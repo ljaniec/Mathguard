@@ -45,11 +45,29 @@ theorem ledgerUpdate_eq {n : Nat} (p : Policy n) (ctx : Context n) (q : Request 
     ledgerUpdate p ctx q s = ((ledgerStep p s ctx q).outcome, (ledgerStep p s ctx q).state) :=
   rfl
 
+/-- Return the result and install its state from the same kernel evaluation. -/
+def ledgerResultUpdate {n : Nat} (p : Policy n) (ctx : Context n) (q : Request n)
+    (s : Ledger n) : LedgerResult n × Ledger n :=
+  let r := ledgerStep p s ctx q
+  (r, r.state)
+
+theorem ledgerResultUpdate_eq {n : Nat} (p : Policy n) (ctx : Context n)
+    (q : Request n) (s : Ledger n) :
+    ledgerResultUpdate p ctx q s =
+      (ledgerStep p s ctx q, (ledgerStep p s ctx q).state) := rfl
+
+/-- The returned snapshot belongs to this transition, even if another caller
+advances the cell before the recipient renders it. This is internal state, not
+an authenticated public receipt; adapters must authorize and mask its fields. -/
+def atomicLedgerStepResult {n : Nat} (cell : LedgerCell n) (p : Policy n)
+    (ctx : Context n) (q : Request n) : BaseIO (LedgerResult n) :=
+  cell.modifyGet (ledgerResultUpdate p ctx q)
+
 /-- Execute one reviewed transition atomically on a volatile in-memory ledger cell.
 This operation does not persist a receipt or prove database/whole-stack atomicity. -/
 def atomicLedgerStep {n : Nat} (cell : LedgerCell n) (p : Policy n) (ctx : Context n)
-    (q : Request n) : BaseIO LedgerOutcome :=
-  cell.modifyGet (ledgerUpdate p ctx q)
+    (q : Request n) : BaseIO LedgerOutcome := do
+  return (← atomicLedgerStepResult cell p ctx q).outcome
 
 /-- Read current balances independently of any earlier transition (account order).
 This demo helper is NOT a commit-correlated receipt: a concurrent call may have

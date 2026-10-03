@@ -1,0 +1,584 @@
+{
+  "metadata": {
+    "collected_at_utc": "2026-10-03T20:56:47.439413+00:00",
+    "platform": "Linux",
+    "machine": "x86_64",
+    "logical_cpus": 9,
+    "python": "3.12.14",
+    "base_commit": "e4fcc80993ac63214427c768e890530660c64822",
+    "source_sha256": {
+      "Bench.lean": "670e1b6f3114285a9eb8eeba26bcf718453f15d4be72712ffda09948eefb2fe0",
+      "Main.lean": "2463386fd264e7f6e0acd658d692e868f6826ec78f817d2b0fb09bd7cd96257d",
+      "Mathguard/Budget.lean": "a9c4331758012c7db179c7eb8b63f4fec31e75f096af334c4d4ce30be869a285",
+      "Mathguard/Flow.lean": "12ad2ed320fc4a717013842b462215bb7e97308dd9835c2771002c17aa223f97",
+      "Mathguard/Ledger.lean": "3647d048e9be9f374568597bfe02e2f8fe186e123450970b596767be26a0d3fa",
+      "Mathguard/OptimizedBudget.lean": "567d08790f81e3b70c307d267fe44f47f84dc2b72c63a14138025f4d9fbd3b92",
+      "Mathguard/Runtime.lean": "c6543d51ce3bb610e6bf6f525e297175564b3eb859297a111bf0e80ae5544eb9",
+      "Mathguard/Spec.lean": "b5f1f1ecc519435a24442974d679cdab63432df5c6b40aeb39dbfd4a5a63f62b",
+      "Mathguard.lean": "b46ae3cbae5ee9ba85418ba32a50a6479c94b7265c688cc694e43128d8d0d8cb",
+      "Tests.lean": "3216defed90d5c9a6203d3f45220c8516aa7ebebd66d587effc7f121ae8e0e37",
+      "lake-manifest.json": "79ef867c2640ecbfa811c06acc76a5307cc26f4f49303799bcebea7d47c0fb31",
+      "lakefile.toml": "a11f8525ea1eb11afc9e30e7933372604fb50ea67330c93cbc24c9faa3849cac",
+      "lean-toolchain": "db7bb24b756d745bbde83fe92718b51bd3625dae3701ba0f598d0eedcd3f3028",
+      "scripts/audit_sources.py": "9292b246ef0aeca6b43c6371e194c24c5eae7be91745b53795f0c10ff41a01c9",
+      "scripts/check-fast.sh": "0b60ba4c0e07403f7d771572da7f21e873bc8c3d4af75077b6c82c4a98e96c52",
+      "scripts/check-lean.sh": "d089e136b8fe83771f0011404f409d4e80976c9639c86694ea1013f093ddfd4d",
+      "scripts/check-local.sh": "9e3deb3df9e2fbf6958e4b3dfb245e85b723cb57fb27ba303aa5a8dc8a7445a4",
+      "scripts/lean_source.py": "3247abe181f70d73c93d58209a3e58064452e2c990b03cc0d42669068b66237c",
+      "scripts/profile-checks.py": "e441cc3b79d83a04734054be7864197058a376b0318dc923f3faf62f567b66fd",
+      "scripts/test_audit.py": "21349da0beba726424c355358c0e2d09cf94f36516aacf71e6103869de0eb81d"
+    },
+    "toolchain": "leanprover/lean4:v4.28.0",
+    "mathlib_commit": "8f9d9cff6bd728b17a24e163c9402775d9e6a365",
+    "build_mode": "existing dependency cache; two successive incremental Lake builds; no clean Mathlib build",
+    "native_quantiles": "quantiles of 15 batch-mean per-operation times; not individual request latency quantiles",
+    "rss_scope": "Linux child-command RSS high-water mark; not summed concurrent process-tree memory",
+    "lean_version": "Lean (version 4.28.0, x86_64-unknown-linux-gnu, commit 7e01a1bf5c70fc6167d49c345d3bf80596e9a79b, Release)",
+    "execution_environment_note": "Official unmodified Lean release. An environment-only readlink compatibility shim used /proc/self/exe when the sandbox numeric PID path was unavailable; no kernel or proof-check options were changed.",
+    "publication_note": "Collected with --output performance-results/reviewed --lean-files --iterations 100. Command paths beneath the checkout were normalized to repository-relative paths and the Python executable to python3 for publication; measurements and source hashes are unchanged. Raw profiler output records absolute host paths."
+  },
+  "stages": [
+    {
+      "stage": "static_preflight",
+      "command": [
+        "bash",
+        "scripts/check-fast.sh"
+      ],
+      "seconds": 0.43048401800024294,
+      "peak_rss_kib": 17920,
+      "exit_code": 0
+    },
+    {
+      "stage": "project_build",
+      "command": [
+        "lake",
+        "build"
+      ],
+      "seconds": 1.013854935999916,
+      "peak_rss_kib": 852752,
+      "exit_code": 0
+    },
+    {
+      "stage": "incremental_build",
+      "command": [
+        "lake",
+        "build"
+      ],
+      "seconds": 1.005940558000475,
+      "peak_rss_kib": 856144,
+      "exit_code": 0
+    },
+    {
+      "stage": "axioms",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "scripts/Axioms.lean"
+      ],
+      "seconds": 2.52926076499989,
+      "peak_rss_kib": 2013220,
+      "exit_code": 0
+    },
+    {
+      "stage": "fresh_audit",
+      "command": [
+        "python3",
+        "scripts/audit_sources.py",
+        "--axioms",
+        "performance-results/reviewed/axioms.log",
+        "--require-extra"
+      ],
+      "seconds": 0.07501293099994655,
+      "peak_rss_kib": 12416,
+      "exit_code": 0
+    },
+    {
+      "stage": "demo",
+      "command": [
+        ".lake/build/bin/mathguard"
+      ],
+      "seconds": 0.04539269900033105,
+      "peak_rss_kib": 82924,
+      "exit_code": 0
+    },
+    {
+      "stage": "native_tests",
+      "command": [
+        "lake",
+        "exe",
+        "mathguard-tests"
+      ],
+      "seconds": 1.118751125000017,
+      "peak_rss_kib": 859032,
+      "exit_code": 0
+    },
+    {
+      "stage": "lean_Budget",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "-Dprofiler=true",
+        "-Dprofiler.threshold=10",
+        "Mathguard/Budget.lean"
+      ],
+      "seconds": 1.9210059150000234,
+      "peak_rss_kib": 1318080,
+      "exit_code": 0
+    },
+    {
+      "stage": "lean_Flow",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "-Dprofiler=true",
+        "-Dprofiler.threshold=10",
+        "Mathguard/Flow.lean"
+      ],
+      "seconds": 1.6064540259994828,
+      "peak_rss_kib": 1155968,
+      "exit_code": 0
+    },
+    {
+      "stage": "lean_Ledger",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "-Dprofiler=true",
+        "-Dprofiler.threshold=10",
+        "Mathguard/Ledger.lean"
+      ],
+      "seconds": 1.9934556800008068,
+      "peak_rss_kib": 1279876,
+      "exit_code": 0
+    },
+    {
+      "stage": "lean_OptimizedBudget",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "-Dprofiler=true",
+        "-Dprofiler.threshold=10",
+        "Mathguard/OptimizedBudget.lean"
+      ],
+      "seconds": 1.6358447980001074,
+      "peak_rss_kib": 1173088,
+      "exit_code": 0
+    },
+    {
+      "stage": "lean_Runtime",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "-Dprofiler=true",
+        "-Dprofiler.threshold=10",
+        "Mathguard/Runtime.lean"
+      ],
+      "seconds": 1.720749731000069,
+      "peak_rss_kib": 1148512,
+      "exit_code": 0
+    },
+    {
+      "stage": "lean_Spec",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "-Dprofiler=true",
+        "-Dprofiler.threshold=10",
+        "Mathguard/Spec.lean"
+      ],
+      "seconds": 2.0865554239999256,
+      "peak_rss_kib": 1179436,
+      "exit_code": 0
+    },
+    {
+      "stage": "benchmark_build",
+      "command": [
+        "lake",
+        "build",
+        "mathguard-bench"
+      ],
+      "seconds": 0.8593868319994726,
+      "peak_rss_kib": 852204,
+      "exit_code": 0
+    },
+    {
+      "stage": "native_benchmarks",
+      "command": [
+        ".lake/build/bin/mathguard-bench",
+        "100"
+      ],
+      "seconds": 4.65585213400027,
+      "peak_rss_kib": 86852,
+      "exit_code": 0
+    }
+  ],
+  "native_cases": [
+    {
+      "case": "ledger.commit",
+      "checksum": 1501001501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 317,
+      "p95_batch_mean_ns": 373,
+      "samples": 15,
+      "size": 10
+    },
+    {
+      "case": "ledger.retry_oldest",
+      "checksum": 1501003002,
+      "iterations": 100,
+      "p50_batch_mean_ns": 73,
+      "p95_batch_mean_ns": 76,
+      "samples": 15,
+      "size": 10
+    },
+    {
+      "case": "ledger.retry_newest",
+      "checksum": 1501003002,
+      "iterations": 100,
+      "p50_batch_mean_ns": 125,
+      "p95_batch_mean_ns": 352,
+      "samples": 15,
+      "size": 10
+    },
+    {
+      "case": "ledger.stale",
+      "checksum": 1501004503,
+      "iterations": 100,
+      "p50_batch_mean_ns": 123,
+      "p95_batch_mean_ns": 127,
+      "samples": 15,
+      "size": 10
+    },
+    {
+      "case": "budget.reserve.reference",
+      "checksum": 181621,
+      "iterations": 100,
+      "p50_batch_mean_ns": 1252,
+      "p95_batch_mean_ns": 1467,
+      "samples": 15,
+      "size": 10
+    },
+    {
+      "case": "budget.reject.reference",
+      "checksum": 1501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 439,
+      "p95_batch_mean_ns": 443,
+      "samples": 15,
+      "size": 10
+    },
+    {
+      "case": "budget.reserve.optimized",
+      "checksum": 181621,
+      "iterations": 100,
+      "p50_batch_mean_ns": 950,
+      "p95_batch_mean_ns": 1096,
+      "samples": 15,
+      "size": 10
+    },
+    {
+      "case": "budget.reject.optimized",
+      "checksum": 1501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 241,
+      "p95_batch_mean_ns": 242,
+      "samples": 15,
+      "size": 10
+    },
+    {
+      "case": "budget.settle_first",
+      "checksum": 15010,
+      "iterations": 100,
+      "p50_batch_mean_ns": 324,
+      "p95_batch_mean_ns": 472,
+      "samples": 15,
+      "size": 10
+    },
+    {
+      "case": "budget.settle_last",
+      "checksum": 15010,
+      "iterations": 100,
+      "p50_batch_mean_ns": 382,
+      "p95_batch_mean_ns": 388,
+      "samples": 15,
+      "size": 10
+    },
+    {
+      "case": "ledger.commit",
+      "checksum": 1501001501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 1658,
+      "p95_batch_mean_ns": 1786,
+      "samples": 15,
+      "size": 100
+    },
+    {
+      "case": "ledger.retry_oldest",
+      "checksum": 1501003002,
+      "iterations": 100,
+      "p50_batch_mean_ns": 75,
+      "p95_batch_mean_ns": 77,
+      "samples": 15,
+      "size": 100
+    },
+    {
+      "case": "ledger.retry_newest",
+      "checksum": 1501003002,
+      "iterations": 100,
+      "p50_batch_mean_ns": 621,
+      "p95_batch_mean_ns": 765,
+      "samples": 15,
+      "size": 100
+    },
+    {
+      "case": "ledger.stale",
+      "checksum": 1501004503,
+      "iterations": 100,
+      "p50_batch_mean_ns": 625,
+      "p95_batch_mean_ns": 742,
+      "samples": 15,
+      "size": 100
+    },
+    {
+      "case": "budget.reserve.reference",
+      "checksum": 451801,
+      "iterations": 100,
+      "p50_batch_mean_ns": 10644,
+      "p95_batch_mean_ns": 12493,
+      "samples": 15,
+      "size": 100
+    },
+    {
+      "case": "budget.reject.reference",
+      "checksum": 1501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 3184,
+      "p95_batch_mean_ns": 3837,
+      "samples": 15,
+      "size": 100
+    },
+    {
+      "case": "budget.reserve.optimized",
+      "checksum": 451801,
+      "iterations": 100,
+      "p50_batch_mean_ns": 6915,
+      "p95_batch_mean_ns": 8775,
+      "samples": 15,
+      "size": 100
+    },
+    {
+      "case": "budget.reject.optimized",
+      "checksum": 1501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 1902,
+      "p95_batch_mean_ns": 3850,
+      "samples": 15,
+      "size": 100
+    },
+    {
+      "case": "budget.settle_first",
+      "checksum": 150100,
+      "iterations": 100,
+      "p50_batch_mean_ns": 1185,
+      "p95_batch_mean_ns": 1741,
+      "samples": 15,
+      "size": 100
+    },
+    {
+      "case": "budget.settle_last",
+      "checksum": 150100,
+      "iterations": 100,
+      "p50_batch_mean_ns": 1807,
+      "p95_batch_mean_ns": 2319,
+      "samples": 15,
+      "size": 100
+    },
+    {
+      "case": "ledger.commit",
+      "checksum": 1501001501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 16699,
+      "p95_batch_mean_ns": 19480,
+      "samples": 15,
+      "size": 1000
+    },
+    {
+      "case": "ledger.retry_oldest",
+      "checksum": 1501003002,
+      "iterations": 100,
+      "p50_batch_mean_ns": 73,
+      "p95_batch_mean_ns": 273,
+      "samples": 15,
+      "size": 1000
+    },
+    {
+      "case": "ledger.retry_newest",
+      "checksum": 1501003002,
+      "iterations": 100,
+      "p50_batch_mean_ns": 6602,
+      "p95_batch_mean_ns": 8116,
+      "samples": 15,
+      "size": 1000
+    },
+    {
+      "case": "ledger.stale",
+      "checksum": 1501004503,
+      "iterations": 100,
+      "p50_batch_mean_ns": 5691,
+      "p95_batch_mean_ns": 8323,
+      "samples": 15,
+      "size": 1000
+    },
+    {
+      "case": "budget.reserve.reference",
+      "checksum": 3153601,
+      "iterations": 100,
+      "p50_batch_mean_ns": 107329,
+      "p95_batch_mean_ns": 122479,
+      "samples": 15,
+      "size": 1000
+    },
+    {
+      "case": "budget.reject.reference",
+      "checksum": 1501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 28944,
+      "p95_batch_mean_ns": 30964,
+      "samples": 15,
+      "size": 1000
+    },
+    {
+      "case": "budget.reserve.optimized",
+      "checksum": 3153601,
+      "iterations": 100,
+      "p50_batch_mean_ns": 67053,
+      "p95_batch_mean_ns": 70956,
+      "samples": 15,
+      "size": 1000
+    },
+    {
+      "case": "budget.reject.optimized",
+      "checksum": 1501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 17942,
+      "p95_batch_mean_ns": 18990,
+      "samples": 15,
+      "size": 1000
+    },
+    {
+      "case": "budget.settle_first",
+      "checksum": 1501000,
+      "iterations": 100,
+      "p50_batch_mean_ns": 11332,
+      "p95_batch_mean_ns": 12581,
+      "samples": 15,
+      "size": 1000
+    },
+    {
+      "case": "budget.settle_last",
+      "checksum": 1501000,
+      "iterations": 100,
+      "p50_batch_mean_ns": 17823,
+      "p95_batch_mean_ns": 19752,
+      "samples": 15,
+      "size": 1000
+    },
+    {
+      "case": "ledger.commit",
+      "checksum": 1501001501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 168848,
+      "p95_batch_mean_ns": 179335,
+      "samples": 15,
+      "size": 10000
+    },
+    {
+      "case": "ledger.retry_oldest",
+      "checksum": 1501003002,
+      "iterations": 100,
+      "p50_batch_mean_ns": 73,
+      "p95_batch_mean_ns": 86,
+      "samples": 15,
+      "size": 10000
+    },
+    {
+      "case": "ledger.retry_newest",
+      "checksum": 1501003002,
+      "iterations": 100,
+      "p50_batch_mean_ns": 62854,
+      "p95_batch_mean_ns": 67511,
+      "samples": 15,
+      "size": 10000
+    },
+    {
+      "case": "ledger.stale",
+      "checksum": 1501004503,
+      "iterations": 100,
+      "p50_batch_mean_ns": 58874,
+      "p95_batch_mean_ns": 66052,
+      "samples": 15,
+      "size": 10000
+    },
+    {
+      "case": "budget.reserve.reference",
+      "checksum": 30171601,
+      "iterations": 100,
+      "p50_batch_mean_ns": 1049686,
+      "p95_batch_mean_ns": 1210457,
+      "samples": 15,
+      "size": 10000
+    },
+    {
+      "case": "budget.reject.reference",
+      "checksum": 1501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 281814,
+      "p95_batch_mean_ns": 312519,
+      "samples": 15,
+      "size": 10000
+    },
+    {
+      "case": "budget.reserve.optimized",
+      "checksum": 30171601,
+      "iterations": 100,
+      "p50_batch_mean_ns": 651354,
+      "p95_batch_mean_ns": 683729,
+      "samples": 15,
+      "size": 10000
+    },
+    {
+      "case": "budget.reject.optimized",
+      "checksum": 1501,
+      "iterations": 100,
+      "p50_batch_mean_ns": 163844,
+      "p95_batch_mean_ns": 166772,
+      "samples": 15,
+      "size": 10000
+    },
+    {
+      "case": "budget.settle_first",
+      "checksum": 15010000,
+      "iterations": 100,
+      "p50_batch_mean_ns": 111541,
+      "p95_batch_mean_ns": 122770,
+      "samples": 15,
+      "size": 10000
+    },
+    {
+      "case": "budget.settle_last",
+      "checksum": 15010000,
+      "iterations": 100,
+      "p50_batch_mean_ns": 178061,
+      "p95_batch_mean_ns": 356511,
+      "samples": 15,
+      "size": 10000
+    }
+  ]
+}

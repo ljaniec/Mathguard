@@ -2,6 +2,7 @@ module
 
 import Mathguard.Spec
 import Mathguard.Runtime
+import Mathguard.OptimizedBudget
 
 /-!
 # Mathguard demo executable
@@ -25,10 +26,10 @@ public def main : IO Unit := do
   IO.println "== Ledger (atomic commit boundary over ledgerStep)"
   let cell ← LedgerCell.genesis demoGenesis
   IO.println s!"genesis balances: {← cell.balances}"
-  let o₁ ← atomicLedgerStep cell demoPolicy demoContext demoRequest
-  IO.println s!"transfer 2500 from 0 to 1: {outcomeName o₁}, balances {← cell.balances}"
-  let o₂ ← atomicLedgerStep cell demoPolicy demoContext demoRequest
-  IO.println s!"exact retry: {outcomeName o₂}, balances {← cell.balances}"
+  let r₁ ← atomicLedgerStepResult cell demoPolicy demoContext demoRequest
+  IO.println s!"transfer 2500 from 0 to 1: {outcomeName r₁.outcome}, balances {List.ofFn r₁.state.balances}"
+  let r₂ ← atomicLedgerStepResult cell demoPolicy demoContext demoRequest
+  IO.println s!"exact retry: {outcomeName r₂.outcome}, balances {List.ofFn r₂.state.balances}"
   let stale := { demoRequest with id := 19 }
   let o₃ ← atomicLedgerStep cell demoPolicy demoContext stale
   IO.println s!"stale revision: {outcomeName o₃}"
@@ -36,13 +37,13 @@ public def main : IO Unit := do
   let o₄ ← atomicLedgerStep cell demoPolicy demoContext big
   IO.println s!"high value without approval: {outcomeName o₄}"
   let a : Approval 3 := { nonce := 9, principal := 1, boundRequest := big, expires := 100 }
-  let o₅ ← atomicLedgerStep cell demoPolicy { demoContext with approval := some a } big
-  IO.println s!"high value with bound approval: {outcomeName o₅}, balances {← cell.balances}"
+  let r₅ ← atomicLedgerStepResult cell demoPolicy { demoContext with approval := some a } big
+  IO.println s!"high value with bound approval: {outcomeName r₅.outcome}, balances {List.ofFn r₅.state.balances}"
   IO.println "== Budget"
   let b₀ := initialBudget (fun _ => 10)
-  let b₁ := budgetStep b₀ (.reserveCall { id := 1, bound := fun _ => 6 })
+  let b₁ := budgetStepOptimized b₀ (.reserveCall { id := 1, bound := fun _ => 6 })
   IO.println s!"reserve 6/10: {budgetSummary b₁}"
-  let b₂ := budgetStep b₁ (.reserveCall { id := 2, bound := fun _ => 6 })
+  let b₂ := budgetStepOptimized b₁ (.reserveCall { id := 2, bound := fun _ => 6 })
   IO.println s!"reserve another 6 (denied): {budgetSummary b₂}"
   let b₃ := budgetStep b₂ (.settleCall 1 (fun _ => 4))
   IO.println s!"settle actual 4: {budgetSummary b₃}"
