@@ -1,5 +1,8 @@
 # Mathguard
 
+<img width="3344" height="1248" alt="project_logo" src="https://github.com/user-attachments/assets/47c7bbf7-8e97-408e-877c-0ed70a49a4d8" />
+
+
 **LLMs propose actions. Mathguard checks which actions may change the ledger.**
 
 Bootstrapping and formal-model pack for HackYeah 2026, Goldman Sachs **AI Control Layer**. The reference application is a simulated personal-account ledger; the assessed product is the AI control layer around agents, model calls, and ledger/MCP tools.
