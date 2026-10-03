@@ -24,3 +24,7 @@ The rules state a 3 October 2026 23:00 start and 4 October 2026 23:00 submission
 - https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
 
 The Lean validation guidance distinguishes checking a proof term from reviewing its meaning, and describes additional trust introduced by native evaluation. The MCP guidance informs per-request authentication, scoped authority, private tool credentials, and separation of sessions from authentication. No broad compliance or certification claim follows from citing these sources.
+
+## Fresh challenge recovery review
+
+Both original PDFs were fetched directly again and their scoring pages were visually checked; SHA-256 values match the earlier uploaded files. See [the requirement matrix](../docs/10-REQUIREMENTS-RECOVERY.md) for source links/page references, corrections to secondary interpretations, conservative earlier submission target, implemented behavior and unresolved evidence. The authenticated HackTribe schedule was not independently available in this review.

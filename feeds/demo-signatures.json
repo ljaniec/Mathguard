@@ -1,0 +1,12 @@
+{
+  "schema_version": "mathguard-signatures-1",
+  "version": 1,
+  "source": "Mathguard synthetic defensive fixtures; not a comprehensive exploit feed",
+  "signatures": [
+    {"id": "INSTRUCTION_OVERRIDE", "contains": "ignore previous instructions", "reason": "PROMPT_INJECTION"},
+    {"id": "INSTRUCTION_OVERRIDE_PL", "contains": "zignoruj poprzednie instrukcje", "reason": "PROMPT_INJECTION"},
+    {"id": "UNSAFE_DESERIALIZATION", "contains": "pickle.loads", "reason": "UNSAFE_DESERIALIZATION"},
+    {"id": "REMOTE_MODEL_CODE", "contains": "trust_remote_code=true", "reason": "MODEL_REMOTE_CODE"},
+    {"id": "SHELL_PIPE", "contains": "| bash", "reason": "MALICIOUS_EXECUTION"}
+  ]
+}

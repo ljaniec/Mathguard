@@ -1,4 +1,4 @@
-> **Status update after Aristotle return:** production modules and native demo now exist. All original 55 targets are proved according to the supplied pinned run; static import checks pass. Earlier statements below describing an uncompiled draft refer to the original request pack. Do not redo the completed 55 targets. Independent local rebuild remains required; see `verification/IMPORT-AUDIT.md`.
+> **Current checkpoint:** the 55 baseline targets and five additional equality targets have been independently checked with the pinned toolchain. The gateway/worker runtime is now integration-tested. Earlier request-pack descriptions below are historical; current scope and open work are in `07-TEAM-INTEGRATION-CONTRACT.md` and `10-REQUIREMENTS-RECOVERY.md`.
 
 # Validation, evidence, and demo plan
 

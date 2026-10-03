@@ -1,0 +1,37 @@
+{
+  "schema_version": "mathguard-policy-2",
+  "epoch": 8,
+  "profile": "permissive",
+  "pii_action": "redact",
+  "semantic_threshold": 85,
+  "allowed_models": [
+    "local-model"
+  ],
+  "semantic_model": "local-model",
+  "budget_limit": [
+    1000000,
+    1000000,
+    600000,
+    200
+  ],
+  "call_bound": [
+    0,
+    16384,
+    16000,
+    1
+  ],
+  "deadline_seconds": 15,
+  "max_output_tokens": 512,
+  "max_input_bytes": 4096,
+  "max_session_steps": 20,
+  "repeat_limit": 3,
+  "max_transfer": 50000,
+  "approval_threshold": 10000,
+  "model_clearance": 2,
+  "artifact_repositories": [
+    "mathguard/demo-safe"
+  ],
+  "artifact_sha256": [
+    "a9311856600eeba2a2c803baf41eec2eb10d885fefe9f2dffbe5c0a77a317e28"
+  ]
+}

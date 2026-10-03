@@ -23,3 +23,7 @@ root = "Tests"
 [[lean_exe]]
 name = "mathguard-bench"
 root = "Bench"
+
+[[lean_exe]]
+name = "mathguard-worker"
+root = "Mathguard.Worker"
