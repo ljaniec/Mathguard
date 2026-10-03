@@ -15,3 +15,11 @@ name = "Mathguard"
 [[lean_exe]]
 name = "mathguard"
 root = "Main"
+
+[[lean_exe]]
+name = "mathguard-tests"
+root = "Tests"
+
+[[lean_exe]]
+name = "mathguard-bench"
+root = "Bench"

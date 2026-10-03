@@ -1,0 +1,40 @@
+import took 720ms
+simp took 13.4ms
+simp took 18.8ms
+type checking took 13.9ms
+typeclass inference of Nonempty took 16.5ms
+simp took 27.2ms
+simp took 49.9ms
+typeclass inference of Nonempty took 21.2ms
+simp took 11.7ms
+typeclass inference of Nonempty took 12.8ms
+simp took 27ms
+simp took 11.4ms
+typeclass inference of Nonempty took 21.6ms
+typeclass inference of Nonempty took 10.3ms
+simp took 64ms
+typeclass inference of Nonempty took 10.8ms
+typeclass inference of Nonempty took 10.2ms
+simp took 11.1ms
+cumulative profiling times:
+	attribute application 3.18ms
+	blocked (unaccounted) 525ms
+	compilation (IR) 0.406ms
+	compilation (LCNF base) 0.833ms
+	compilation (LCNF mono) 0.466ms
+	congr simp thm 11.9ms
+	elaboration 146ms
+	fix level params 1.56ms
+	import 720ms
+	initialization 29.9ms
+	instantiate metavars 15.2ms
+	interpretation 469ms
+	let-to-have transformation 2.58ms
+	linting 63.8ms
+	parsing 17.1ms
+	process pre-definitions 18.1ms
+	share common exprs 8.51ms
+	simp 406ms
+	tactic execution 194ms
+	type checking 73.3ms
+	typeclass inference 266ms

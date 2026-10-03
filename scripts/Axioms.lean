@@ -1,4 +1,4 @@
--- Prints the axiom dependencies of all 55 model-v1 targets.
+-- Prints 55 model-v1 targets plus 5 refinement/snapshot bridge targets.
 -- Run: lake env lean scripts/Axioms.lean
 import Mathguard
 open Mathguard
@@ -57,3 +57,9 @@ open Mathguard
 #print axioms demo_secret_export_denied
 #print axioms demo_internal_export_allowed
 #print axioms demo_public_export_allowed
+-- Additional refinement/snapshot bridge targets, separate from the baseline 55.
+#print axioms reservedTotals_eq
+#print axioms reservedAt_eq
+#print axioms reserveOptimized_eq
+#print axioms budgetStepOptimized_eq
+#print axioms ledgerResultUpdate_eq

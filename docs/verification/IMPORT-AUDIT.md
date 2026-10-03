@@ -13,7 +13,7 @@ Source: user-supplied `67b0cd4c-acaa-40a7-8292-bec3a55e0c80-aristotle.tar.gz`, r
 
 ## Verification status
 
-The supplied run reports a warning-free `lake build` and observed native demo outputs. **This integration environment has no Lean/Lake/Elan executable and has not independently rerun those commands.** Static comparison and supplied reports support provenance; they are not a fresh kernel check. `scripts/check-lean.sh` provides the local rebuild, current axiom audit, and native demo command sequence. Its missing-toolchain path fails, rather than reporting success.
+The supplied run reports a warning-free `lake build` and observed native demo outputs. **At the original import checkpoint this environment had no Lean/Lake/Elan executable and had not independently rerun those commands.** Static comparison and supplied reports supported provenance; they were not a fresh kernel check. The subsequent [performance review](PERFORMANCE-REVIEW.md) obtained the official pinned toolchain, independently rebuilt the 55 original targets, and checked five additional refinement/snapshot targets. The original supplied report is preserved separately. `scripts/check-lean.sh` provides the incremental rebuild, fresh axiom audit, demo, and native regression tests. Its missing-toolchain path fails, rather than reporting success.
 
 ## Runtime boundary
 

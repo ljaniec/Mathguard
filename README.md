@@ -22,7 +22,7 @@ Bootstrapping and formal-model pack for HackYeah 2026, Goldman Sachs **AI Contro
 
 The supplied Aristotle run reports all **55 model-v1 targets proved** under Lean 4.28.0 / Mathlib `8f9d9cff` (`v4.28.0`), with a warning-free build and native demo. The code, original statements, and supplied axiom report pass the static import audit: [IMPORT-AUDIT.md](docs/verification/IMPORT-AUDIT.md).
 
-**Independent local Lean rebuild is still required:** this integration environment has no Lean toolchain. The supplied report is retained as external build evidence, not a newly performed kernel check. Run `bash scripts/check-lean.sh` on a machine with the pinned toolchain/cache. Model safety and the runtime boundary remain distinct; authentication, persistence, parser, policy, and combined-control integration are open.
+The performance-review work independently rebuilt all **55 baseline targets** with the pinned toolchain and checked **five additional reservation-refinement/snapshot targets**. The fresh axiom report, native regression tests, and measured results are in [PERFORMANCE-REVIEW.md](docs/verification/PERFORMANCE-REVIEW.md). The original supplied report remains separate evidence. Model safety and the runtime boundary remain distinct; authentication, persistence, parser, policy, and combined-control integration are open.
 
 ### Layout
 
@@ -33,8 +33,10 @@ The supplied Aristotle run reports all **55 model-v1 targets proved** under Lean
 | `Mathguard/Budget.lean` | Budget targets plus helper lemmas (unique-ticket removal, reservation/settlement characterisations) |
 | `Mathguard/Flow.lean` | Information-flow targets plus helper lemmas (label preorder, trace monotonicity) |
 | `Mathguard/Runtime.lean` | In-memory runtime boundary: `atomicLedgerStep` installs `(ledgerStep p s ctx q).state` in one `IO.Ref.modifyGet` |
+| `Mathguard/OptimizedBudget.lean` | Allocation-reducing totals/reservation implementation with exact equality proofs against the unchanged model |
 | `Main.lean` | Demo executable running the reviewed kernels on the `n = 3` fixtures |
-| `scripts/Axioms.lean` | `#print axioms` for all 55 targets |
+| `scripts/Axioms.lean` | `#print axioms` for 55 baseline and 5 additional targets |
+| `Tests.lean`, `Bench.lean` | Native snapshot/budget regressions and ledger/budget size sweeps |
 | `aristotle/` | The original proof-request pack (kept unchanged as the specification of record; not part of the build) |
 
 ### Build, check, run, generate C
@@ -46,10 +48,16 @@ lake env lean scripts/Axioms.lean
 lake exe mathguard              # runs the demo
 ```
 
-`bash scripts/check-lean.sh` runs the formal build/audit/demo subgate. The canonical
+`bash scripts/check-fast.sh` runs a static preflight without Lean. `bash scripts/check-lean.sh`
+runs the incremental formal build/fresh audit/demo/native-test subgate. The canonical
 `bash scripts/check-local.sh` is the full release entry point: it also requires the
 gateway integration suite at `scripts/test-integration.sh` and fails if it is absent.
 That suite is a next implementation deliverable, so the full release gate is not yet complete.
+
+`python3 scripts/profile-checks.py --lean-files --iterations 100` collects actual
+build/frontend/audit timings, peak RSS, and native benchmark JSON/CSV. Returned runtime
+snapshots come from `atomicLedgerStepResult`; the demo no longer renders balances read
+independently after a commit. Neither API supplies durable or authenticated public receipts.
 
 
 Every definition in `Mathguard/Spec.lean` is computable. `lake build` translates the kernel and runtime modules
