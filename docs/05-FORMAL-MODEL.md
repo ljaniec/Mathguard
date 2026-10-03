@@ -1,3 +1,5 @@
+> **Status update after Aristotle return:** production modules and native demo now exist. All original 55 targets are proved according to the supplied pinned run; static import checks pass. Earlier statements below describing an uncompiled draft refer to the original request pack. Do not redo the completed 55 targets. Independent local rebuild remains required; see `verification/IMPORT-AUDIT.md`.
+
 # Mathguard model-v1 — exact formal specification
 
 ## Purpose and assurance claim
@@ -293,3 +295,4 @@ The source invariants are independent specifications; do not repair a failed the
 ## F. Extensions after the hackathon
 
 Possible later work: variable-policy trace theorem; history-level authorization under policy snapshots; verified serialization/refinement; structured declassification/noninterference; bounded liveness for authorized workflows; hierarchical session/global budget transaction proof; deposits/withdrawals via explicitly balanced external accounts; temporal caps; more general supervisory-control synthesis. None is required to make the model-v1 PoC useful, and none may be claimed before definition, proof, and runtime integration.
+

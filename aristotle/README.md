@@ -1,3 +1,5 @@
+> **Historical model-v1 requests.** The supplied Aristotle return completes these 55 targets in `Mathguard/Ledger.lean`, `Mathguard/Budget.lean`, and `Mathguard/Flow.lean`. Do not resubmit them or add the duplicate standalone files to the Lake build. See `docs/verification/IMPORT-AUDIT.md` for provenance and rebuild limits.
+
 # Aristotle handoff — Mathguard model-v1
 
 ## What to send
@@ -52,3 +54,4 @@ Do not invent a total severity ordering between approval and redaction. Do not c
 The Codex implementation agent must independently rerun the pinned definition/proof checks, inspect theorem meanings against `docs/05-FORMAL-MODEL.md`, inspect axiom dependencies, and build the runtime from the reviewed definition hash. Aristotle success is not automatic permission to modify the production policy or skip integration tests.
 
 If only some kernels finish, the dashboard must list exactly which targets are checked and which are pending. Keep the gateway fail closed and retain ordinary tests. A pending proof does not justify a fabricated verified badge.
+

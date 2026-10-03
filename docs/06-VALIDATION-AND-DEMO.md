@@ -1,3 +1,5 @@
+> **Status update after Aristotle return:** production modules and native demo now exist. All original 55 targets are proved according to the supplied pinned run; static import checks pass. Earlier statements below describing an uncompiled draft refer to the original request pack. Do not redo the completed 55 targets. Independent local rebuild remains required; see `verification/IMPORT-AUDIT.md`.
+
 # Validation, evidence, and demo plan
 
 ## Evidence states
@@ -136,3 +138,4 @@ Use deterministic fixture mode for reproducible judge self-tests and live-model 
 10. Integration value, current limits, and next work.
 
 Use the actual checked results/status at submission. Do not put unchecked request files behind a “verified” slide. Source code, policy, startup command, suite command, and demo link should be easy to find from the submission.
+
