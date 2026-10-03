@@ -15,6 +15,11 @@ committed state change; persistence, authentication and the adapters that build 
 remain outside the model.
 
 Everything here is computable and is compiled to C together with the kernel.
+
+This cell is VOLATILE: no durability or crash-recovery guarantee is supplied.
+`ledgerUpdate_eq` is a pure definitional equality, not a verified IO concurrency theorem.
+The runtime primitive supplies atomic reference modification; authentication,
+policy/approval provenance, combined budget state, and persistence remain external.
 -/
 
 @[expose] public section
@@ -40,12 +45,16 @@ theorem ledgerUpdate_eq {n : Nat} (p : Policy n) (ctx : Context n) (q : Request 
     ledgerUpdate p ctx q s = ((ledgerStep p s ctx q).outcome, (ledgerStep p s ctx q).state) :=
   rfl
 
-/-- Execute one reviewed transition atomically on a ledger cell. -/
+/-- Execute one reviewed transition atomically on a volatile in-memory ledger cell.
+This operation does not persist a receipt or prove database/whole-stack atomicity. -/
 def atomicLedgerStep {n : Nat} (cell : LedgerCell n) (p : Policy n) (ctx : Context n)
     (q : Request n) : BaseIO LedgerOutcome :=
   cell.modifyGet (ledgerUpdate p ctx q)
 
-/-- Read the current balances of a ledger cell as a list (account order). -/
+/-- Read current balances independently of any earlier transition (account order).
+This demo helper is NOT a commit-correlated receipt: a concurrent call may have
+advanced the cell before this read. Production receipts must be returned from
+the same authoritative update/transaction with their checked revision. -/
 def LedgerCell.balances {n : Nat} (cell : LedgerCell n) : BaseIO (List Nat) := do
   let s ← cell.get
   return List.ofFn s.balances

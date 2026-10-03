@@ -24,3 +24,9 @@ Pinned source: https://github.com/leanprover/lean4/blob/v4.28.0/src/Init/System/
 ## Build hygiene
 
 The imported manifest had a stale root package name `RequestProject`; this import changes only that metadata to match `lakefile.toml`'s `Mathguard`. Dependency SHAs remain unchanged, including Mathlib `8f9d9cff6bd728b17a24e163c9402775d9e6a365`. No GitHub Actions workflows are added. The historical Aristotle summary/report is retained and labeled as supplied evidence.
+
+## Prelint review disposition
+
+The first review identified that the canonical `scripts/check-local.sh` path was absent and the formal-only script did not invoke an integration suite. The full release entry point now exists: it runs the formal checks and requires `scripts/test-integration.sh`, failing if the still-unimplemented gateway suite is missing. `check-lean.sh` remains explicitly the formal/demo subgate, not a full release check.
+
+Runtime call-site documentation now states volatility and warns that the independent balances read is not a commit receipt. The imported API name is preserved for source compatibility; atomic reference modification and durability are distinct guarantees. The enforcement handoff requires commit-correlated responses and a deliberate volatile/durable deployment choice. Combined gating is the first new formal request. Actual model/guard resource consumption may still be charged on failed financial requests; only the financial-tool ticket is coupled to a new transfer in that request. CI remains disabled per project preference; PR app review and local gates are retained.

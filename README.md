@@ -46,6 +46,12 @@ lake env lean scripts/Axioms.lean
 lake exe mathguard              # runs the demo
 ```
 
+`bash scripts/check-lean.sh` runs the formal build/audit/demo subgate. The canonical
+`bash scripts/check-local.sh` is the full release entry point: it also requires the
+gateway integration suite at `scripts/test-integration.sh` and fails if it is absent.
+That suite is a next implementation deliverable, so the full release gate is not yet complete.
+
+
 Every definition in `Mathguard/Spec.lean` is computable. `lake build` translates the kernel and runtime modules
 to C in `.lake/build/ir/Mathguard/*.c` (e.g. `Spec.c` contains `ledgerStep`, `admission`, `budgetStep`,
 `flowAllowed`), compiles them, and links `.lake/build/bin/mathguard` against the Lean runtime.
