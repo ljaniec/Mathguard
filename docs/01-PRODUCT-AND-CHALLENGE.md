@@ -12,7 +12,7 @@ Mathguard is a hybrid AI control layer for agents, LLMs, and MCP/API tools. LLMs
 
 ### What's done so far and what is the goal of your project?
 
-We have defined the architecture, formal model, and validation plan. Our hackathon goal is a working proof of concept around a simulated personal-account ledger: an agent proposes transfers, Mathguard checks them before execution, and an automated suite demonstrates allowed operations, blocked attacks, resource limits, and the connection between Lean proofs and the running system.
+We have checked 55 core Lean theorem targets and five additional equality results, and implemented a callable gateway, compiled Lean transition worker, policy/feed reload, local-model adapter, interactive dashboard, and automated integration tests. Our proof of concept uses a simulated personal-account ledger to make action safety visible. Live local-model quality evaluation and final submission packaging remain in progress; fixture tests are reported separately from live-model evidence.
 
 **Status editing rule:** replace the first sentence with actual checked accomplishments as they become available. Do not say the gateway or proofs already work merely because this pack exists.
 
@@ -66,15 +66,15 @@ Use the phrase **formally verified model and transition core** only after the co
 
 Ask the mentor which final weighting applies. Both versions make a strong test suite and useful reporting essential.
 
-The supplied rules state a start no earlier than **3 October 2026, 23:00**, submission by **4 October 2026, 23:00**, and a maximum ten-slide PDF. These times are reproduced from the document, without an explicit timezone in its text; confirm against the event schedule/HackTribe. Distinguish this preparatory specification from implementation activity and confirm any change to the announced start with the organizer. The agent bootstrap must record the applicable official start before implementation.
+The written rules give 23:00 on 3–4 October; the attached secondary schedule review reports an earlier 11:00 finish on 4 October. Plan to submit by **09:30 Europe/Warsaw on 4 October**, while confirming the actual cutoff and pitch duration with organizers. This conservative target is not a verified correction of the source. See the fresh [source audit and delivery matrix](10-REQUIREMENTS-RECOVERY.md).
 
 ## Priorities for a single primary developer
 
-1. Freeze the small ledger model and get universal preservation proofs.
-2. Wire the same transition definition into an atomic local executor.
-3. Deliver real model/tool mediation, budgets, and a semantic guard.
-4. Show replay, approval-binding, overspend, injection/exfiltration, and loop termination through the UI.
-5. Complete automated evidence and submission assets.
+1. Run the existing gateway with the actual local model and record live positive/negative evidence.
+2. Rehearse policy/feed changes, approvals/replay, resource exhaustion, and sanitized exports.
+3. Measure model quality and full-request/stage latency; keep fixture/native benchmarks separate.
+4. Complete the maximum-ten-slide PDF, source/model/license inventory, and accessible submission links.
+5. Preserve the checked formal core; extend proofs only where a deployment-critical semantic gap requires it.
 
 Do not make the demo wait on generalized finance, blockchain consensus, full OAuth deployment, arbitrary plugins, full theorem synthesis, or a large React product. An in-process control layer with a small UI satisfies the architectural form allowed by the brief if it really mediates the calls.
 

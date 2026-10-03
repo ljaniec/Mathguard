@@ -1,0 +1,7 @@
+{
+  "repository": "mathguard/demo-safe",
+  "sha256": "a9311856600eeba2a2c803baf41eec2eb10d885fefe9f2dffbe5c0a77a317e28",
+  "format": "gguf",
+  "trust_remote_code": false,
+  "content_base64": "R0dVRk1hdGhndWFyZCBpbmVydCBoZWFkZXIgZml4dHVyZTsgbm90IGEgcnVubmFibGUgbW9kZWw="
+}
