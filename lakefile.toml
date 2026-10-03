@@ -1,0 +1,17 @@
+name = "Mathguard"
+version = "0.1.0"
+defaultTargets = ["Mathguard", "mathguard"]
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4.git"
+rev = "v4.28.0"
+
+# Reviewed model-v1 definitions and their machine-checked proofs.
+[[lean_lib]]
+name = "Mathguard"
+
+# Executable demo of the reviewed transition functions (compiled to C by Lean).
+[[lean_exe]]
+name = "mathguard"
+root = "Main"

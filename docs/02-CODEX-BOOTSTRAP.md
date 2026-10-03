@@ -1,3 +1,5 @@
+> **Status update after Aristotle return:** production modules and native demo now exist. All original 55 targets are proved according to the supplied pinned run; static import checks pass. Earlier statements below describing an uncompiled draft refer to the original request pack. Do not redo the completed 55 targets. Independent local rebuild remains required; see `verification/IMPORT-AUDIT.md`.
+
 # Codex bootstrap — Astra / Sol 6.1
 
 Copy the block below into Codex after opening `https://github.com/ljaniec/Mathguard`. It is self-contained; the repository documents supply the detailed contracts. Use high reasoning effort for implementation and the highest available effort for definition/theorem review. Delegation is explicitly authorized below when the harness supports it; it is optional and must not duplicate work.
@@ -105,3 +107,4 @@ At every checkpoint report: implemented behavior; checked proof targets; tests r
 ## This pack's current limits
 
 No runtime or checked theorem is supplied as complete. The request files contain exact desired propositions but need typechecking and proofs in the selected workspace. The authoritative finite ledger is deliberately smaller than real-world banking. There is no claimed liveness, distributed-consensus, cryptographic, classifier-accuracy, or whole-stack theorem.
+
