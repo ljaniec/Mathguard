@@ -29,3 +29,5 @@ JSON/string parsing, authenticated context/approval construction, catalog/label 
 ## Review checkpoint
 
 Prelint's first foundation review found a missing canonical local-check path/full-suite gate; the path and fail-closed missing-suite behavior are added. Runtime docs clarify volatility and independent reads. Later head checks must be read by the contributor before merging. User preference keeps GitHub Actions disabled; local checks remain required.
+
+Prelint passed the foundation head and the first handoff head. Its handoff decision review requested an explicit pending-approval trigger and concrete joint-transaction tests; both are now specified in the shared contract and enforcement assignment. These are implementation requirements, not claims that the engine tests already exist.

@@ -61,6 +61,10 @@ Public `outcome` is exactly one of:
 
 `REDACTED_OUTPUT` is an **output disposition**, not a financial outcome. Include it separately as `output_disposition` when applicable. Do not run redaction on an amount/beneficiary and then execute a changed payment. `PENDING_APPROVAL` belongs to the outer gateway; the core ledger with missing required approval returns `blocked`. Likewise specific reason codes come from reviewed gateway predicates/explanations; model-v1's core has only the three `LedgerOutcome` constructors.
 
+Return `PENDING_APPROVAL` only for a fresh canonical proposal whose authentication, schema, identity, capability, beneficiary, amount, account, cap, funds, epoch/revision, flow, signature, and other non-approval gates pass at the authoritative snapshot. Check resource capacity without allocating a financial-tool ticket for the pending proposal. The only unresolved prerequisites must be an absent high-value approval (`amount >= approvalThreshold`) or an explicit catalog-authorized semantic review. Report the applicable `approval_requirements` as `high_value` and/or `semantic_review`, with `APPROVAL_REQUIRED` and/or `SEMANTIC_REVIEW`. An explicit semantic denial or unavailable guard remains closed; it cannot become an approval prompt.
+
+An invalid, expired, consumed, or substituted supplied approval is `BLOCKED` with its specific reason, not silently replaced by a pending prompt. An existing request ID first takes the exact replay/conflict path; it never becomes a new pending payment. Pending has no financial effect, no consumed approval, and no financial-tool reservation; separately incurred model/guard costs and observed label joins remain accounted. Approval issuance does not execute the proposal. Resubmission rechecks every gate at the current snapshot and uses the exact original action; stale work requires a new proposal. Test the positive pending case and each isolated non-approval failure, plus invalid-approval, replay, conflict, and stale resubmission cases.
+
 Minimum response fields: `outcome`, `reason_codes[]`, `request_id`, `trace_id`, `policy_epoch`, `ledger_revision_before`, `ledger_revision_after`, `receipt` (nullable), `output_disposition`, `assurance_ref`. A receipt contains commit ID, canonical transfer, committed revision, prior/replay status, and only authorized balance fields. Client UI must not generate a commit receipt.
 
 Stable initial reason codes: `AUTH_REQUIRED`, `SCHEMA_INVALID`, `TOOL_NOT_ALLOWED`, `OWNER_MISMATCH`, `CAPABILITY_DENIED`, `BENEFICIARY_DENIED`, `AMOUNT_INVALID`, `SAME_ACCOUNT`, `TRANSFER_CAP`, `INSUFFICIENT_FUNDS`, `DEBIT_CAP`, `APPROVAL_REQUIRED`, `APPROVAL_INVALID`, `APPROVAL_EXPIRED`, `APPROVAL_USED`, `STALE_REVISION`, `STALE_POLICY`, `IDEMPOTENCY_CONFLICT`, `FLOW_DENIED`, `SIGNATURE_MATCH`, `SEMANTIC_DENIED`, `SEMANTIC_REVIEW`, `SEMANTIC_UNAVAILABLE`, `BUDGET_EXHAUSTED`, `WORKER_UNAVAILABLE`, `STORE_CONFLICT`. Store/public reason mapping must not itself leak sensitive account facts to unauthorized callers.
@@ -72,6 +76,23 @@ Events: ordered sequence per trace, event ID, trace ID, stage, sanitized action 
 Budget order is fixed: `[cost_micros, tokens, compute_ms, tool_calls]`. Surface limit, spent, reserved, inflight, and provider identity. Cost price zero does not mean unlimited local compute. Both financial tool and guard/model calls are charged in their appropriate accounting buckets. Global and session buckets are distinct but admission is all-or-none.
 
 Assurance minimum: model version, source SHA, toolchain, Mathlib commit, target counts by kernel, evidence origin, current local build status, runtime strategy, unresolved integration assumptions. Baseline: 55 targets reported checked by supplied run; integration statically audited; no independent local Lean rebuild here. The 35 next targets are `REQUESTED`, not added to the verified count until checked.
+
+The formal coordinator updates a package's proof count only after reviewing its production source, exact statement comparison, pinned independent build, and complete fresh axiom report. Extend the provenance checker for the new namespace/targets; a baseline-only pass does not audit new proofs. The enforcement agent supplies the separate runtime evidence: the execution path calls the reviewed function or documents a coordinator-reviewed refinement argument, with the integration tests below. Proof completion and runtime integration have separate evidence fields; proving C1 does not by itself upgrade the deployed transaction claim.
+
+## Joint transition acceptance tests
+
+The enforcement agent must include these executable tests in the integration suite before marking joint financial admission complete. Use deterministic barriers and failure hooks at real adapter/store boundaries; assert the entire authoritative state and dispatch count, not only HTTP outcomes.
+
+| Test | Required observation |
+|---|---|
+| Financial reservation denial after otherwise valid gates | No ledger/journal/revision change, approval consumption, financial ticket, or tool dispatch; previously charged guard work remains charged |
+| Failure after candidate computation or tentative reservation, before publication | No partially published financial state; any tentative financial reservation is discarded with the candidate |
+| Concurrent duplicate and competing stale-revision proposals | One financial commit/ticket/approval consumption for the winning action; an exact duplicate replays, a conflicting or stale loser has no financial effect |
+| Competing actions with one remaining resource slot | Capacity is never oversubscribed; a loser cannot leave a debit or orphan financial ticket |
+| Failure on either side of durable store commit | Before commit: full rollback. After commit/lost response: exact retry returns the same receipt, with no second debit or charge; committed outbox events use stable IDs for deduplication |
+| Volatile deployment reset | In-process failures publish no partial joint state; process restart explicitly starts a new genesis/namespace and never claims recovery of the prior ledger |
+
+Run the durable crash cases only when durability is claimed; the volatile reset case is mandatory for volatile deployments. Label observation and guard/model accounting can advance on a denied financial action as documented in C1; the financial nonmutation assertions do not erase those effects. Separate mutable cells without a joint publication boundary do not satisfy these tests.
 
 ## Integration milestones
 

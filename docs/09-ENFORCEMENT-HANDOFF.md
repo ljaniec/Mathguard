@@ -69,7 +69,11 @@ Apply cheap hard checks, reserve the semantic/model call, obtain its bounded ass
 
 Bind semantic assessment to the complete canonical action and active policy snapshot. Revalidate policy epoch/state revision after asynchronous work. An owner approval cannot authorize new economic fields or new version bindings. Do not silently rebase/retry an old approved payment at a new revision.
 
+Implement the shared contract's exact `PENDING_APPROVAL` rule: all non-approval gates must pass, and only an absent required high-value approval or catalog-authorized semantic review may remain unresolved. Supplied invalid approvals, hard denials, explicit semantic denials/unavailability, stale proposals, and ID conflicts stay blocked/closed. Report the exact approval requirements; approval issuance alone cannot execute anything. Add isolated tests proving these distinctions.
+
 New C1 request models a joint ledger/budget/label transition. You can implement this pipeline using the existing kernels while C1 is pending, with a tested composition boundary. Do not label the composition formally verified until C1 is checked and the runtime actually executes the reviewed composite function or has a reviewed refinement argument. Similarly P1 supports policy-history claims and W1 covers typed account-index projection only.
+
+Implement every applicable test under the shared contract's **Joint transition acceptance tests**. Failure injection after a tentative financial reservation must leave no orphan ticket, debit, approval consumption, or commit receipt. Race tests must inspect actual authoritative state and dispatch counts. E2 requires duplicate/revision races and E3 requires budget competition/rollback tests; E4 adds durable crash recovery or explicit volatile reset tests. Earlier guard/model charges and conservative label joins are retained, not refunded by a later financial denial.
 
 ## Resource details
 

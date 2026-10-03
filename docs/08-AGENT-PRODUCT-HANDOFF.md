@@ -54,6 +54,8 @@ Bound the loop with maximum iterations, calls, deadlines, and output tokens. Ret
 
 Display `COMMITTED`, `REPLAYED`, `PENDING_APPROVAL`, `BLOCKED`, `ERROR_CLOSED` as distinct financial outcomes. `REDACTED_OUTPUT` is a separate output disposition. A `PENDING_APPROVAL` card has no financial effect. A replay does not increment the journal or show a second payment animation. Timeout/error is not a semantic safe verdict.
 
+Show an approval card only when the engine returns `PENDING_APPROVAL`; display its exact `approval_requirements` (`high_value`, `semantic_review`, or both). Do not convert a generic block, invalid approval, stale request, or guard failure into an approval prompt. Issuing approval alone never animates a payment; wait for a later authoritative commit receipt. Fixtures and A3 tests must cover these distinctions and stale resubmission.
+
 The current in-memory native demo reads balances after a transition; production event/receipt rendering must instead use the receipt returned by the same authoritative transition/transaction. A later balance read could show another action's result under concurrency.
 
 Subscribe to sanitized SSE or poll with bounded interval. Deduplicate event IDs after reconnect. Never infer success from HTTP timing or an optimistic frontend counter. Render documents, purpose strings, and model explanations as inert text. Do not export raw tokens, approval secrets, full account statements, or injected secret values.

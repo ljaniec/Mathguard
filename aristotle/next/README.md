@@ -57,3 +57,5 @@ After completion, the enforcement agent should call this definition from the Lea
 ## Gate after return
 
 Open one PR per completed package. Include the statement comparison and current axiom report; keep the 55-target baseline green. Prelint findings must be read and addressed; tool silence is not an approval. The coordinator runs local checks on the integrated head before any assurance count is updated. Deferred theorem/runtime boundaries remain visible in `STATUS.md` and the dashboard.
+
+Extend `scripts/audit_sources.py` to compare the new namespace's target statements and definitions against its unchanged request, and require a fresh axiom record for every new exported target. Its existing baseline-only checks do not yet audit `Mathguard.Next` reports. Proof counts and deployed integration evidence are separate: the coordinator reviews the former; the enforcement agent supplies execution/refinement and joint-transition test evidence for the latter.
