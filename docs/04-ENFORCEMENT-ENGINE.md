@@ -1,3 +1,5 @@
+> **Current AI-agent assignment:** see [09-ENFORCEMENT-HANDOFF.md](09-ENFORCEMENT-HANDOFF.md) and [shared integration contract](07-TEAM-INTEGRATION-CONTRACT.md). The imported Lean foundation exists; ownership, milestones, and current evidence status are defined there. The detailed requirements below remain applicable.
+
 # Enforcement engine specification
 
 ## Required behavior
@@ -180,3 +182,4 @@ A liveness guarantee is not claimed: valid actions may be delayed, require reapp
 ## Definition of done
 
 One authenticated positive and one negative action work through the same public path; a real model adapter and semantic guard are mediated; policies/signatures reload safely; budgets reserve and settle; approval/replay/races are correct; all reference effects are mediated; a startup script, schema, suite, and measured report exist. Exact checked theorem/build status appears in the manifest. No fixture or test result is described as a proof of the whole deployed service.
+
