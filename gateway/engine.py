@@ -84,6 +84,10 @@ class Engine:
         self.approvals = {}
         self.receipts = {}
         self.quarantined = False
+        self.quarantine_id = None
+        self.quarantine_reason = None
+        self.instance_id = secrets.token_hex(8)
+        self.started_at = int(time.time())
         self.config_errors = []
         self.live_calls = 0
         self.current_trace = None
@@ -151,6 +155,11 @@ class Engine:
              clearance=self.active['model_clearance'],acceptsUntrusted=True):
             raise Denied('FLOW_DENIED')
 
+    def quarantine(self,reason):
+        self.quarantined=True
+        self.quarantine_id=self.quarantine_id or secrets.token_hex(16)
+        self.quarantine_reason=reason
+
     def model_call(self,s,model,messages,semantic=False):
         if self.quarantined: raise Denied('PROVIDER_QUARANTINED')
         if model not in self.active['allowed_models']: raise Denied('MODEL_NOT_ALLOWED')
@@ -169,20 +178,18 @@ class Engine:
             elapsed = (time.monotonic()-started)*1000
             if self.provider.mode=='live': self.live_calls += 1
             if reported is not None and reported > self.active['call_bound'][1]:
-                self.quarantined = True
                 raise Denied('USAGE_BOUND_EXCEEDED')
             if elapsed > self.active['call_bound'][2]:
-                self.quarantined = True
                 raise Denied('COMPUTE_BOUND_EXCEEDED')
             return content
         except Denied as exc:
             failure = exc.code
             # Adapter cancellation cannot prove remote GPU cancellation. Quarantine
             # further dispatch, retain the full charge, and expose the limitation.
-            self.quarantined = True
+            self.quarantine(exc.code)
             raise
         except Exception as exc:
-            self.quarantined=True
+            self.quarantine('PROVIDER_UNAVAILABLE')
             failure='PROVIDER_UNAVAILABLE'
             raise Denied(failure) from exc
         finally:
@@ -207,7 +214,7 @@ class Engine:
             value = strict_json(content)
             keys(value,{'risk','verdict'})
             integer(value['risk'],0,100)
-            if value['verdict'] not in {'allow','block','review'}: raise Denied('SEMANTIC_SCHEMA')
+            if value['verdict'] not in ('allow','block','review'): raise Denied('SEMANTIC_SCHEMA')
         except Denied as exc: raise Denied('SEMANTIC_UNAVAILABLE') from exc
         if value['verdict'] != 'allow' or value['risk'] >= self.active['semantic_threshold']:
             raise Denied('SEMANTIC_DENIED')
@@ -250,7 +257,10 @@ class Engine:
         ctx['now']=int(time.time())  # Recheck expiry after potentially slow semantic work.
         final = preview if preview['outcome']=='REPLAYED' else self.worker.call(op='execute',request=q,context=ctx)
         outcome = final['outcome']
-        if outcome=='BLOCKED': raise Denied(final['reason'])
+        if outcome=='BLOCKED':
+            if final['reason']=='APPROVAL_INVALID' and ctx['approval'] and ctx['now']>ctx['approval']['expires']:
+                raise Denied('APPROVAL_EXPIRED')
+            raise Denied(final['reason'])
         if outcome=='COMMITTED':
             self.receipts[(q['id'],principal)] = dict(commit_id=body['request_id'],
               arguments=deepcopy(body['arguments']),committed_revision=str(final['state']['revision']),
@@ -273,6 +283,16 @@ class Engine:
             policy(json.dumps(body))
             return {'valid':True,'activated':False}
         self.ready()
+        if path=='/v1/provider/recover':
+            if role!='operator': raise Denied('ROLE_FORBIDDEN')
+            keys(body,{'quarantine_id','upstream_stopped'})
+            if not self.quarantined: raise Denied('PROVIDER_NOT_QUARANTINED')
+            if body['upstream_stopped'] is not True or body['quarantine_id']!=self.quarantine_id:
+                raise Denied('RECOVERY_CONFIRMATION_REQUIRED')
+            self.quarantined=False
+            self.quarantine_id=None
+            self.quarantine_reason=None
+            return {'recovered':True,'state_preserved':True,'resource_charges_preserved':True}
         if path=='/v1/sessions':
             if role not in {'agent','owner'}: raise Denied('ROLE_FORBIDDEN')
             keys(body,set())
@@ -298,7 +318,7 @@ class Engine:
         if path=='/v1/models/chat':
             if role not in {'agent','owner'}: raise Denied('ROLE_FORBIDDEN')
             keys(body,{'session_id','model','prompt','source'})
-            if body['source'] not in {'user','tool','document'}: raise Denied('SCHEMA_INVALID')
+            if body['source'] not in ('user','tool','document'): raise Denied('SCHEMA_INVALID')
             if body['model'] not in self.active['allowed_models']: raise Denied('MODEL_NOT_ALLOWED')
             s=self.session(body['session_id'],principal)
             self.step(s,'chat:'+digest(body['prompt']))
@@ -390,6 +410,8 @@ class Engine:
                 quantile=lambda q: lat[max(0,min(len(lat)-1,__import__('math').ceil(len(lat)*q)-1))] if lat else None
                 return {'ready':bool(self.active and self.feed and not self.worker.broken),
                   'state':self.worker.call(op='snapshot') if not self.worker.broken else None,
+                  'instance_id':self.instance_id,'started_at':self.started_at,
+                  'quarantine_id':self.quarantine_id,'quarantine_reason':self.quarantine_reason,
                   'policy':self.active,'feed_version':self.feed['version'] if self.feed else None,
                   'config_errors':self.config_errors,'quarantined':self.quarantined,'counters':dict(self.counters),
                   'latency_ms':{'p50':quantile(.5),'p95':quantile(.95),'samples':len(lat)},
@@ -397,4 +419,4 @@ class Engine:
             raise Denied('ROUTE_NOT_ALLOWED')
 
 KNOWN_ROUTES={'/v1/sessions','/v1/actions','/v1/approvals','/v1/models/chat',
- '/v1/policy/reload','/v1/policy/validate','/v1/artifacts/check'}
+ '/v1/policy/reload','/v1/policy/validate','/v1/artifacts/check','/v1/provider/recover'}

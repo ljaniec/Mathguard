@@ -66,9 +66,9 @@ POLICY_KEYS = {'schema_version','epoch','profile','pii_action','semantic_thresho
 def policy(raw):
     p = strict_json(raw)
     keys(p, POLICY_KEYS)
-    if p['schema_version'] != 'mathguard-policy-2' or p['profile'] not in {'strict','balanced','permissive'}:
+    if p['schema_version'] != 'mathguard-policy-2' or p['profile'] not in ('strict','balanced','permissive'):
         raise Denied('POLICY_INVALID')
-    if p['pii_action'] not in {'block','redact'}:
+    if p['pii_action'] not in ('block','redact'):
         raise Denied('POLICY_INVALID')
     for field, low, high in [('epoch',1,10**9),('semantic_threshold',1,100),
       ('deadline_seconds',1,30),('max_output_tokens',16,2048),('max_input_bytes',32,8192),
@@ -156,7 +156,7 @@ def artifact(manifest,p):
     if actual_hash != manifest['sha256']: raise Denied('ARTIFACT_HASH_MISMATCH')
     if manifest['repository'] not in p['artifact_repositories']: raise Denied('ARTIFACT_REPOSITORY')
     if manifest['sha256'] not in p['artifact_sha256']: raise Denied('ARTIFACT_HASH')
-    if manifest['format'] not in {'safetensors','gguf'}: raise Denied('UNSAFE_DESERIALIZATION')
+    if manifest['format'] not in ('safetensors','gguf'): raise Denied('UNSAFE_DESERIALIZATION')
     if manifest['trust_remote_code'] is not False: raise Denied('MODEL_REMOTE_CODE')
     if manifest['format']=='gguf' and not content.startswith(b'GGUF'): raise Denied('ARTIFACT_FORMAT')
     if manifest['format']=='safetensors':

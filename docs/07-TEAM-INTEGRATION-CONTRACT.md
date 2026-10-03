@@ -20,6 +20,7 @@ The launcher prints separate random `OPERATOR`, `OWNER`, and `AGENT` tokens to t
 | GET `/v1/ledger/summary` | Agent/owner | Own account balance, revision and epoch |
 | POST `/v1/policy/validate` | Operator | Full candidate policy object, validation without activation |
 | POST `/v1/policy/reload` | Operator | Empty object; reload configured local files |
+| POST `/v1/provider/recover` | Operator | Current `quarantine_id` plus `upstream_stopped: true`; preserves state and charges |
 | POST `/v1/artifacts/check` | Operator | Bounded byte/hash/header admission; example `contracts/artifact-fixture.json` |
 | GET `/v1/status`, `/v1/events`, `/v1/report` | Operator | Current state, audit window, management summary |
 | GET `/v1/audit/export` | Operator | Sanitized JSONL, latest 2,000 events |
@@ -57,7 +58,7 @@ Policies are strict JSON. Unknown fields or unsupported controls fail validation
 
 Reload occurs on the next authenticated POST, with explicit operator reload available; there is no background watcher. Config snapshots stay fixed during a request. Budget reductions below spent+reserved fail. Feed changes require a higher version; an empty optional signature list is valid. Hard ledger checks cannot be disabled by removing text signatures.
 
-Resource order: `[cost_micros,tokens,compute_ms,tool_calls]`. Every semantic/proposer dispatch reserves a trusted configured bound using Lean and charges the full bound on completion/error. This conservative mode does not refund unused capacity; displayed totals are **accounted bounds**, not measured cloud bills. Cost=0 for local calls still consumes tokens, time and slots. Bounds must be calibrated to the actual provider/model and price. Reported tokens above a bound, timeout, or provider failure quarantines further model calls. Killing the adapter does not establish remote GPU cancellation. Operator must investigate upstream work before restarting; restart resets this explicitly volatile demo.
+Resource order: `[cost_micros,tokens,compute_ms,tool_calls]`. Every semantic/proposer dispatch reserves a trusted configured bound using Lean and charges the full bound on completion/error. This conservative mode does not refund unused capacity; displayed totals are **accounted bounds**, not measured cloud bills. Cost=0 for local calls still consumes tokens, time and slots. Bounds must be calibrated to the actual provider/model and price. Reported tokens above a bound, timeout, or provider failure quarantines further model calls. Killing the adapter does not establish remote GPU cancellation. After verifying the upstream job stopped, the operator can recover the current quarantine without resetting the ledger or charges. Restart is a distinct new volatile instance.
 
 The only vector quota is global. Session steps/repeats add isolation limits but are not session vector quotas. The gateway serializes operations; ingress is limited to eight simultaneous server handlers and bounded request/response sizes. Do not launch multiple workers behind a load balancer with independent budget copies.
 

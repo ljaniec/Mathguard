@@ -123,7 +123,7 @@ class GatewayTests(unittest.TestCase):
         self.provider.complete=slow
         with patch('gateway.engine.time.time',side_effect=lambda:clock[0]):
             response=self.action(q)
-        self.denied(response,'APPROVAL_INVALID');self.assertEqual(self.state()['revision'],0)
+        self.denied(response,'APPROVAL_EXPIRED');self.assertEqual(self.state()['revision'],0)
     def test_invalid_approval_not_pending(self):
         q=self.request(amount='10000');q['approval_ref']='forged';self.denied(self.action(q),'APPROVAL_INVALID')
     def test_semantic_veto_cannot_be_approved(self):
@@ -138,6 +138,24 @@ class GatewayTests(unittest.TestCase):
         self.assertEqual(self.state()['spent'],self.e.active['call_bound']);self.assertEqual(self.state()['pending'],0)
         calls=len(self.provider.calls);self.denied(self.chat('Another prompt'),'PROVIDER_QUARANTINED')
         self.assertEqual(len(self.provider.calls),calls)
+    def test_operator_recovery_preserves_ledger_and_charges(self):
+        self.action(self.request())
+        self.provider.error='PROVIDER_TIMEOUT';self.chat('trigger timeout')
+        before=self.state();instance=self.e.instance_id
+        self.provider.error=None
+        body={'quarantine_id':self.e.quarantine_id,'upstream_stopped':True}
+        result=self.e.handle('/v1/provider/recover',body,'operator')
+        self.assertTrue(result['recovered']);self.assertEqual(self.state(),before)
+        self.assertEqual(self.e.instance_id,instance)
+        self.assertEqual(self.action(self.request())['outcome'],'REPLAYED')
+        self.assertEqual(self.chat('new allowed prompt')['outcome'],'ALLOWED')
+    def test_recovery_requires_operator_and_current_confirmation(self):
+        self.provider.error='PROVIDER_TIMEOUT';self.chat()
+        ident=self.e.quarantine_id
+        self.denied(self.e.handle('/v1/provider/recover',{'quarantine_id':ident,'upstream_stopped':True},'agent'),'ROLE_FORBIDDEN')
+        for body in [{'quarantine_id':ident,'upstream_stopped':False},{'quarantine_id':'stale','upstream_stopped':True}]:
+            self.denied(self.e.handle('/v1/provider/recover',body,'operator'),'RECOVERY_CONFIRMATION_REQUIRED')
+        self.assertTrue(self.e.quarantined)
     def test_provider_usage_above_bound_quarantines(self):
         self.provider.tokens=999999;self.denied(self.chat(),'USAGE_BOUND_EXCEEDED');self.assertTrue(self.e.quarantined)
     def test_input_redacted_before_both_models(self):
@@ -175,6 +193,16 @@ class GatewayTests(unittest.TestCase):
     def test_invalid_policy_keeps_last_good(self):
         self.pp.write_text('{bad json');r=self.e.handle('/v1/policy/reload',{},'operator')
         self.assertTrue(r['last_good_retained']);self.assertEqual(self.e.active['epoch'],7)
+        self.assertEqual(self.action(self.request())['outcome'],'COMMITTED')
+    def test_invalid_typed_policy_keeps_last_good(self):
+        original=json.loads(self.pp.read_text())
+        for field,value in [('profile',[]),('pii_action',{}),('semantic_threshold',[]),('budget_limit','bad'),('allowed_models',[[]])]:
+            with self.subTest(field=field):
+                candidate={**original,field:value}
+                self.pp.write_text(json.dumps(candidate))
+                result=self.e.handle('/v1/policy/reload',{},'operator')
+                self.assertTrue(result.get('last_good_retained'),result)
+                self.assertEqual(self.e.active['epoch'],7)
         self.assertEqual(self.action(self.request())['outcome'],'COMMITTED')
     def test_limit_reduction_below_spent_rejected(self):
         self.chat();before=self.state();r=self.update_policy(epoch=8,budget_limit=[1000000,16384,600000,200])

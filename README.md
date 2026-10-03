@@ -47,7 +47,7 @@ python3 scripts/evaluate-live.py --model '<exact model ID>' \
   --output evidence/live-development.json
 ```
 
-Edit the policy/signature files and use Reload to demonstrate activation. Invalid edits retain the last valid configuration; startup without one closes execution. Model failure/timeout retains budget charges and quarantines further calls. The deployment is **single-process and volatile**; restart creates a fresh ledger. Budget values are conservative accounted bounds, not actual provider bills. There is no bundled model or claimed live-model result from this development environment.
+Edit the policy/signature files and use Reload to demonstrate activation. Invalid edits retain the last valid configuration; startup without one closes execution. Model failure/timeout retains budget charges and quarantines further calls. After stopping/verifying the upstream job, use explicit operator recovery to preserve the ledger and all charges. The deployment is **single-process and volatile**; restart creates a fresh ledger. Budget values are conservative accounted bounds, not actual provider bills. There is no bundled model or claimed live-model result from this development environment.
 
 ### Layout
 

@@ -83,7 +83,7 @@ flowchart TD
   S --> R
 ```
 
-The worker is a private subprocess. Financial state lives only there. A gateway lock serializes the complete operation and configuration activation. The pure `execute` handler computes ledger admission and a financial tool-slot reservation, then publishes both next states together. If it rejects, the financial state is unchanged. Earlier model/guard calls remain charged. This runtime composition is tested; a proof of its full adapter/IO behavior is not claimed. Provider calls are conservatively charged at their full configured bound. A timeout terminates the adapter process, quarantines further provider calls, and retains the charge; the remote GPU job may require operator cleanup.
+The worker is a private subprocess. Financial state lives only there. A gateway lock serializes the complete operation and configuration activation. The pure `execute` handler computes ledger admission and a financial tool-slot reservation, then publishes both next states together. If it rejects, the financial state is unchanged. Earlier model/guard calls remain charged. This runtime composition is tested; a proof of its full adapter/IO behavior is not claimed. Provider calls are conservatively charged at their full configured bound. A timeout terminates the adapter process, quarantines further provider calls, and retains the charge; the remote GPU job may require operator cleanup followed by explicit operator recovery, preserving the ledger and charges.
 
 ## Priorities for the remaining overnight work
 
