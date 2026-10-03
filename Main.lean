@@ -3,6 +3,7 @@ module
 import Mathguard.Spec
 import Mathguard.Runtime
 import Mathguard.OptimizedBudget
+import Mathguard.Control
 
 /-!
 # Mathguard demo executable
@@ -51,3 +52,20 @@ public def main : IO Unit := do
   IO.println s!"secret/untrusted -> public: {flowAllowed secretUntrusted publicSink}"
   IO.println s!"secret/untrusted -> internal: {flowAllowed secretUntrusted internalSink}"
   IO.println s!"public/trusted -> public: {flowAllowed publicTrusted publicSink}"
+  IO.println "== Control-layer gate (G1)"
+  let showD (d : Control.Decision) : String :=
+    s!"executes={d.executes} deny={d.deny} ask={d.ask} redact={d.redact} reasons={repr d.reasons}"
+  let pol := Control.demoControlPolicy
+  let st := Control.PolicyStore.empty.reload pol
+  IO.println s!"benign prompt: {showD (Control.gate pol 0 Control.demoPrompt (.risk 10))}"
+  IO.println s!"feed signature in content: {showD (Control.gate pol 0 { Control.demoPrompt with content := [5, 66, 67, 8] } (.risk 0))}"
+  IO.println s!"PII score 70: {showD (Control.gate pol 0 { Control.demoPrompt with piiScore := 70 } (.risk 0))}"
+  IO.println s!"semantic timeout (balanced): {showD (Control.gate pol 0 Control.demoPrompt .timeout)}"
+  IO.println s!"semantic timeout (strict): {showD (Control.gate { pol with strictness := .strict } 0 Control.demoPrompt .timeout)}"
+  IO.println s!"irreversible tool, no approval: {showD (Control.gate pol 0 { Control.demoPrompt with kind := .toolCall 11 } (.risk 0))}"
+  IO.println s!"pickle artifact: {showD (Control.gate pol 0 { Control.demoPrompt with kind := .artifactLoad 4242 .pickle } (.risk 0))}"
+  let st' := st.reload { pol with piiRedactAt := 95 }
+  IO.println s!"invalid reload: epoch {st'.epoch}, rejected reloads {st'.rejectedReloads}, last good kept {st'.active == some pol}"
+  let loop := List.replicate 5 (Control.demoPrompt, Control.SemanticResult.risk 0)
+  let s := Control.sessionRun st Control.Session.empty loop
+  IO.println s!"loop of 5 under maxSteps=3: dispatched {s.steps}, logged {s.log.length}, blocked {Control.blockedCount s.log}"

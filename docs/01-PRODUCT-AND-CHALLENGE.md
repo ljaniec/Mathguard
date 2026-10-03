@@ -4,21 +4,21 @@
 
 ### What problem are you solving with the idea?
 
-AI agents can propose unauthorized or inconsistent ledger operations, expose sensitive account data, and consume uncontrolled model/API resources. Organizations need a control layer that checks actions before execution and provides evidence explaining why each action was allowed or blocked.
+AI agents can expose sensitive data, misuse tools, send unsafe instructions between agents, and consume uncontrolled model/API resources. Organizations need a control layer that checks actions before execution and provides evidence explaining why each action was allowed or blocked.
 
 ### What is your solution?
 
-Mathguard is a hybrid AI control layer for agents, LLMs, and MCP/API tools. LLMs interpret requests and propose actions; a deterministic supervisor, specified and verified in Lean 4, enforces ledger invariants, authorization, approval, replay protection, information-flow rules, and resource limits. A semantic AI guard detects suspicious instructions and can restrict actions without overriding hard safety checks. A dashboard displays decisions, ledger changes, budgets, and verification evidence.
+Mathguard is a hybrid AI control layer for agents, LLMs, and MCP/API tools. A compiled generic Lean 4 kernel combines deterministic controls with local AI verdicts before releasing prompts, model calls, tool interactions, agent messages and artifacts. Central policy files govern strictness, thresholds, allowlists, approvals and resource limits. The ledger adapter adds verified authorization, replay protection and financial invariants. A semantic AI guard detects suspicious instructions and can restrict actions without overriding hard safety checks. A dashboard displays decisions, ledger changes, budgets, and verification evidence.
 
 ### What's done so far and what is the goal of your project?
 
-We have checked 55 core Lean theorem targets and five additional equality results, and implemented a callable gateway, compiled Lean transition worker, policy/feed reload, local-model adapter, interactive dashboard, and automated integration tests. Our proof of concept uses a simulated personal-account ledger to make action safety visible. Live local-model quality evaluation and final submission packaging remain in progress; fixture tests are reported separately from live-model evidence.
+We have rebuilt a 156-record axiom catalog (55 baseline, 5 refinements, 43 Next and 53 Control) and connected the generic kernel to the running gateway. The shared interception API and SDK extend coverage to tool results and agent messages, with exact approvals and live policy/feed updates. The local automated gate checks native proofs/regressions, 14 static-audit cases and 70 gateway/provider/SDK cases. Our proof of concept uses a simulated personal-account ledger to make action safety visible. Live local-model quality evaluation and final submission packaging remain in progress; fixture tests are reported separately from live-model evidence.
 
 **Status editing rule:** replace the first sentence with actual checked accomplishments as they become available. Do not say the gateway or proofs already work merely because this pack exists.
 
 ### One-line pitch
 
-**Mathguard lets AI agents propose financial actions while a formally specified supervisor controls what can actually happen.**
+**Mathguard controls AI interactions with configurable guardrails and a compiled, formally specified decision kernel.**
 
 ### Thirty-second pitch
 
@@ -44,7 +44,7 @@ Use the phrase **formally verified model and transition core** only after the co
 
 | Brief requirement | Mathguard implementation | Evidence for judges |
 |---|---|---|
-| Functional gateway/proxy/middleware/SDK | Gateway mediates agent → model and agent → ledger/MCP tool; raw mutation endpoint private | Run benign and adversarial requests through public gateway |
+| Functional gateway/proxy/middleware/SDK | Gateway plus SDK mediates model, tool/result and agent-message boundaries; ledger mutation stays private | Run benign and adversarial requests through public gateway |
 | Centralized configurable policy | Versioned catalog with capabilities, account ownership, model allowlist, thresholds, budgets, destinations, signatures | Edit catalog, activate new epoch, rerun a scenario |
 | Deterministic controls | Typed request checks, authorization, ledger preconditions, approval, replay, secret patterns, output gating | Decision reasons and positive/negative tests |
 | Semantic AI controls | Local/OpenAI-compatible model produces bounded structured suspicion assessment | Real semantic call, model identity, time and tokens, timeout test |

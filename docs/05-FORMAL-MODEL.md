@@ -1,3 +1,5 @@
+> **Generic-kernel update:** the imported C1/P1/W1/G1 modules and their current runtime mapping are documented in [13-GENERAL-CONTROL-LAYER.md](13-GENERAL-CONTROL-LAYER.md). Fresh build/axiom evidence is in [GENERAL-CONTROL-INTEGRATION.md](verification/GENERAL-CONTROL-INTEGRATION.md).
+
 > **Current checkpoint:** the 55 baseline targets and five additional equality targets have been independently checked with the pinned toolchain. The gateway/worker runtime is now integration-tested. Earlier request-pack descriptions below are historical; current scope and open work are in `07-TEAM-INTEGRATION-CONTRACT.md` and `10-REQUIREMENTS-RECOVERY.md`.
 
 # Mathguard model-v1 — exact formal specification

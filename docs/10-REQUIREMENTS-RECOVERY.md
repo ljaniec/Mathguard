@@ -2,6 +2,8 @@
 
 Checked 3 October 2026 against the original four-page challenge brief and three-page rules. This document controls the current delivery scope. The ledger is the demonstrator; **the product is an integrable hybrid AI control layer**. Proving more ledger theorems alone does not deliver the challenge.
 
+> **General-kernel integration:** [13-GENERAL-CONTROL-LAYER.md](13-GENERAL-CONTROL-LAYER.md) describes the compiled G1 path, shared SDK API and schema-3 controls. Fresh 156-record/70-case evidence is in [GENERAL-CONTROL-INTEGRATION.md](verification/GENERAL-CONTROL-INTEGRATION.md). Source interpretations below remain unchanged.
+
 ## What the source audit actually found
 
 The earlier repository already listed most official requirements, including the two scoring tables. The failure was treating those descriptions as delivery progress: `main` had a formal model and native demos, without a callable gateway, policy loader, real-model adapter, interactive dashboard, or gateway integration suite. The new implementation closes a substantial part of that gap; live-model evidence and submission packaging remain open.
@@ -40,16 +42,16 @@ R p1 §5 says 23:00 on 3 October to 23:00 on 4 October. The compendium reports a
 
 | ID / source | Required capability | Current implementation and test evidence | Remaining acceptance / owner |
 |---|---|---|---|
-| D1, D p2 §3.1 | Functional control layer + diagram | `gateway/`, compiled `Mathguard/Worker.lean`, `agent/run.py`; HTTP, native-state and replay tests | Run reference agent with actual local model / engine + product |
+| D1, D p2 §3.1 | Functional control layer + diagram | `gateway/` + SDK, compiled G1/W1 and ledger/budget/flow worker, `agent/run.py`; HTTP, native-state and replay tests | Run reference agent with actual local model / engine + product |
 | D2, D p2–3 §3.2 | Documented configurable policies | `policies/`, strict validation, semantic threshold, PII block/redact, model allowlist, budgets | Judge edits actual file; show valid activation + invalid retention / engine |
 | D3, D p3 §3.3 | Interactive dashboard | `dashboard/`: prompt, transfer, approval, policy/feed, metrics, audit, assurance | Live model run and operator rehearsal / product |
 | D4, D p3 §3.4 | Ready-to-run automated suite | `scripts/test-integration.sh`, real worker plus labeled guard fixture | Add human-authored unseen corpus; run live evaluator / QA |
 | C1, D p2 §2 + p3 §4.1 | Central source of controls | Validated immutable policy snapshot; higher epochs; bounded data-only feed | Broader ownership/beneficiary catalogs are future work; current three-account policy explicit |
-| C2, D p3 §4.2.1 | Deterministic controls | Auth, exact schema, ledger gates, secret/email/IBAN rules, input/output redaction | Pattern coverage remains finite; test additional Polish PII / engine |
-| C3, D p2 §2 + p3 §4.2.2 | Semantic AI controls | Bounded local OpenAI-compatible classifier; veto/review blocks; cannot override Lean | **OPEN live validation**: model ID/revision, verdict quality, false positives, timeouts / engine |
+| C2, D p3 §4.2.1 | Deterministic controls | Auth, exact schema, ledger gates, secret/email/IBAN facts, compiled input/output redact/block thresholds and tool allowlists | Pattern coverage remains finite; test additional Polish PII / engine |
+| C3, D p2 §2 + p3 §4.2.2 | Semantic AI controls | Bounded local OpenAI-compatible classifier; compiled risk review/block and profile fallback; cannot override hard Lean gates | **OPEN live validation**: model ID/revision, verdict quality, false positives, timeouts / engine |
 | C4, D p3 §4.3 | Budget/resource governance | Actual Lean reserve/charge kernels; before every guard/model call; atomic financial call slot | Global accounting + session steps/repeats; per-session vector quotas and actual-usage refunds are follow-ups |
 | C5, D p3 §4.4 | Historical exploit mitigation | Reloadable literal signatures; block unsafe loaders; bounded artifact byte hash/header/repository checks; no execution | Link representative signatures to primary incident/advisory sources; expand corpus / security |
-| C6, D p3 §4.5 | Security and management reports | Counters, request latency, resources, reasons, JSONL export, explicit assurance | Add concise management export and stage timing; audit is bounded and volatile / product |
+| C6, D p3 §4.5 | Security and management reports | Counters, request latency, resources, reasons, JSONL export, explicit assurance | Management export and detector/gate p95 implemented; live baseline/overhead measurement remains; audit is bounded and volatile / product |
 | C7, D p3 §4.6 | Positive and negative self-tests | Real state assertions, approvals/replay/conflict, redaction, policy/feed, races, resource/failure tests | No classifier-accuracy claim from fixture tests / QA |
 | V1, D p4 §6 | Unprepared prompts | Live prompt panel and shared enforcement path | Rehearse arbitrary mentor prompts on local model / product |
 | V2, D p4 §6 | Judges modify config/feeds | Reload at next request; higher epoch/version; last-good retention | Expose active version/error and demonstrate changing/removing optional signatures / engine |
@@ -87,7 +89,7 @@ The worker is a private subprocess. Financial state lives only there. A gateway 
 
 ## Priorities for the remaining overnight work
 
-Stop adding generalized ledger features and new performance representations until the four deliverables have executable evidence. Keep the 55+5 checked results and their precise claims.
+Stop adding generalized ledger features and new performance representations until the four deliverables have executable evidence. Preserve the original 55+5 results and the imported generic/Next modules with their precise model/runtime boundaries.
 
 | Priority | Work | Done when |
 |---|---|---|
@@ -99,6 +101,6 @@ Stop adding generalized ledger features and new performance representations unti
 | P1 | Stage latency, management summary, failure/race coverage | Measured report includes baseline, controls overhead and classifier cost |
 | P1 | Source-backed historical signatures + model license inventory | Every claim maps to a source, test, and explicit limitation |
 | P2 | Per-session resource vectors, durable outbox/store, scalable global quotas | Separate design and tests; no multiworker launch with duplicated allowances |
-| P2 | Composite/policy-history refinement proofs | New exact statements are reviewed; do not recount the original 55 |
+| Completed model import | C1/P1/W1 + G1 proof campaign | 156 fresh axiom records; C1/P1 remain separate model evidence; runtime mapping in document 13 |
 
 `P0` means critical to a credible submission; it is not an official binary eligibility classification. Keep [STATUS.md](../STATUS.md) honest. A working adapter without a live run remains “implemented, live validation pending.”
