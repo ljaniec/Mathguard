@@ -54,7 +54,7 @@ The JSON records all measured stage times, RSS, source hashes, versions, and exi
 ```sh
 bash scripts/check-fast.sh
 bash scripts/check-lean.sh
-python3 scripts/profile-checks.py --lean-files --iterations 100
+python3 scripts/profile-checks.py --output performance-results/reviewed --lean-files --iterations 100
 bash scripts/check-local.sh
 ```
 
@@ -63,6 +63,14 @@ fresh axiom report requiring all five new bridge/refinement targets, audits it,
 runs the demo, and runs native regression tests. The profiling command records
 actual stage times/RSS, Lean profiler logs, and 40 native benchmark cases in JSON/CSV.
 The last command remains the complete release gate and requires the future gateway suite.
+
+The profiling command recreates the workload and output directory used for the
+archived run. Its raw `performance-results/reviewed/report.json` records absolute
+host paths. In the published `profile.json`, command paths beneath the checkout
+were normalized to repository-relative paths and the Python executable to
+`python3`; measurements and source hashes were retained. This publication step is
+recorded in the report metadata. Timings, timestamps, host metadata, and absolute
+paths will vary on another run; reproduction does not mean byte-identical JSON.
 
 Evidence: [profile.json](performance/profile.json), [native.csv](performance/native.csv),
 [fresh axioms](performance/axioms.txt), [ledger profiler](performance/ledger-profiler.txt),

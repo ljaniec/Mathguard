@@ -34,7 +34,8 @@
     "native_quantiles": "quantiles of 15 batch-mean per-operation times; not individual request latency quantiles",
     "rss_scope": "Linux child-command RSS high-water mark; not summed concurrent process-tree memory",
     "lean_version": "Lean (version 4.28.0, x86_64-unknown-linux-gnu, commit 7e01a1bf5c70fc6167d49c345d3bf80596e9a79b, Release)",
-    "execution_environment_note": "Official unmodified Lean release. An environment-only readlink compatibility shim used /proc/self/exe when the sandbox numeric PID path was unavailable; no kernel or proof-check options were changed."
+    "execution_environment_note": "Official unmodified Lean release. An environment-only readlink compatibility shim used /proc/self/exe when the sandbox numeric PID path was unavailable; no kernel or proof-check options were changed.",
+    "publication_note": "Collected with --output performance-results/reviewed --lean-files --iterations 100. Command paths beneath the checkout were normalized to repository-relative paths and the Python executable to python3 for publication; measurements and source hashes are unchanged. Raw profiler output records absolute host paths."
   },
   "stages": [
     {
