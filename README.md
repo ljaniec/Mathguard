@@ -18,6 +18,17 @@ Bootstrapping and formal-model pack for HackYeah 2026, Goldman Sachs **AI Contro
 7. Checked Lean development: [definitions](Mathguard/Spec.lean), [ledger proofs](Mathguard/Ledger.lean), [budget proofs](Mathguard/Budget.lean), [flow proofs](Mathguard/Flow.lean), [runtime commit boundary](Mathguard/Runtime.lean). Original requests: [aristotle/](aristotle/README.md).
 8. [Validation matrix, demo, and delivery gates](docs/06-VALIDATION-AND-DEMO.md).
 
+## Team-agent handoffs and next formal work
+
+- [Shared integration contract](docs/07-TEAM-INTEGRATION-CONTRACT.md)
+- [Agent/product/visualization AI-agent specification](docs/08-AGENT-PRODUCT-HANDOFF.md)
+- [Enforcement-engine AI-agent specification](docs/09-ENFORCEMENT-HANDOFF.md)
+- [Next Aristotle campaign: 35 new targets](aristotle/next/README.md)
+- [Current status and open deployment boundaries](STATUS.md)
+
+The next requests reuse the completed baseline and add composite gating, policy-history evidence,
+and typed wire projection. They are uncompiled requests, excluded from production targets.
+
 ## Status — 2026-10-03
 
 The supplied Aristotle run reports all **55 model-v1 targets proved** under Lean 4.28.0 / Mathlib `8f9d9cff` (`v4.28.0`), with a warning-free build and native demo. The code, original statements, and supplied axiom report pass the static import audit: [IMPORT-AUDIT.md](docs/verification/IMPORT-AUDIT.md).
@@ -51,7 +62,6 @@ lake exe mathguard              # runs the demo
 gateway integration suite at `scripts/test-integration.sh` and fails if it is absent.
 That suite is a next implementation deliverable, so the full release gate is not yet complete.
 
-
 Every definition in `Mathguard/Spec.lean` is computable. `lake build` translates the kernel and runtime modules
 to C in `.lake/build/ir/Mathguard/*.c` (e.g. `Spec.c` contains `ledgerStep`, `admission`, `budgetStep`,
 `flowAllowed`), compiles them, and links `.lake/build/bin/mathguard` against the Lean runtime.
@@ -62,7 +72,7 @@ to C in `.lake/build/ir/Mathguard/*.c` (e.g. `Spec.c` contains `ledgerStep`, `ad
 2. `demo_isolated_funds_rejection`: the continuation line `approvalThreshold := 200000` was indented one column less than the first structure-instance field, which is a parse error; it is now aligned. The statement is otherwise identical.
 3. The root package name in `lake-manifest.json` is aligned with `lakefile.toml`; dependency SHAs are unchanged.
 
-The three contributors have separate hackathon projects. Mathguard is Łukasz Janiec's project. The workstream documents describe roles for coding agents or optional helpers; they do not assume Przemek or Cezary is available to implement Mathguard.
+Mathguard is coordinated by Łukasz Janiec. The agent/product and enforcement workstreams are now assigned to AI agents run by team members; the shared contract defines ownership and dependencies. Their separate human hackathon projects remain distinct.
 
 The attached official brief requires a functional layer, centralized configurable policy, deterministic and semantic controls, budget governance, historical attack mitigation, reporting, and an executable positive/negative suite. Formal methods strengthen those deliverables; a standalone banking proof does not replace them.
 

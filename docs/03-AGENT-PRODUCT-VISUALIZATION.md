@@ -1,3 +1,5 @@
+> **Current AI-agent assignment:** see [08-AGENT-PRODUCT-HANDOFF.md](08-AGENT-PRODUCT-HANDOFF.md) and [shared integration contract](07-TEAM-INTEGRATION-CONTRACT.md). The imported Lean foundation exists; ownership, milestones, and current evidence status are defined there. The detailed requirements below remain applicable.
+
 # Agent, product, and visualization specification
 
 ## Mission and boundary
@@ -138,3 +140,4 @@ The policy editor exposes supported catalog values; unknown or invalid settings 
 ## Integration handoff
 
 Agree schemas before coding. Use the same canonical fixtures as the enforcement engine. Keep scenario narratives in fixtures, not hard-coded backend outcomes. Add screenshots only after the real event flow works. A compact polished screen and a two-minute coherent demo are more valuable than a large unfinished app.
+
