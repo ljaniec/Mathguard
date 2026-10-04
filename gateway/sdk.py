@@ -9,6 +9,10 @@ The 100-second I/O timeout accommodates three local stages at the configured
 30-second maximum. A client timeout is not confirmation that a request stopped.
 Callbacks are trusted host integration code, not a sandbox or MCP transport/OAuth
 implementation. A callback side effect cannot be undone when its result is blocked.
+Gateway denials occur outside the callback exception handler and retain sanitized
+policy reason codes. TRUSTED_CALLBACK_FAILURE means the callback raised after
+admission; its side effect may already have occurred. Do not automatically retry
+it without the external tool's idempotency or status protocol.
 """
 from __future__ import annotations
 import json

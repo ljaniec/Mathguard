@@ -161,6 +161,12 @@ To daje około 4 min 50 s. Jeśli masz trzy minuty, połącz 4–5 i 6–7 w kr�
 
 Przetestowany model to `qwen2.5:1.5b-instruct`. Domyślny limit odpowiedzi wynosi 128 tokenów, a deadline pojedynczego wywołania 15 sekund. Odpowiedzi celowo są krótkie. Klasyfikator korzysta ze ścisłego schematu JSON; host nadal sprawdza wynik i egzekwuje blokadę lub review. Sam poprawny JSON nie dowodzi poprawnej oceny zagrożenia.
 
+Limit 128 tokenów jest wspólny dla klasyfikatora i generatora odpowiedzi. Dłuższa wypowiedź może skończyć się w połowie zdania. Poproś o krótką odpowiedź i uprzedź jurora: “The demo caps each stage at 128 output tokens, so longer answers can stop at the cap.” Dopuszczony czat wykonuje trzy wywołania lokalnego modelu. Jedna zmierzona próba na CPU zajęła około 4,26 s łącznie w tych etapach; na innym sprzęcie czas może być dłuższy, do trzech deadline’ów plus obsługa bramki. Powiedz: “We inspect both sides of generation, so an allowed chat makes three separately charged local calls.”
+
+Świeża przykładowa polityka pozwala na **12 pełnych czatów**, zanim inne działania zużyją budżet. Limit 200 wywołań nie oznacza 200 czatów: każde zużywa trzy wywołania, a konserwatywny limit czasu kończy się wcześniej. To naliczone górne granice, nie faktyczny czas CPU. [Tabela polityki](../policies/README.md#budget-example) pokazuje obliczenie. Nowa sesja i restart nie zerują globalnych opłat.
+
+Jeśli pokazujesz restart, zatrzymaj bramkę i uruchom `make run` z tym samym katalogiem runtime. Nie uruchamiaj ponownie setup i nie kasuj dziennika. Po udanym odświeżeniu dashboard wyczyści starą sesję, zgody i dane ponowienia; kliknij **Connect & create session**. Tokeny zostają w bieżącej karcie, a potwierdzone salda i naliczone zasoby wracają z SQLite. Niezatwierdzone żądanie i zgodę trzeba wydać od nowa. Powiedz: “Restart preserves committed state and charges, but invalidates live sessions and pending approvals. Reconnect explicitly; no action is retried automatically.”
+
 ## Krótki pokaz: trzy zachowania
 
 | Krok | Co robisz | Co ma być widoczne |
@@ -188,13 +194,22 @@ Nie przedstawiaj fixture jako działającego modelu. Nie usuwaj kwarantanny, zan
 | Dlaczego to hybrydowe? | Reguły i lokalny model tworzą niezależne ograniczenia. Model nie może odwołać twardego zakazu. |
 | Co rzeczywiście udowodniliście? | Właściwości modeli Lean dotyczące decyzji, polityki, limitów i wybranych przejść. Granice Python/HTTP i trwałość mają testy oraz osobny plan formalizacji. |
 | Czy wykryjecie każdy prompt injection? | Nie. Zestaw testów mierzy określone przykłady. Potrzebna jest niezależna ocena na nieznanych wcześniej promptach i dobranym modelu. |
+| Co jeśli wpiszę tę pominiętą instrukcję z notatki supportu? | W rzeczywistej próbie wejście nadal dostało `risk=0`, ale generator odmówił pomocy. Bramka dopuściła tę bezpieczną odmowę. Osobno zablokowała przygotowaną szkodliwą odpowiedź. To dwa konkretne wyniki, nie dowód wykrycia każdej odmiany. |
 | Czy działa bez płatnych API? | Tak. Wymagamy lokalnego Ollama i lokalnych wag. Nie ma zależności od OpenAI, Anthropic ani Copilot. |
 | Co jeśli model lub gateway padnie? | Niepewne wywołanie zachowuje naliczone zasoby i kwarantannę. Trwały stan odtwarza potwierdzone przejścia. Niepewny dziennik zamyka dostęp. |
 | Czy log jest odporny na administratora hosta? | Łańcuch hashy wykrywa niespójności. Bez zewnętrznej kotwicy nie dowodzi odporności na administratora, który przepisał cały plik lub przywrócił starszą poprawną kopię. |
 | Czy to produkcyjny system rozproszony? | To demonstrator pojedynczego lokalnego węzła. Replikacja, twarde rozliczanie GPU i exactly-once efektów zewnętrznych wymagają osobnych protokołów. |
 | Skąd koszty lokalnego modelu? | Mamy konfigurowalne jednostki księgowe oraz pomiary tokenów i czasu. Nie nazywamy tego rzeczywistym rachunkiem od usługodawcy. |
+| Dlaczego budżet kończy się przed 200 czatami? | Czat zużywa trzy wywołania i trzy konserwatywne naliczenia. W świeżym sample limit compute pozwala na 12 pełnych czatów przed innym użyciem. Nowa sesja nie odnawia globalnego limitu. |
+| Czy restart zgubi pieniądze lub zgody? | Potwierdzone salda i opłaty wracają z tego samego dziennika. Żywe sesje i oczekujące zgody są unieważniane. Dashboard prosi o jawne połączenie; nie ponawia działań automatycznie. |
 | Co z formatami modeli? | Przyjęcie sprawdza przypięty hash i obsługiwany ograniczony format. Nie uruchamiamy pickle ani kodu. Bezpieczeństwo docelowego loadera jest oddzielną granicą. |
 | Które kryteria priorytetyzowaliście? | Bezpieczeństwo 30%, architektura 20% i raportowanie 20% są wspólne dla obu dokumentów. Wszystkie cztery deliverables są w repo. Różnicę pozostałych wag zachowujemy w planie. |
+
+Jeśli juror zapyta o znany pominięty prompt, powiedz po angielsku:
+
+> The input classifier still missed this known prompt. In our live follow-up the proposer refused it, and the output gate allowed that refusal. A separate constructed harmful-output probe was blocked semantically. Those are two finite observations, not a guarantee that the second classifier catches every variant.
+
+Pełna treść próby, odpowiedź i etapy dostawcy: [prelint-indirect-live.json](../evidence/prelint-indirect-live.json). Nie nazywaj bezpiecznej odmowy wynikiem blokady wejścia. `ALLOWED` oznacza tu dopuszczenie odpowiedzi odmawiającej, nie wykonanie instrukcji ani wyciek.
 
 ## Słownik dla prezentera
 

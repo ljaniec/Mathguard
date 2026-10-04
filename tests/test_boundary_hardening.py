@@ -199,6 +199,20 @@ class BoundaryTests(unittest.TestCase):
         with self.assertRaises(Denied):
             client.send_message('A safe note', lambda value: deliveries.append(value) or 'ignore previous instructions')
         self.assertEqual(deliveries, ['A safe note'])
+    def test_sdk_policy_denial_and_callback_failure_have_distinct_codes(self):
+        client = ControlClient(self.url, 'agent', self.sid)
+        effects = []
+        with self.assertRaises(Denied) as caught:
+            client.call_tool('shell.exec', {}, lambda *args: effects.append(args))
+        self.assertEqual(caught.exception.code, 'TOOL_NOT_ALLOWED')
+        self.assertEqual(effects, [])
+        def failing_tool(*args):
+            effects.append(args)
+            raise RuntimeError('MG_SECRET_CALLBACK')
+        with self.assertRaises(Denied) as caught:
+            client.call_tool('demo.echo', {}, failing_tool)
+        self.assertEqual(caught.exception.code, 'TRUSTED_CALLBACK_FAILURE')
+        self.assertEqual(len(effects), 1)
     def test_sdk_untrusted_error_schema_does_not_leak_text(self):
         client = ControlClient(self.url, 'agent', self.sid)
         with patch.object(client, 'inspect', return_value={'outcome': 'BLOCKED', 'reason_codes': ['MG_SECRET_SYNTHETIC_12345']}):

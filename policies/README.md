@@ -36,6 +36,21 @@ Local model IDs support namespaces and tags such as `qwen2.5:3b` and `hf.co/team
 
 The token component of `call_bound` must cover `max_input_bytes + max_output_tokens + 2048`. Its compute component must cover `deadline_seconds × 1000 + 1000`. These are conservative envelopes, not tokenizer calibration or financial invoices. The supplied `[0,16384,16000,1]` bound reserves no monetary charge for a local call, a 16,384-unit token envelope, 16 seconds of compute envelope and one call. Classifier and proposer calls each reserve/charge separately. Actual provider token reports and elapsed time are recorded separately. Timeout charges remain consumed; quarantine requires explicit operator recovery.
 
+## Budget example
+
+An allowed model chat dispatches input classification, answer generation and output classification. It consumes three call slots and three full bounds: `[0,49152,48000,3]`. A fresh sample policy has these independent limits:
+
+| Component | Limit | Bound per dispatch | Whole dispatches available |
+| --- | ---: | ---: | ---: |
+| Cost allowance | 1,000,000 micros | 0 | No cost charge for these local calls |
+| Token envelope | 1,000,000 | 16,384 | 61 |
+| Compute envelope | 600,000 ms | 16,000 ms | 37 |
+| Call slots | 200 | 1 | 200 |
+
+The smallest positive-bound allowance is **37 dispatches**, permitting **12 complete three-stage chats** and one further stage. A thirteenth otherwise allowed chat cannot complete; its consumed stage remains charged and no uninspected answer is released. Other model/tool/ledger checks, timeouts and prior usage reduce this capacity. Sessions and restart preserve the global allowance. Each dispatch reserves independently; this is not an all-or-nothing reservation for a whole chat. The gateway currently serializes request processing, so two completed allowed chats charge six call slots and `[0,98304,96000,6]` cumulatively.
+
+Raise a budget deliberately under a newer epoch for a larger evaluation, after measuring the machine. Do not equate shorter observed inference with a refund of its conservative bound. `max_output_tokens=128` applies to classifiers and the proposer; long answers may end at that ceiling. Increasing it also changes the required token envelope and latency, so recheck the configured deadline on actual hardware.
+
 ## Hybrid decisions
 
 Deterministic and semantic decisions compose as independent deny/review/redact flags in the compiled Lean gate. A semantic `allow` cannot clear a signature match, an unauthorized model/tool, a budget restriction or another hard denial. Owner approval cannot clear those restrictions either.

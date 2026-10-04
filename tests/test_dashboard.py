@@ -123,6 +123,27 @@ async function run(code){return await vm.runInContext('(async()=>{'+code+'})()',
   assert.equal(elements['interaction-retry'].disabled,true);
   assert.match(elements['transfer-result'].textContent,/Cleared/);
   break;
+ case 'restart-session':
+  await run(`connected=true;sid='old-session';last={approval_ref:'old-approval'};lastInteraction={approval_ref:'old-interaction-approval'};transferApprovable=true;interactionApprovable=true;approvalExpires=123;status={instance_id:'before'};$('operator').value='operator-private-token';$('agent').value='agent-private-token';$('owner').value='owner-private-token';renderStatus({instance_id:'before',ready:true,policy:{max_output_tokens:128}});`);
+  assert.equal(await run('return sid;'),'old-session');
+  await run(`renderStatus({instance_id:'after',ready:true,policy:{max_output_tokens:128}});`);
+  assert.equal(await run('return sid;'),null);
+  assert.equal(await run('return last;'),null);
+  assert.equal(await run('return lastInteraction;'),null);
+  assert.equal(await run('return approvalExpires;'),null);
+  assert.equal(elements.chat.disabled,true);assert.equal(elements.retry.disabled,true);
+  assert.equal(elements.approve.disabled,true);assert.equal(elements['interaction-retry'].disabled,true);
+  assert.equal(fetches.length,0,'restart detection never retries a request');
+  assert.match(elements.connection.textContent,/instance changed.*Connect.*no request was retried/);
+  assert.match(elements['chat-limits'].textContent,/128 tokens.*3 separately charged/);
+  assert.equal(elements.owner.value,'owner-private-token');
+  context.fetch=async(path,options)=>{fetches.push({path,options});return {ok:true,headers:{get:()=>null},text:async()=>JSON.stringify(path==='/v1/status'?{instance_id:'after',ready:true,policy:{max_output_tokens:128}}:path==='/v1/sessions'?{session_id:'new-session'}:path==='/v1/events'?[]:{})};};
+  await elements.connect.handlers.click();
+  assert.equal(await run('return sid;'),'new-session');
+  assert.equal(elements.chat.disabled,false);assert.equal(elements.retry.disabled,true);
+  assert.equal(fetches.filter(f=>f.path==='/v1/sessions').length,1);
+  assert.ok(fetches.every(f=>!['/v1/actions','/v1/models/chat'].includes(f.path)));
+  break;
  case 'report-download':
   context.fetch=async()=>({ok:true,headers:{get:()=>null},text:async()=>JSON.stringify({deployment:'single-node',limitations:['Detector accuracy not proved'],approval_ref:'hidden-approval',note:'operator-private-token',tokens:22})});
   await run(`connected=true;$('operator').value='operator-private-token';`);
@@ -196,6 +217,7 @@ class DashboardTests(unittest.TestCase):
     def test_transfer_retry_reuses_exact_body_and_reports_replay(self): self.run_js('exact-retry')
     def test_concurrent_refresh_is_coalesced_with_honest_fallbacks(self): self.run_js('refresh-single-flight')
     def test_clear_credentials_invalidates_session_and_actions(self): self.run_js('clear-credentials')
+    def test_restart_clears_session_approvals_without_retry_and_allows_reconnect(self): self.run_js('restart-session')
     def test_management_export_redacts_credentials_preserves_limits(self): self.run_js('report-download')
     def test_new_quarantine_incident_requires_fresh_operator_attestation(self): self.run_js('quarantine-attestation')
 

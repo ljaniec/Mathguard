@@ -10,7 +10,9 @@ Mathguard is an AI control layer. The dashboard is the operator's view of that l
 4. Paste the **operator** and **agent** credentials, then select **Connect & create session**. The **owner** credential is needed only to issue approvals. Separate roles are enforced by the server; hiding or disabling a button is not an authorization boundary.
 5. Check the control posture before sending a request: active policy/feed versions, strictness, local model identity, provider mode, worker/storage status and any reload or quarantine warning.
 
-Credentials stay in the current tab's DOM and request memory. They travel only in same-origin Authorization headers, not query strings, cookies, browser storage, audit downloads or management exports. **Clear credentials** invalidates the current UI session and removes pending approval/retry data. Reload before switching server instances. The server session expires separately; clearing the UI is not remote revocation.
+Credentials stay in the current tab's DOM and request memory. They travel only in same-origin Authorization headers, not query strings, cookies, browser storage, audit downloads or management exports. **Clear credentials** invalidates the current UI session and removes pending approval/retry data. The server session expires separately; clearing the UI is not remote revocation.
+
+After restarting with the same runtime directory, run `make run` again; setup is unnecessary. SQLite keeps committed ledger/resource/audit state, but sessions and outstanding approvals are invalidated. The next successful status refresh detects the new instance, clears stale session, approval and retry data, stops polling and asks you to select **Connect & create session**. Credentials remain in the current tab. Nothing is retried automatically. Check restored balances before proposing anything new; a pending uncommitted action requires a fresh proposal and approval. Clearing/reconnecting a session never resets global budget.
 
 ## A short judge demonstration
 
@@ -26,6 +28,8 @@ Credentials stay in the current tab's DOM and request memory. They travel only i
 | Download management JSON and sanitized audit | Version, reason, resource and assurance metadata | Downloads contain decision metadata, not raw prompts or role credentials. The UI audit export is a bounded window, not a claim of complete history. |
 
 The semantic model can deny a proposal, return review, time out or return malformed output. A separate owner approval cannot override semantic denial or unresolved semantic review. Explain the displayed outcome instead of changing a policy solely to force a successful demonstration. Repeated interactions can reach session step/repetition limits; create a new session only when appropriate, keeping global resource charges intact.
+
+The model panel shows the active output cap. At the sample 128-token cap, longer replies can end mid-sentence. Allowed chat uses three separately charged calls; one measured benign CPU request took about 4.26 seconds across provider stages. The fresh sample compute allowance permits 12 complete chats before other usage, even though the call-slot allowance is 200. See the [policy budget example](../policies/README.md#budget-example).
 
 The general interaction endpoint returns filtered content and dispatch authority. It does not execute `demo.echo` or `demo.publish` itself. The SDK/MCP integration controls tool dispatch and remains responsible for its external callback effect boundary.
 
@@ -57,6 +61,6 @@ Polling runs at five-second intervals, pauses while the tab is hidden or a write
 
 ## Verification record
 
-`python -m unittest discover -s tests -p test_dashboard.py -v` exercises eleven static and Node DOM-harness cases: credential input posture; matching accessible controls; absence of HTML insertion/browser persistence sinks; hostile metadata as text; truthful fixture/storage/resource labels; role headers and bounded requests; oversized response/error/deadline behavior; unchanged retries; coalesced refresh; fresh quarantine attestation; credential clearing; and sanitized management download with limitations preserved.
+`python -m unittest discover -s tests -p test_dashboard.py -v` exercises twelve static and Node DOM-harness cases: credential input posture; matching accessible controls; absence of HTML insertion/browser persistence sinks; hostile metadata as text; truthful fixture/storage/resource labels; role headers and bounded requests; oversized response/error/deadline behavior; unchanged retries; coalesced refresh; fresh quarantine attestation; credential clearing; restart invalidation and explicit reconnect without automatic retry; and sanitized management download with limitations preserved.
 
 The harness is not a browser layout engine. It does not certify pixel layout, keyboard navigation, browser downloads or actual Ollama inference. Final browser QA belongs to the release integration review; record observed desktop/mobile rendering and actual clicks there without inventing screenshots or live model quality results.

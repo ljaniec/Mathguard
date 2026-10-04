@@ -20,7 +20,7 @@ Open **http://127.0.0.1:8787**. In a second terminal, run `make credentials` and
 
 Setup discovers the exact installed model ID, checks downloaded local weights and a harmless readiness request through the shared classifier prompt and strict JSON schema, then prepares a private policy and persistent state. It never substitutes a fixture or a paid service. Qwen2.5 1.5B is an approximately 986 MB instruction model distributed under Apache 2.0. [Model source and license](https://ollama.com/library/qwen2.5:1.5b-instruct).
 
-The sample limits responses to 128 tokens with a 15-second call deadline. Replies are deliberately brief. Increase the output allowance only after measuring your hardware; a timeout retains the reservation and quarantines further dispatch.
+The sample limits responses to 128 tokens with a 15-second call deadline; long replies may end mid-sentence. An allowed chat makes three separately charged local calls (one measured CPU case took about 4.26 seconds). The fresh sample budget permits 12 complete chats before other usage; see the [budget calculation](policies/README.md#budget-example). Increase allowances only after measuring your hardware; a timeout retains the reservation and quarantines further dispatch.
 
 The smaller 0.5B model falsely blocked all three benign development cases and withheld the redaction case. It is unsuitable for this demonstration; its [failed baseline](evidence/live-development-evaluation-05-baseline.json) is retained. The [model record](submission/model-record.json) identifies the selected weights, engine, digest and license. A readiness check does not establish detector accuracy.
 

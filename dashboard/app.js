@@ -53,6 +53,11 @@ function metric(label,value,className){const div=document.createElement('div');d
 function modeText(mode){return mode==='live'?'Local inference':mode==='fixture'?'TEST FIXTURE · not live AI':String(mode||'Unknown provider');}
 function storageText(storage){if(storage?.mode==='sqlite')return 'Single-node durable SQLite · '+(storage.healthy?'healthy':'CLOSED: storage requires attention')+' · restored sessions are invalidated';return 'Volatile single-process demo · restart resets ledger and quotas to the seeded state';}
 function renderStatus(data){
+ if(connected&&status?.instance_id&&data.instance_id&&data.instance_id!==status.instance_id){
+  connected=false;sid=null;last=null;lastInteraction=null;approvalExpires=null;transferApprovable=false;interactionApprovable=false;stopPolling();
+  for(const id of ['chat-result','transfer-result','interaction-result','chat-explanation','decision-explanation','interaction-explanation'])text(id,'Previous session ended. Connect before submitting a new request.');
+  controls();notify('Gateway instance changed. Session and pending approvals cleared. Select Connect & create session; no request was retried.');
+ }
  if(!data.quarantined||data.quarantine_id!==status?.quarantine_id)$('upstream-stopped').checked=false;
  status=data;const counts=data.counters||{},posture=data.security_posture||{};
  text('health',(data.ready?'Controls ready':'Execution closed')+(data.quarantined?' · provider quarantined':''));$('health').className='status'+(!data.ready||data.quarantined?' closed':'');
@@ -61,6 +66,7 @@ function renderStatus(data){
  text('versions','Policy '+(data.policy?.epoch??'none')+' / feed '+(data.feed_version??'none'));text('strictness',(data.policy?.profile||'No active strictness')+' · '+integer(posture.semantic_fallback_alerts)+' semantic fallback alerts');
  text('latency',[data.latency_ms?.p95,data.control_latency_ms?.p95].map(v=>Number.isFinite(v)?v.toFixed(1)+' ms':'—').join(' / '));
  text('latency-detail','Request '+integer(data.latency_ms?.samples)+' samples · control '+integer(data.control_latency_ms?.samples)+' samples; provider excluded from control timing.');
+ text('chat-limits','Output cap: '+(integer(data.policy?.max_output_tokens)||'unknown')+' tokens per stage. An allowed chat uses 3 separately charged local calls. Replies can end at the cap; CPU inference takes seconds.');
  const errors=Array.isArray(data.config_errors)?data.config_errors.slice(0,12).map(v=>String(v).slice(0,180)):[];
  if(data.storage&&data.storage.healthy===false)errors.push('Storage is unhealthy. Execution stays closed until safe recovery.');
  $('warnings').hidden=!errors.length;text('warnings',errors.join(' · '));$('recovery').hidden=!data.quarantined;text('quarantine-reason',data.quarantine_reason||'A provider call did not finish within its configured bounds.');
@@ -99,6 +105,7 @@ function resetView(){
  for(const [id,value] of [['provider','Not connected'],['provider-detail','Connect to inspect exact model and inference mode.'],['versions','—'],['strictness','No active configuration in this view.'],['latency','—'],['observed','Provider observations have not been loaded.'],['instance','Storage and restart scope appear after connection.'],['audit-scope','Latest 30 records appear after connection.']])text(id,value);
  $('resources').replaceChildren();const p=document.createElement('p');p.textContent='Connect to view active limits, charges and reservations.';$('resources').append(p);
  renderEvents([]);$('warnings').hidden=true;$('recovery').hidden=true;
+ text('chat-limits','An allowed chat inspects input, generates a reply and inspects output. Limits appear after connection.');
 }
 async function refresh(afterWrite=false){
  if(refreshPromise){if(!afterWrite)return refreshPromise;await refreshPromise.catch(()=>{});}
@@ -127,9 +134,9 @@ function download(name,textValue,type){const blob=new Blob([textValue],{type}),u
 action('connect',async()=>{
  if(!$('operator').value||!$('agent').value)throw Error('Enter the operator and agent credentials first.');
  viewGeneration++;
- await api('/v1/status');const result=await api('/v1/sessions',{},'agent');
+ const initial=await api('/v1/status');const result=await api('/v1/sessions',{},'agent');
  if(typeof result.session_id!=='string')throw Error((result.reason_codes||[]).map(safeCode).join(', ')||'Session was not created.');
- sid=result.session_id;connected=true;last=null;lastInteraction=null;approvalExpires=null;transferApprovable=false;interactionApprovable=false;
+ status=initial;sid=result.session_id;connected=true;last=null;lastInteraction=null;approvalExpires=null;transferApprovable=false;interactionApprovable=false;
  notify('Session connected. Credentials are held only in this tab.');await refresh(true);schedulePoll();
 });
 action('disconnect',async()=>{
