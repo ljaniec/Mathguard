@@ -1,89 +1,119 @@
-# Mathguard — product definition and challenge alignment
+# Mathguard — project description and submission fields
 
-## Replacement text for the submission website
+Updated 4 October 2026 against the release merged in PR #6, source commit `2539ac4911157483fb574f8c8c2071f05d98d5e8`. Runtime evidence remains attached to its measured source/binary fingerprints. This page replaces the earlier 70-case, live-evaluation-pending description. The three question headings below are retained from the existing submission template; the additional fields are ready for use if the platform requests them. Platform-specific character limits and registered team details require the actual form.
 
-### What problem are you solving with the idea?
+## Project name
 
-AI agents can expose sensitive data, misuse tools, send unsafe instructions between agents, and consume uncontrolled model/API resources. Organizations need a control layer that checks actions before execution and provides evidence explaining why each action was allowed or blocked.
+Mathguard
 
-### What is your solution?
+## Challenge / category
 
-Mathguard is a hybrid AI control layer for agents, LLMs, and MCP/API tools. A compiled generic Lean 4 kernel combines deterministic controls with local AI verdicts before releasing prompts, model calls, tool interactions, agent messages and artifacts. Central policy files govern strictness, thresholds, allowlists, approvals and resource limits. The ledger adapter adds verified authorization, replay protection and financial invariants. A semantic AI guard detects suspicious instructions and can restrict actions without overriding hard safety checks. A dashboard displays decisions, ledger changes, budgets, and verification evidence.
+HackYeah 2026 — Goldman Sachs: AI Control Layer
 
-### What's done so far and what is the goal of your project?
+## One-line description
 
-We have rebuilt a 156-record axiom catalog (55 baseline, 5 refinements, 43 Next and 53 Control) and connected the generic kernel to the running gateway. The shared interception API and SDK extend coverage to tool results and agent messages, with exact approvals and live policy/feed updates. The local automated gate checks native proofs/regressions, 14 static-audit cases and 70 gateway/provider/SDK cases. Our proof of concept uses a simulated personal-account ledger to make action safety visible. Live local-model quality evaluation and final submission packaging remain in progress; fixture tests are reported separately from live-model evidence.
+Mathguard applies live policy to AI interactions using deterministic rules, a local semantic model and a compiled Lean decision kernel.
 
-**Status editing rule:** replace the first sentence with actual checked accomplishments as they become available. Do not say the gateway or proofs already work merely because this pack exists.
+## What problem are you solving with the idea?
 
-### One-line pitch
+Applications using AI can expose sensitive data, invoke unauthorized tools, follow hostile instructions in retrieved content or other agents' messages, and consume resources without clear limits. Organizations need a shared enforcement point that checks these interactions before releasing content or authorizing effects. Developers also need editable policies and an audit trail that explains decisions without copying sensitive prompts into reports.
 
-**Mathguard controls AI interactions with configurable guardrails and a compiled, formally specified decision kernel.**
+## What is your solution?
 
-### Thirty-second pitch
+Mathguard is a working HTTP gateway and Python SDK placed between existing applications and their AI interactions. A policy file controls strictness, sensitive-data handling, model/tool allowlists, approvals and resource limits. Deterministic checks and a local Ollama classifier feed a compiled Lean kernel: a semantic allow cannot override a hard denial. The layer allows, redacts, withholds for review or blocks traffic. It inspects model input and output, tool arguments and results, agent messages and bounded artifact admissions. A dashboard shows decisions, resource headroom and sanitized audit exports. A synthetic account ledger demonstrates exact owner approval and safe retries for an irreversible tool.
 
-An AI assistant should not get to move money simply because it generated a plausible tool call. Mathguard sits between the assistant and its models and tools. It checks authority, approval, ledger consistency, replay attempts, sensitive-data flows, and budgets before execution. Lean 4 supplies machine-checked proofs for the exact state transitions; a semantic guard adds contextual detection. Our simulated bank account makes the result visible: legitimate transfers work, hostile proposals fail, and every decision comes with an audit trace.
+## What's done so far and what is the goal of your project?
 
-## Product scope
+All four deliverables are implemented: the control layer with an architecture diagram, documented policy samples, an interactive dashboard and automated tests. The latest canonical check passed 189 runtime tests, 14 static tests, the pinned Lean build and a fresh 156-record axiom audit. Actual local Ollama/Qwen2.5 1.5B evidence includes eight development cases and ten operational checks covering chat, approval/retry, live policy edits and same-journal restart. The ten-slide PDF, editable PowerPoint and presenter tutorial are complete. Next priorities are independent unseen attack evaluation, human browser rehearsal and further formalization of the host/worker and persistence contracts. Existing model proofs and runtime tests have explicitly different scopes.
 
-- **Control-layer product:** gateway plus policy catalog, enforcement core, model/tool adapters, semantic guard, audit stream, dashboard, test runner.
-- **Reference application:** simulated closed ledger in one currency, with seeded Alice, Bob, and Merchant accounts. No connection to real banking systems.
-- **Agent:** untrusted proposal generator. The LLM is neither a source of identity nor a proof checker.
-- **Formal artifact:** reviewed definitions, preservation theorems, trace theorems, witnesses, and an explicit deployment contract.
-- **Optional development assistant:** LLM drafts Lean specifications/proofs offline; only reviewed and checked artifacts become part of a release. This is separate from the live financial agent.
+## Thirty-second pitch
 
-The main user is a developer integrating an agent. The operator reviews security events and changes policy. The account owner approves a specific transfer through a separate authenticated UI. The security team exports sanitized evidence.
+AI applications need rules that a model cannot talk its way around. Mathguard puts one policy gateway in front of local models, tools and agent messages. Deterministic checks and a local classifier inspect traffic; a compiled Lean kernel ensures that a semantic allow cannot remove a hard denial. Developers can edit policies live. Operators can see blocked threats and resource headroom. Our ledger demo shows exact approval and retry without a second debit. The system runs locally and requires no paid inference API.
 
-## Why a ledger is a good demonstrator
+## Target users and use cases
 
-A ledger has precise properties: money must not be created by a transfer; an account cannot spend more than its balance; duplicate delivery cannot debit twice; the person who controls the account must authorize debits; approval of one amount must not authorize a different amount. Those properties can be stated and checked independently of the LLM's wording. A live ledger also exposes the gap between text classification and action enforcement.
+| Field | Submission text |
+| --- | --- |
+| Target users | Developers integrating AI applications or agents; security teams defining guardrails; operators reviewing decisions and resource use. |
+| Main use cases | Inspect prompts and generated replies; sanitize sensitive data; gate tool arguments/results and agent messages; limit model resources; require approval for configured irreversible actions. |
+| Product form | Local HTTP gateway and Python SDK for integrated clients. Calls routed outside that integration remain outside its perimeter. |
+| Demonstrator | Synthetic PLN account ledger with Alice, Bob and Merchant accounts. No bank connection or real payment service. |
+| Distinguishing design | A compiled, formally specified restriction-combination kernel in the request path, paired with empirical deterministic/semantic detection and explicit runtime trust boundaries. |
 
-Use the phrase **formally verified model and transition core** only after the corresponding gates pass. Do not claim that arbitrary banks, cryptography, all prompt injections, all software, or the whole deployed stack are formally verified.
+## Technology and resources
 
-## Official requirement mapping
+| Field | Checked value |
+| --- | --- |
+| Enforcement core | Lean 4.28.0; pinned Mathlib `8f9d9cff6bd728b17a24e163c9402775d9e6a365`; long-lived compiled worker. |
+| Gateway / SDK | Python 3.10+ standard library; authenticated loopback HTTP routes and a callback-based Python SDK. |
+| Dashboard | Repository HTML, CSS and JavaScript; same-origin authenticated requests; no external UI CDN. |
+| Durable state | Owner-private, single-owner SQLite command journal; committed ledger/resource state and audit restore after restart. Sessions and outstanding approvals are invalidated. |
+| Local inference | Tested Ollama 0.35.1 with `qwen2.5:1.5b-instruct`, Q4_K_M, approximately 986 MB. Actual daemon started with `OLLAMA_NO_CLOUD=1`. No model weights are bundled. |
+| Model identity | Digest `65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b`; installed-model Apache-2.0 license verified in [model-record.json](../submission/model-record.json). |
+| Configuration | `mathguard-policy-3` JSON; strict/balanced/permissive profiles; versioned data-only signatures. Invalid candidates keep the last valid configuration; no valid configuration means execution stays closed. |
+| Test resources | Repository-authored synthetic prompts, detector/transport fixtures and actual compiled-worker tests. Node.js is needed for the dashboard DOM harness; these fixtures are not live-model accuracy evidence. |
+| Development assistance | Codex/ChatGPT for implementation, documentation and visual refinement; Aristotle for Lean proof development. Accepted proof artifacts are independently rebuilt and audited. These are development tools, not live inference dependencies. |
+| Licenses | Lean/Mathlib and tested Qwen weights: Apache-2.0; tested Ollama release: MIT. Exact sources/notices are in [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md). The project owner's distribution-license choice remains unrecorded. |
 
-| Brief requirement | Mathguard implementation | Evidence for judges |
-|---|---|---|
-| Functional gateway/proxy/middleware/SDK | Gateway plus SDK mediates model, tool/result and agent-message boundaries; ledger mutation stays private | Run benign and adversarial requests through public gateway |
-| Centralized configurable policy | Versioned catalog with capabilities, account ownership, model allowlist, thresholds, budgets, destinations, signatures | Edit catalog, activate new epoch, rerun a scenario |
-| Deterministic controls | Typed request checks, authorization, ledger preconditions, approval, replay, secret patterns, output gating | Decision reasons and positive/negative tests |
-| Semantic AI controls | Local/OpenAI-compatible model produces bounded structured suspicion assessment | Real semantic call, model identity, time and tokens, timeout test |
-| External and local model budgets | Reserve before provider calls; settle bounded usage; tool-call and local wall-time limits | Boundary and concurrent-reservation tests; budget display |
-| Historical attack mitigation | Reloadable, data-only signatures with provenance and version; examples for instruction injection, dangerous deserialization, model-loader configurations | Modify feed, demonstrate new match; no exploit code executed |
-| Security reporting | Sanitized event trace, counters, resources, reason codes, export | Dashboard and JSONL export |
-| Executable self-tests | One local command; integration, race, model-reference, policy-change, and red-team tests | Judge can execute tests without an API subscription |
-| Performance and scalability | Measured stage latency, concurrency bounds, serialized commit scope, timeout behavior | Exported measured p50/p95 and environment, no invented numbers |
+The current HTTP API is a custom control-layer interface. The SDK integrates trusted MCP/tool callbacks; it does not implement a full MCP transport/OAuth server or a drop-in OpenAI chat proxy.
 
-## Weights and dates from the uploaded PDFs
+## Deliverables and links
 
-| Criterion | Detailed criteria PDF | Rules PDF |
-|---|---:|---:|
-| Robustness / guardrails | 30% | 30% |
-| Architecture / performance | 20% | 20% |
-| Security reporting | 20% | 20% |
-| Self-testing | 15% | 20% |
-| Implementability / scalability | 15% | 10% |
+| Form field | Value / destination |
+| --- | --- |
+| Repository | https://github.com/ljaniec/Mathguard |
+| Component and architecture | [Gateway and SDK](../gateway/) and the [README diagram](../README.md#architecture). |
+| Policy example | [demo.json](../policies/demo.json), [strict.json](../policies/strict.json), [permissive.json](../policies/permissive.json), [field documentation](../policies/README.md). |
+| Interactive demo | `http://127.0.0.1:8787` after local startup; this is a local URL, not a publicly hosted service. |
+| Automated suite | `make test`; [tests](../tests/) and [integration receipt](../evidence/integration.json). |
+| Presentation upload | [Mathguard-HackYeah-2026.pdf](../submission/Mathguard-HackYeah-2026.pdf), ten slides. |
+| Editable presentation | [Mathguard-HackYeah-2026.pptx](../submission/Mathguard-HackYeah-2026.pptx). |
+| Presenter tutorial | [Polish slide explanations and English scripts](18-PRESENTATION-TUTORIAL.md), demo sequence and judge questions. |
+| Judge instructions | [Quickstart](17-JUDGE-QUICKSTART.md); [dashboard guide](16-DASHBOARD-GUIDE.md). |
+| Formal assurance | [Release assurance](verification/RELEASE-ASSURANCE.md), [axiom report](verification/axioms.txt), [next Aristotle tasks](../aristotle/FINAL-HARDENING-HANDOFF.md). |
 
-Ask the mentor which final weighting applies. Both versions make a strong test suite and useful reporting essential.
+## How judges run it
 
-The written rules give 23:00 on 3–4 October; the attached secondary schedule review reports an earlier 11:00 finish on 4 October. Plan to submit by **09:30 Europe/Warsaw on 4 October**, while confirming the actual cutoff and pitch duration with organizers. This conservative target is not a verified correction of the source. See the fresh [source audit and delivery matrix](10-REQUIREMENTS-RECOVERY.md).
+Install Python 3.10+, GNU Make, Lean/elan and Ollama. For the complete dashboard test coverage, also install Node.js. Start the Ollama daemon with cloud disabled:
 
-## Priorities for a single primary developer
+```sh
+OLLAMA_NO_CLOUD=1 ollama serve
+```
 
-1. Run the existing gateway with the actual local model and record live positive/negative evidence.
-2. Rehearse policy/feed changes, approvals/replay, resource exhaustion, and sanitized exports.
-3. Measure model quality and full-request/stage latency; keep fixture/native benchmarks separate.
-4. Complete the maximum-ten-slide PDF, source/model/license inventory, and accessible submission links.
-5. Preserve the checked formal core; extend proofs only where a deployment-critical semantic gap requires it.
+In another terminal inside the checkout:
 
-Do not make the demo wait on generalized finance, blockchain consensus, full OAuth deployment, arbitrary plugins, full theorem synthesis, or a large React product. An in-process control layer with a small UI satisfies the architectural form allowed by the brief if it really mediates the calls.
+```sh
+ollama pull qwen2.5:1.5b-instruct
+make setup MODEL=qwen2.5:1.5b-instruct
+make run
+```
 
-## Sources
+Open `http://127.0.0.1:8787`, use `make credentials` in a private terminal, and connect the separate roles. Run `make test` for the canonical checks. First setup downloads dependencies/weights; operation can stay local after preparation. Preserve the runtime directory on subsequent starts.
 
-- Primary task files: `CRIETRIA AI Control Layer.pdf` and `RULES AI Control Layer.pdf` in the uploaded Goldman directory; audit in `reference/SOURCE-NOTES.md`.
-- Event page: https://hackyeah.pl/tasks-prizes
-- Lean proof validation: https://lean-lang.org/doc/reference/latest/ValidatingProofs/
-- OWASP prompt injection: https://genai.owasp.org/llmrisk/llm01-prompt-injection/
-- MCP security guidance: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+## Evidence, performance and limitations
 
-Retrieved/read 3 October 2026. External references inform the threat model; the uploaded Goldman brief controls this project specification.
+| Field | Accurate submission statement |
+| --- | --- |
+| Test status | [189 runtime tests](../evidence/integration.json), zero failures/errors/skips, collected `2026-10-04T02:40:39.907793+00:00`; canonical Lean/native/14-static checks also passed. |
+| Formal scope | 156 axiom-catalog records, not 156 independent requirements. Proofs cover typed model properties and restriction composition; authentication, raw JSON/HTTP, provider IO and SQLite host composition remain runtime-tested. |
+| Live evaluation | [Eight development cases](../evidence/live-development-evaluation.json) passed expected outcomes; [ten operational checks](../evidence/live-local-rehearsal.json) passed. The development corpus informed the prompt and is not held out. |
+| Known detection gap | The classifier missed a support-note instruction to publish private contacts. In the [full gateway follow-up](../evidence/prelint-indirect-live.json), the proposer refused and that harmless refusal was released. A separately constructed harmful output was blocked. This does not close the input detection gap. |
+| Response cap / latency | Sample cap: 128 output tokens for every stage; long replies may end at the cap. Allowed chat uses input classification, generation and output classification. One measured benign CPU case took about 4.26 seconds across provider stages; each stage has a 15-second deadline. |
+| Budget capacity | Each allowed chat charges three conservative bounds. The fresh sample compute allowance permits 12 complete chats before other usage; creating a session or restarting does not reset global charges. [Calculation](../policies/README.md#budget-example). |
+| Deployment boundary | Trusted single node and filesystem, serialized processing and global quotas. No distributed quota guarantee, upstream GPU-cancellation proof or exactly-once guarantee for arbitrary SDK callback effects. |
+| Artifact boundary | Pinned byte/hash checks and a bounded inert safetensors/GGUF subset; no pickle execution. This is admission, not a safety proof for arbitrary weight loaders. |
+| Human acceptance | Independent unseen evaluation and browser visual/download/operator rehearsal remain open. The PDF was rendered and checked separately. |
+
+## Fields requiring organizer / team confirmation
+
+| Field | Required source |
+| --- | --- |
+| Registered team name | Exact current HackTribe team record; project name does not establish the registered team name. |
+| Registered members / team leader / contact | Actual roster and designated contact. GitHub contributors and account names do not establish competition registration. |
+| Project distribution license | Explicit owner decision; third-party notices do not license the project itself. |
+| Organizer cutoff / submission ID / acceptance | Current platform or organizer confirmation. The supplied rules and secondary schedule disagree; no acceptance or upload is claimed here. |
+| Video or public hosted demo | No checked video/public deployment link is recorded. Use the supplied PDF and local demo unless the team provides one. |
+
+## Challenge alignment
+
+The supplied scoring tables agree on security resilience 30%, architecture/performance 20% and reporting 20%. They differ on tests versus implementability: 15/15 in the detailed brief and 20/10 in the rules. All four deliverables have repository links above. The exact primary PDF links/hashes, requirement mapping and unresolved cutoff are in [10-REQUIREMENTS-RECOVERY.md](10-REQUIREMENTS-RECOVERY.md) and [reference/SOURCE-NOTES.md](../reference/SOURCE-NOTES.md).

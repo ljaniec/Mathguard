@@ -16,7 +16,7 @@ Mathguard is a hybrid control layer for AI model/tool interactions. The simulate
 4. Dashboard cards should answer: What was stopped? Why? What did we allow? What resources remain? Which policy/feed is active? What is actually proved? Which checks are merely tested? Show model-call stage latency separately from total request latency and pure-kernel microbenchmarks.
 5. Improve approval UX: display the canonical source/destination/amount/request ID/revision/epoch before issuing approval; require an explicit owner action. Show issuance separately from execution. Invalid/expired/stale requests do not become approval prompts. Exact retry cannot show a second payment.
 6. Add a concise management report view/download: decision counts, major reasons, resource-accounting units, current configuration errors/quarantine, time window, dropped audit records, mode and evidence limitations. No fabricated risk percentage or “fully secure” badge.
-7. Prepare the actual submission PDF, at most ten slides, from checked evidence. Include title/team/member fields and links. This is still a pending artifact, not fulfilled by Markdown slide notes.
+7. Maintain the completed ten-slide submission PDF, editable deck and presenter tutorial against checked evidence. Use the actual registered title/team/member details once confirmed; do not infer them from GitHub contributors. The current artifacts are in `submission/`; presentation delivery does not establish platform upload or acceptance.
 
 ## Ten-slide plan
 

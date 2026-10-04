@@ -1,6 +1,6 @@
 > **Generic-kernel update:** the imported C1/P1/W1/G1 modules and their current runtime mapping are documented in [13-GENERAL-CONTROL-LAYER.md](13-GENERAL-CONTROL-LAYER.md). Fresh build/axiom evidence is in [GENERAL-CONTROL-INTEGRATION.md](verification/GENERAL-CONTROL-INTEGRATION.md).
 
-> **Current checkpoint:** the 55 baseline targets and five additional equality targets have been independently checked with the pinned toolchain. The gateway/worker runtime is now integration-tested. Earlier request-pack descriptions below are historical; current scope and open work are in `07-TEAM-INTEGRATION-CONTRACT.md` and `10-REQUIREMENTS-RECOVERY.md`.
+> **Current checkpoint:** the full catalog contains 156 checked axiom records, including 55 baseline targets and five additional equality records. The gateway/worker runtime has 189 passing integration cases and finite actual local-model evidence. Earlier request-pack descriptions below are historical; current proof/runtime scope and open work are in [RELEASE-ASSURANCE.md](verification/RELEASE-ASSURANCE.md), `07-TEAM-INTEGRATION-CONTRACT.md` and `10-REQUIREMENTS-RECOVERY.md`.
 
 # Mathguard model-v1 — exact formal specification
 
@@ -297,4 +297,3 @@ The source invariants are independent specifications; do not repair a failed the
 ## F. Extensions after the hackathon
 
 Possible later work: variable-policy trace theorem; history-level authorization under policy snapshots; verified serialization/refinement; structured declassification/noninterference; bounded liveness for authorized workflows; hierarchical session/global budget transaction proof; deposits/withdrawals via explicitly balanced external accounts; temporal caps; more general supervisory-control synthesis. None is required to make the model-v1 PoC useful, and none may be claimed before definition, proof, and runtime integration.
-

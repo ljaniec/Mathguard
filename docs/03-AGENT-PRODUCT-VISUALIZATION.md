@@ -1,4 +1,4 @@
-> **Implementation status:** this is the broader design specification. The implemented volatile slice, supported routes and explicit deferred guarantees are in [the current contract](07-TEAM-INTEGRATION-CONTRACT.md). Priorities and official-versus-design requirements are in [the recovery matrix](10-REQUIREMENTS-RECOVERY.md). Do not treat every proposed feature below as already implemented.
+> **Implementation status:** this is the broader design specification. The implemented gateway, optional durable SQLite journal, supported routes and deferred guarantees are in [the current contract](07-TEAM-INTEGRATION-CONTRACT.md). Priorities and official-versus-design requirements are in [the recovery matrix](10-REQUIREMENTS-RECOVERY.md). Do not treat every proposed feature below as already implemented.
 
 # Agent, product, and visualization specification
 
