@@ -1,0 +1,84 @@
+{
+  "schema": "mathguard-release-hardening-validation-1",
+  "verified_at_utc": "2026-10-04T08:28:27.548147+00:00",
+  "integration_base_commit": "27f03dadad8dd0753aa5845acba67631e054ef27",
+  "aristotle_runs": [
+    "4da8c3b4-c158-42dc-b5ae-82aaf02aeaae",
+    "f96f8424-9d59-4214-84b6-96551073fd07"
+  ],
+  "archive_sha256": "b5b2d30a7dbed067ddaf9aa0679bdfc0f6e84db8b618ca587a4875dd7373ca79",
+  "archive_comparison": "Both supplied archives have identical extracted file contents",
+  "integration_adjustments": [
+    "Corrected stale mathlib inputRev in the supplied archive; resolved revision unchanged",
+    "Extended make test to build/audit the release proofs and run native H1 cases",
+    "Clarified source/proof/runtime boundaries in current submission documentation"
+  ],
+  "lean": "4.28.0",
+  "mathlib_rev": "8f9d9cff6bd728b17a24e163c9402775d9e6a365",
+  "checks": {
+    "make_test": {
+      "passed": true,
+      "static_tests": 14,
+      "runtime_tests": 189,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0
+    },
+    "release_build": {
+      "passed": true,
+      "targets": [
+        "MathguardRelease",
+        "mathguard-worker",
+        "mathguard-tests",
+        "mathguard-bench"
+      ],
+      "warnings": 0
+    },
+    "axiom_audit": {
+      "passed": true,
+      "original_records": 156,
+      "release_records": 85,
+      "allowed_dependencies": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "forbidden_dependency_mutation_rejected": true,
+      "missing_record_mutation_rejected": true
+    },
+    "native_h1": {
+      "passed": true,
+      "checks": 9
+    },
+    "live_local_rehearsal": {
+      "passed": true,
+      "receipt": "evidence/release-h1-live-rehearsal.json"
+    }
+  },
+  "source_sha256": {
+    "Mathguard/Worker.lean": "dad3a82a2e713f394047aedf2bd41e3f6934ee1a2754f21a36ecdfec8c202d2b",
+    "aristotle/release/ReleaseApproval.lean": "c5aeb6125fcdf20b2830a3f408b35d27298eaead569221ae407f7cf9cb212cb1",
+    "aristotle/release/ReleaseDispatch.lean": "a46eca192d56c00270425e0db4af55199e6c9e858fdc3d24666981b2c659e6fd",
+    "aristotle/release/ReleaseH1.lean": "60e5cce998f6bb8b99c6aaab3c2d72c65988255e09d69fbd642b64bb077e5758",
+    "aristotle/release/ReleaseReload.lean": "d5a0e649cd4797eeecdf41a641ce95d858f99cc23bafa53cbc5c228e42d669cd",
+    "aristotle/release/RuntimeSpec.lean": "5da93063502b4549a1bca8eb9f57b34d352f1955dc6c9545991b59859ef77e72",
+    "lake-manifest.json": "03aadc7f9b6f83bb0947615f7450c01e760635a2435f41648c8d1e8004f1b786",
+    "lakefile.toml": "059711a4e3cf0dae70c7e760143a69a829969800c14cf65b357e6d6c662d089c",
+    "scripts/audit_sources.py": "e6653b8ef008a14af96c15877243dde109e6134ca0709adbc8e77e5ca812b3f3",
+    "scripts/check-lean.sh": "4c1dc2991105dacd0eb9ace7808c442a38dd52f97b074b5cc18d9d227da85e20",
+    "scripts/release/H1Commands.lean": "4b7e439bf09e95af8155d4f9dbef5746014c2159e74d63ddf207dfaa9e7fd6ab",
+    "scripts/release/ReleaseAxioms.lean": "004add132e47b06bba7f370a204d29179846a7280639cf2e59a3bb1d4fb29b8b",
+    "scripts/release_h1_native.py": "5901e42b607502ff0923b2c0fddfae81da2d33853fb82b3f632409be51dec54e"
+  },
+  "worker_sha256": "97fe8fcf92f3b012d4d67646d2c1524a0869b2e2434241641e3295f429c9a220",
+  "integration_receipt": "evidence/integration.json",
+  "historical_evidence": "Earlier model evaluations, live rehearsals and dashboard captures retain their pre-decoder-change fingerprints; not overwritten or relabeled.",
+  "limitations": [
+    "H1 covers typed worker composition/dispatch, not raw JSON parsing or the host persistence adapter",
+    "H3 issuance/admission models are proposals, not refinement proofs of Python code",
+    "H4/H6/H7 and host parts of H2/H3/H5 remain open",
+    "Older journals intentionally reject this worker hash; no state migration delivered",
+    "Live rehearsal is finite operational evidence, not held-out classifier accuracy"
+  ],
+  "environment": "Used the documented path-discovery shim via LD_PRELOAD in this execution sandbox; no shim is shipped or required on ordinary hosts"
+}

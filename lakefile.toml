@@ -5,7 +5,7 @@ defaultTargets = ["Mathguard", "mathguard"]
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4.git"
-rev = "v4.28.0"
+rev = "8f9d9cff6bd728b17a24e163c9402775d9e6a365"  # Mathlib v4.28.0
 
 # Reviewed model-v1 definitions and their machine-checked proofs.
 [[lean_lib]]
@@ -27,3 +27,10 @@ root = "Bench"
 [[lean_exe]]
 name = "mathguard-worker"
 root = "Mathguard.Worker"
+
+# Release hardening: definition-only runtime spec (unchanged) and its checked proofs.
+# Not a default target and not linked into the production worker.
+[[lean_lib]]
+name = "MathguardRelease"
+srcDir = "aristotle/release"
+roots = ["RuntimeSpec", "ReleaseH1", "ReleaseDispatch", "ReleaseReload", "ReleaseApproval"]

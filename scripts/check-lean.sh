@@ -7,9 +7,12 @@ if ! command -v lake >/dev/null 2>&1; then
 fi
 lake env lean --version
 lake build
+lake build MathguardRelease mathguard-worker
 mathguard_axiom_report=$(mktemp)
 trap 'rm -f "$mathguard_axiom_report"' EXIT
 lake env lean scripts/Axioms.lean > "$mathguard_axiom_report"
-python3 scripts/audit_sources.py --axioms "$mathguard_axiom_report" --require-extra --require-control
+lake env lean scripts/release/ReleaseAxioms.lean >> "$mathguard_axiom_report"
+python3 scripts/audit_sources.py --axioms "$mathguard_axiom_report" --require-extra --require-control --require-release
 lake exe mathguard
 lake exe mathguard-tests
+python3 scripts/release_h1_native.py

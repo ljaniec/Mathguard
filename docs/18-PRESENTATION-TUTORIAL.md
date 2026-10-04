@@ -228,4 +228,21 @@ Pełna treść próby, odpowiedź i etapy dostawcy: [prelint-indirect-live.json]
 | Fixture | Jawnie podstawiony wynik klasyfikatora do powtarzalnego testu |
 | Axiom audit | Raport zależności dowodów od aksjomatów; nie licznik wykrytych ataków |
 
+## Ostatnia aktualizacja dowodów — H1
+
+Slajd z liczbą 156 nadal opisuje pierwotny katalog. Osobny audyt nowych wyników ma 85
+pozycji. H1 dowodzi teraz zgodności rzeczywistej, typowanej gałęzi finansowej workera z
+modelem przejścia, bez dodatkowego założenia o rozpoznawaniu `Json.null`. Powiedz:
+
+> We now prove correspondence to the actual typed financial worker dispatch. The original
+> 156-record catalog and the new 85-record audit are separate. Raw parsing, authentication
+> and database crash behavior remain outside this proof.
+
+Świeży pełny test przeszedł 189 przypadków wykonawczych, 14 statycznych i dziewięć prób
+H1 na skompilowanym workerze. Dziesięć nowych prób z lokalnym modelem sprawdziło również
+zgodę, ponowienie, zmianę polityki i restart. Starsze obrazy dashboardu zachowują wcześniejsze
+identyfikatory workera. Po aktualizacji użyj osobnego prywatnego katalogu do nowego demo;
+stary dziennik jest związany z poprzednim plikiem wykonywalnym i nie został zmigrowany.
+[Wyniki i ograniczenia H1](verification/RELEASE-HARDENING-RESULTS.md).
+
 Aktualne ograniczenia i mapa dowodów: [RELEASE-ASSURANCE.md](verification/RELEASE-ASSURANCE.md). Dalsze zadania Lean: [handoff Aristotle](../aristotle/FINAL-HARDENING-HANDOFF.md).

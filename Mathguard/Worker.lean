@@ -86,11 +86,19 @@ def request (j : Json) : Except String (Request 3) := do
     policyEpoch := (← nat j "policyEpoch") }
   let some q := Next.fromWire 3 wire | throw "account out of range"
   return q
+/-- Decode an optional approval: `null` means absent. The `null` case is a structural pattern
+match (not the `partial` `BEq Json`), so its behaviour is visible to proofs. -/
+def approvalOpt (a : Json) : Except String (Option (Approval 3)) :=
+  match a with
+  | .null => pure none
+  | a => do
+    let nonce ← nat a "nonce"
+    let principal ← nat a "principal"
+    let boundRequest ← request (← field a "boundRequest")
+    let expires ← nat a "expires"
+    return some { nonce, principal, boundRequest, expires }
 def context (j : Json) : Except String (Context 3) := do
-  let mut approval := none
-  let a ← field j "approval"
-  if a != Json.null then
-    approval := some { nonce := (← nat a "nonce"), principal := (← nat a "principal"), boundRequest := (← request (← field a "boundRequest")), expires := (← nat a "expires") }
+  let approval ← approvalOpt (← field j "approval")
   return { principal := (← nat j "principal"), now := (← nat j "now"), approval }
 def snapshot (s : State) : Json := Json.mkObj [
   ("revision", toJson s.ledger.revision),
