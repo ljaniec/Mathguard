@@ -27,7 +27,8 @@ class RecordedResult(unittest.TextTestResult):
 
 
 def main():
-    paths=[*ROOT.glob('Mathguard/*.lean'),ROOT/'lakefile.toml',ROOT/'lean-toolchain',ROOT/'lake-manifest.json']
+    paths=[*(ROOT/'Mathguard').rglob('*.lean'),ROOT/'Main.lean',ROOT/'scripts/Axioms.lean',
+           ROOT/'lakefile.toml',ROOT/'lean-toolchain',ROOT/'lake-manifest.json']
     for folder in ['gateway','agent','dashboard','policies','feeds','contracts','tests','scripts']:
         paths.extend(p for p in (ROOT/folder).rglob('*') if p.is_file() and p.suffix in {'.py','.sh','.json','.jsonl','.js','.css','.html','.lean'})
     source={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(set(paths))}
@@ -40,7 +41,7 @@ def main():
       'passed':result.wasSuccessful(),'tests':result.records,
       'semantic_evidence':'FixtureProvider for enforcement; local HTTP protocol fixture for transport; no real LLM inference measured',
       'kernel_evidence':'Actual compiled Lean worker, not a Python ledger mirror',
-      'ui_evidence':'Static HTTP serving and JavaScript syntax checked separately; browser visual QA remains pending',
+      'ui_evidence':'Dashboard markup and JavaScript DOM/request behavior tested; browser visual/download QA remains pending',
       'claim':'Runtime regressions, not a whole-stack theorem or classifier accuracy benchmark'}
     output=ROOT/'evidence/integration.json';output.parent.mkdir(exist_ok=True)
     output.write_text(json.dumps(report,indent=2)+'\n')

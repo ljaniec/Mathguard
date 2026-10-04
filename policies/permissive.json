@@ -21,7 +21,7 @@
     1
   ],
   "deadline_seconds": 15,
-  "max_output_tokens": 512,
+  "max_output_tokens": 128,
   "max_input_bytes": 4096,
   "max_session_steps": 20,
   "repeat_limit": 3,

@@ -1,34 +1,51 @@
-# Mathguard — evaluation and submission checkpoint
+# Mathguard: final engineering checkpoint
 
-## Implemented and checked
+Mathguard is a local AI control gateway and SDK. The ledger is its irreversible-tool demonstrator. The four assessed deliverables are implemented: component and architecture diagram, live policy samples, interactive dashboard and automated suite. The repository's judge entry points are `make setup`, `make run` and `make test`.
 
-- Fresh 156-record axiom catalog: 55 baseline, five refinement/snapshot, 43 Next (35 targets + eight supporting records), and 53 generic Control records; pinned Lean 4.28.0 / Mathlib `8f9d9cff6bd728b17a24e163c9402775d9e6a365`.
-- Compiled private JSONL worker executing the actual generic hard/hybrid gate, ledger/budget/flow functions and W1 typed decoder. The original baseline and imported production modules are unchanged. C1/P1 history/composition proofs remain separate model evidence.
-- Shared interception API and SDK for prompts, tool calls/results, agent messages and model outputs; exact generic owner approvals; schema-3 live tools/thresholds/profiles. Strictness now controls actual compiled semantic fallback.
-- Callable authenticated Python gateway; owner-bound approval; exact replay; strict parsing; live policy/feed reload with last-good retention; input/output pattern controls; local-model semantic/proposer adapter; conservative global resource accounting and session loop limits.
-- Bounded inert artifact byte/hash/header checks; interactive dashboard; sanitized audit and management report; minimal reference agent client.
-- Local gate passed: pinned proof/native checks, 14 audit/parser regressions and 70 actual-worker gateway/provider/SDK cases. Fresh evidence: [GENERAL-CONTROL-INTEGRATION.md](docs/verification/GENERAL-CONTROL-INTEGRATION.md). Dashboard exposes redactions/reviews and detector-plus-gate p95 alongside request latency.
-- Follow-up: 83 gateway/provider/SDK/evaluator regressions passed, plus the unchanged 14 static cases. The 16-case public HTTP fixture rehearsal verifies policy/feed edits, approval/replay, budget stopping and sanitized export. Reports: `evidence/integration.json`, `evidence/rehearsal.json`; repeat with [the operator runbook](docs/14-OPERATOR-REHEARSAL.md).
-- Live evaluator now distinguishes detector denials, reviews, redactions and control errors; records last-good configuration hashes and validated semantic verdicts; preserves partial evidence and invalidates configuration drift. This is reporting validation, not a live-model result.
-- Actual ten-slide [PDF](submission/Mathguard-HackYeah-2026.pdf) and editable [PPTX](submission/Mathguard-HackYeah-2026.pptx) prepared from checked evidence. Registered member details, installed model/license evidence and human acceptance must be finalized before uploading.
+## Release evidence
 
-## Open submission blockers and limitations
+| Check | Result | Scope |
+|---|---|---|
+| Canonical local gate | Pinned Lean build, axiom audit, native regressions and runtime suite pass | Execution sandbox uses a documented path-discovery compatibility shim; no shim ships with the project |
+| Lean axiom catalog | 156 records: 55 baseline, 5 refinements, 43 Next, 53 Control | Catalog size, not 156 independent security requirements |
+| Python runtime suite | 189 passed, 0 failures/errors/skips | Actual compiled worker with labeled classifier/protocol fixtures and dashboard DOM behavior |
+| Static audit/parser regressions | 14 passed | Source contracts and audit handling |
+| Public HTTP fixture rehearsal | 16 cases passed | Policy/feed edits, redaction, budget stopping, approval/retry and export |
+| Real local CPU rehearsal | 10 cases passed | Ollama 0.35.1, Qwen2.5 1.5B instruction weights, strict schema, 128-token cap; chat, ledger approval/retry, policy edits and same-journal restart |
+| Live development corpus | 8/8 expected outcomes; valid run, zero control errors | Three benign requests, one email-redaction case and four attacks; used during prompt development, not held out |
+| Exploratory classifier probes | 9 valid verdicts, 8 expected outcomes | A support-note instruction to publish private contact records was falsely allowed; raw classification, not an executed leak |
+| Prelint live follow-up | 2 operational probes completed | The known prompt still passed input inspection; proposer refused and the refusal was released. A separate constructed harmful output was blocked. No exfiltration tool was invoked. |
+| Presentation | 10 concise slides, editable architecture/tables and presenter notes | Exported PDF pages rendered and checked; Polish tutorial plus English speaking scripts |
 
-1. **Live local-model validation is not performed here.** Configure the exact installed model ID/endpoint; run the live evaluator and agent. The automated gateway suite uses labeled classifier fixtures; provider transport tests use a local HTTP fixture.
-2. **Independent unseen prompt evaluation remains open.** The checked-in corpus is development data; no attack-resistance percentage is claimed.
-3. **Browser visual/operator rehearsal remains open.** Static assets, JS syntax and HTTP serving are checked. Browser download returned truncated archives in this environment; no screenshot/render QA result is claimed.
-4. **HackTribe entry and final submission acceptance remain open.** The actual ten-slide PDF is prepared; confirm team/member details and live evidence before upload. Confirm cutoff/pitch duration and protect the earlier reported 11:00 deadline with a 09:30 Warsaw submission target.
-5. Actual model/weights license and version must be recorded in `submission/model-record.json`; no weights are bundled. No Ollama executable/configured local model endpoint was available in this workspace at this checkpoint.
+The local chat made three real calls: semantic input inspection, generation and semantic output inspection. Known-signature and tightened-PII denials made zero model calls. Real ledger requests committed once, required separate owner approval when configured, and returned exact retries without a second debit or charge. Restart preserved revision 2, balances, consumed resources, observed usage, last-good configuration and durable audit metadata, including an invalid policy file still on disk. These finite cases establish working local integration, not general detector accuracy.
 
-## Deployment boundary
+Source/binary fingerprints and individual assertions are in [integration.json](evidence/integration.json), [rehearsal.json](evidence/rehearsal.json) and [live-local-rehearsal.json](evidence/live-local-rehearsal.json). The installed weights/version/license are in [model-record.json](submission/model-record.json). No model weights or role credentials are bundled.
 
-Single serialized volatile owner. SDK mediation is implemented; no durable audit/store, distributed budget, full MCP transport/OAuth, or full artifact/memory security claim. Resource counters charge configured conservative bounds; they are not measured bills. Provider timeout quarantines further work but does not prove upstream GPU cancellation. The new worker adapter/composition/auth/provider/labeling path is integration-tested, not a new full-stack formal theorem. Pattern/classifier coverage remains finite.
+The [eight-case development result](evidence/live-development-evaluation.json) and [nine-probe diagnostic](evidence/semantic-prompt-development.json) retain their exact model, policy and wire identities. Historical 0.5B overblocking, a 512-token CPU timeout and a free-form JSON truncation remain recorded as failures. Strict schema generation fixes the demonstrated formatting issue; it does not fix every semantic miss. The selected sample keeps a 15-second deadline and a 16,000 ms configured compute charge bound. Completion within that deadline depends on the deployed hardware and workload.
 
-## Team assignments
+The [Prelint follow-up](docs/verification/PRELINT-FOLLOWUP.md) adds explicit cap/latency/budget guidance, dashboard restart detection with safe explicit reconnect, SDK denial/failure distinction checks and [actual indirect-prompt observations](evidence/prelint-indirect-live.json). The input detection miss remains; a harmless proposer refusal is not credited as a classifier block.
 
-- Product/agent/dashboard/submission: [copy-paste assignment](docs/08-AGENT-PRODUCT-HANDOFF.md).
-- Enforcement/model/evaluation: [copy-paste assignment](docs/09-ENFORCEMENT-HANDOFF.md).
-- Shared implementation contract: [API and runtime semantics](docs/07-TEAM-INTEGRATION-CONTRACT.md).
-- Priority and source traceability: [requirements recovery](docs/10-REQUIREMENTS-RECOVERY.md).
+## Safety layers delivered
 
-Use PRs and Prelint; no direct main writes or GitHub Actions. Keep runtime evidence separate from model theorems. The earlier 35 C1/P1/W1 targets are now imported and freshly checked; do not duplicate that proof campaign. Current architecture/contract: [13-GENERAL-CONTROL-LAYER.md](docs/13-GENERAL-CONTROL-LAYER.md).
+- Bounded UTF-8 JSON, types, identifiers, HTTP framing/headers/bodies, response sizes, worker IO and admission waits.
+- Separate agent/owner/operator roles, private credentials, loopback-only endpoints, no redirects or ambient proxies, cloud-model identifier refusal and actual daemon cloud-disable setup.
+- Shared deterministic and local semantic gates. Hard denials survive semantic approval. Model answers receive both checks before release. Classifier generation uses a shared strict JSON schema; the host independently validates every verdict and never downgrades an unsupported format.
+- PII/secret, encoded/Unicode/split/indirect inspection; structured redaction preserves keys/types. Overlapping secret spans are merged. Every later model dispatch revalidates retained history under the current policy.
+- Validated live policy/feed activation, invalid-edit last-good retention, no-valid-policy denial, and preserved balances/charges on reload.
+- Durable reservation before provider dispatch, conservative resource charges, global/session/repeat limits and explicit timeout quarantine/recovery.
+- Exact owner approval binding, expiry, single consumption and ledger retry receipts. Restart restores acknowledged ledger/resource transitions, receipts and nonce floor; sessions and outstanding approvals are invalidated.
+- Private single-owner SQLite worker-command journal. Unresolved intent, corruption, response/binary mismatch, unsafe permissions, second ownership and capacity exhaustion fail closed.
+- Pinned bounded inert artifact inspection without deserialization or execution. Hash checks and supported structure checks do not certify arbitrary model loaders.
+- Clear dashboard outcomes/posture/headroom, separately observed usage, safe credentials/text rendering, bounded refresh/export and sanitized audit pagination.
+
+## Assurance and remaining acceptance
+
+The compiled worker enforces existing Lean functions in the request path. Proofs cover the typed models and restriction algebra. Raw parsing, authentication, provider IO, host history/approval composition and SQLite durability are runtime tested. C1/P1 are separate models, not substitutes for a theorem about the exact worker or database protocol. See [release assurance](docs/verification/RELEASE-ASSURANCE.md) and the seven prioritized [Aristotle campaigns](aristotle/FINAL-HARDENING-HANDOFF.md).
+
+This is a trusted-filesystem, single-node demonstrator. Hash chains detect inconsistency, not malicious rewriting or rollback by the host administrator. Adapter timeout does not prove upstream GPU cancellation. External SDK callbacks require their own idempotency and effect-recovery protocols. Local cost allowances are policy units, not measured commercial invoices.
+
+Independent unseen prompt evaluation remains open. The review browser rejected localhost with `ERR_BLOCKED_BY_CLIENT`, so browser layout, downloads and a human operator rehearsal are not claimed. Dashboard DOM/security tests and actual HTTP serving pass. Final team/member registration, organizer cutoff confirmation and HackTribe acceptance are external steps. Preserve the earlier reported 11:00 cutoff until the conflicting 23:00 rule is clarified.
+
+[Judge quickstart](docs/17-JUDGE-QUICKSTART.md) · [Dashboard guide](docs/16-DASHBOARD-GUIDE.md) · [Presenter tutorial](docs/18-PRESENTATION-TUTORIAL.md) · [Full release plan](docs/15-FINAL-RELEASE-PLAN.md).
+
+Changes are prepared on `hardening/final-control-release` after the earlier integration PR was merged. This release does not merge or rewrite main. No GitHub Actions or paid APIs are required.

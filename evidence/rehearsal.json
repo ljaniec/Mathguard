@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-03T23:54:47.801524+00:00",
+  "timestamp_utc": "2026-10-04T02:13:17.463186+00:00",
   "mode": "fixture",
   "passed": true,
   "cases": [
@@ -8,14 +8,14 @@
       "passed": true,
       "outcome": "ALLOWED",
       "reason_codes": [],
-      "trace_id": "7ec2342e1ca7cb9f"
+      "trace_id": "2328ad7546f5611b"
     },
     {
       "case": "secret/PII redaction",
       "passed": true,
       "outcome": "ALLOWED",
       "reason_codes": [],
-      "trace_id": "6f7c4a1eb69004ff"
+      "trace_id": "b7f13b01010a935b"
     },
     {
       "case": "indirect signature",
@@ -24,7 +24,7 @@
       "reason_codes": [
         "SIGNATURE_PROMPT_INJECTION"
       ],
-      "trace_id": "eea736d28963cce8"
+      "trace_id": "710612bc38ee8176"
     },
     {
       "case": "valid financial effect",
@@ -33,7 +33,7 @@
       "reason_codes": [
         "ADMITTED"
       ],
-      "trace_id": "a7d4e5d2fdaaa101"
+      "trace_id": "3117d133fa5122ea"
     },
     {
       "case": "exact retry",
@@ -42,7 +42,7 @@
       "reason_codes": [
         "EXACT_RETRY"
       ],
-      "trace_id": "b16ecbf858c7be2a"
+      "trace_id": "9c59ae79b91edb3e"
     },
     {
       "case": "missing approval",
@@ -51,7 +51,7 @@
       "reason_codes": [
         "APPROVAL_REQUIRED"
       ],
-      "trace_id": "6720ea4ac0234266"
+      "trace_id": "a59f9076502de2e5"
     },
     {
       "case": "owner approval issuance",
@@ -65,7 +65,7 @@
       "reason_codes": [
         "ADMITTED"
       ],
-      "trace_id": "11dbbf21b6df15be"
+      "trace_id": "85425dbbb440241e"
     },
     {
       "case": "approved retry",
@@ -74,7 +74,7 @@
       "reason_codes": [
         "EXACT_RETRY"
       ],
-      "trace_id": "fb6ee2f996691911"
+      "trace_id": "9adff57d885fa0f1"
     },
     {
       "case": "live feed addition",
@@ -83,14 +83,14 @@
       "reason_codes": [
         "SIGNATURE_REHEARSAL"
       ],
-      "trace_id": "46fe335bcdea6371"
+      "trace_id": "3191e1d3e740ae10"
     },
     {
       "case": "live feed removal",
       "passed": true,
       "outcome": "ALLOWED",
       "reason_codes": [],
-      "trace_id": "0325dfbf488bcb61"
+      "trace_id": "6456a347276a4814"
     },
     {
       "case": "valid policy activation preserves charges",
@@ -105,7 +105,7 @@
         "PII_REDACTED",
         "SENSITIVE_DATA"
       ],
-      "trace_id": "8e3f3ea7903d8a80"
+      "trace_id": "07b491b01c51d07b"
     },
     {
       "case": "invalid policy retains last good",
@@ -119,7 +119,7 @@
       "reason_codes": [
         "BUDGET_EXHAUSTED"
       ],
-      "trace_id": "d3691cfb48de3563"
+      "trace_id": "416f620c2d06d717"
     },
     {
       "case": "sanitized audit and management export",
@@ -134,10 +134,17 @@
     "control_axiom_records": 53,
     "generic_gate": "compiled Mathguard.Control.storeDecision / hardDecision",
     "runtime": "tested volatile serialized worker",
+    "storage": {
+      "mode": "volatile",
+      "healthy": true,
+      "error": null,
+      "audit_events": 0,
+      "session_restore": "not_available"
+    },
     "worker_sha256": "13368e2720221f70dfb714a77c0405b94a0fd1706e088f40237e098030b7bf32",
     "semantic_mode": "fixture",
-    "instance_id": "93e6e629cf371ad2",
-    "policy_sha256": "7a1742175b5e7573b8775296bef633dfe22a2cfc5b3489172a4a2bec8c2fbd93",
+    "instance_id": "07e873c9a64f0a39",
+    "policy_sha256": "d828f8f5ae0ee3644bb69a884887d917a1a3f8bac1d4f5df099fe2b4631315cc",
     "feed_sha256": "7300d67b5df7e8f13ac6fbe8e4444318f258f8498011d08446e2347719e2bc64",
     "policy_epoch": 7,
     "feed_version": 1,
@@ -150,7 +157,8 @@
       "No durable storage or distributed quotas",
       "No complete prompt-injection or artifact-safety guarantee",
       "Provider bounds, authentication, parsing and runtime composition are not proved",
-      "Timeout kills adapter, not necessarily the upstream GPU job; further calls are quarantined"
+      "Timeout kills adapter, not necessarily the upstream GPU job; further calls are quarantined",
+      "SDK authorization does not make arbitrary external callbacks exactly once or crash atomic"
     ]
   },
   "assurance_after": {
@@ -160,28 +168,54 @@
     "control_axiom_records": 53,
     "generic_gate": "compiled Mathguard.Control.storeDecision / hardDecision",
     "runtime": "tested volatile serialized worker",
+    "storage": {
+      "mode": "volatile",
+      "healthy": true,
+      "error": null,
+      "audit_events": 38,
+      "session_restore": "not_available"
+    },
     "worker_sha256": "13368e2720221f70dfb714a77c0405b94a0fd1706e088f40237e098030b7bf32",
     "semantic_mode": "fixture",
-    "instance_id": "93e6e629cf371ad2",
-    "policy_sha256": "2d044e556f183e04a2bd4491989643763a5e95d4c3f617a2b3bff8811199f22f",
+    "instance_id": "07e873c9a64f0a39",
+    "policy_sha256": "653ca95dd5060d2432e4b550a132fb5c1dcb8f93c65cfd16a9521f96ff721802",
     "feed_sha256": "a8e0758811b7d6539b0ae658b690dc8f50c6b60e2168529481b20fb0e5f349a7",
     "policy_epoch": 9,
     "feed_version": 3,
     "semantic_model": "local-model",
     "config_errors": [],
-    "validated_semantic_verdicts": 6,
+    "validated_semantic_verdicts": 9,
     "live_calls_observed": 0,
     "quarantined": false,
     "limitations": [
       "No durable storage or distributed quotas",
       "No complete prompt-injection or artifact-safety guarantee",
       "Provider bounds, authentication, parsing and runtime composition are not proved",
-      "Timeout kills adapter, not necessarily the upstream GPU job; further calls are quarantined"
+      "Timeout kills adapter, not necessarily the upstream GPU job; further calls are quarantined",
+      "SDK authorization does not make arbitrary external callbacks exactly once or crash atomic"
     ]
   },
   "management_report": {
-    "generated_at": 1791071687,
+    "generated_at": 1791079997,
     "deployment": "single-process, volatile",
+    "storage": {
+      "mode": "volatile",
+      "healthy": true,
+      "error": null,
+      "audit_events": 38,
+      "session_restore": "not_available"
+    },
+    "observed_usage": {
+      "tokens": 120,
+      "compute_ms": 0.8639999999999999,
+      "calls": 12,
+      "reported_token_calls": 12
+    },
+    "audit_export": {
+      "scope": "retained volatile window",
+      "max_events_per_page": 2000,
+      "id_field": "event_id"
+    },
     "decisions": 12,
     "outcomes": {
       "CONTROL": 14,
@@ -235,7 +269,7 @@
     "resource_accounting": "configured upper bounds charged; not measured financial bills",
     "semantic_mode": "fixture",
     "live_calls_observed": 0,
-    "retained_events": 35,
+    "retained_events": 38,
     "events_dropped": 0,
     "assurance": "model-v1:55;refinement:5;Next:43;Control:53;compiled-gate;runtime-tested",
     "ready_for_submission": false,
@@ -253,10 +287,11 @@
     ]
   },
   "source_sha256": {
-    "scripts/rehearse-demo.py": "35dc265e622b91e743f28587cb745f5305ed9c48d17370a9d048d5a74f23e9bc",
-    "gateway/engine.py": "e6d10d3acfdbf32de6c4e8a5e00f755463a6a8ff7973819d959539bd750d510a",
-    "gateway/server.py": "9605c3dc900d9d6a27f881d48dcee015d2fdfb323e94e17657d46bf71977db4d",
-    "policies/demo.json": "7a1742175b5e7573b8775296bef633dfe22a2cfc5b3489172a4a2bec8c2fbd93",
+    "scripts/rehearse-demo.py": "aa9c50700e86c7fd84021461f61a0f640d61c3db91511df6caaf2ff84bf2b1bf",
+    "gateway/engine.py": "9162ec11d1ce4b7d9ae5f8130aab2d1b339bed8fe8a8132731175fc26f4c2cb2",
+    "gateway/semantic.py": "0328cf3aa6e032c16cb1f3500e0b1fc5080d81839709f7b5ddfc4043a950f0e3",
+    "gateway/server.py": "080d0cc937d2756d87c70f60e7f05e98a4bc7e14db0b64aecdfa7d4f700a17f4",
+    "policies/demo.json": "d828f8f5ae0ee3644bb69a884887d917a1a3f8bac1d4f5df099fe2b4631315cc",
     "feeds/demo-signatures.json": "7300d67b5df7e8f13ac6fbe8e4444318f258f8498011d08446e2347719e2bc64"
   },
   "claim": "Actual worker and public HTTP workflow; fixture verdicts; no live-model accuracy or browser/operator visual rehearsal."

@@ -1,70 +1,42 @@
 # Mathguard presentation design review
 
-Reviewed 4 October 2026. The ten-page PDF keeps the corporate navy-and-ivory direction and introduces one consistent identity system. This revision changes presentation design and wording precision. It does not change runtime code or formal definitions.
+Reviewed 4 October 2026. The final ten-slide deck preserves the corporate navy/ivory direction and returns to the original shield identity. It has 260 visible words including titles and footers, compared with 644 in the preceding PDF: about 60% less text. Detail moves to Polish explanations, short English scripts, demo actions and judge questions in the presenter tutorial and PowerPoint notes.
 
-## Design decisions
+## Design system
 
-| Element | Choice | Purpose |
-| --- | --- | --- |
-| Logo | Open squared G enclosing a proof turnstile | Connect the guard boundary with evidence required for admission |
-| Display type | Nimbus Roman, regular | Give titles an institutional editorial character |
-| Body type | Nimbus Sans, regular and bold | Keep technical explanations and evidence easy to scan |
-| Technical type | Nimbus Mono PS | Align financial figures and distinguish commands, indices and page numbers |
-| Main palette | Navy `#101D32`, ivory `#F6F4ED` | Support a calm, high-contrast reading field |
-| Accent | Brass `#9B814F`, darker text brass `#806638` | Tie identity, rules and chapter labels together without competing with evidence |
-| Secondary text | Slate `#556172` | Separate explanations from headings while retaining legibility |
-| Background | Restrained nested gate contours | Extend the logo's boundary metaphor on the cover and closing page |
-| Composition | 72 px outer margin, fixed column starts and repeated footer coordinates | Make alignment and spacing consistent throughout the deck |
-| Evidence | Open tables with fine horizontal rules and explicit column gutters | Let readers compare rows without a heavy grid |
+| Element | Final choice | Purpose |
+|---|---|---|
+| Logo | Classic navy/gold shield, ∀ and six connected nodes | Common policy over mediated AI interactions; original project identity retained |
+| Display type | Nimbus Roman | Institutional editorial titles with a clear hierarchy |
+| Body type | Nimbus Sans, regular/bold | Large, directly readable examples and labels |
+| Command type | Nimbus Mono PS | Distinguish commands and evidence counts |
+| Palette | Navy `#101D32`, ivory `#F6F4ED`, gold `#C5A567` | Calm reading field with restrained identity accents |
+| Secondary text | Slate `#536172`; dark brass `#806638` | Separate explanation and table labels without losing contrast |
+| Background | Existing quiet gate engraving on cover/closing only | Keep the main technical pages uncluttered |
+| Layout | 72 px outer margins, common baselines/footer, generous whitespace | Stable reading order and deliberate alignment |
+| Evidence | Native architecture, approval flow and four native tables | Editable structure; exact labels rather than a decorative approximation |
 
-Titles use 49 px (36.75pt), the cover uses 78 px (58.5pt), and main body text generally uses 24–29 px (18–21.75pt). Smaller type serves chapter labels, captions and footers. The serif, sans serif and monospaced faces each have a specific role.
+Slide titles are 60 px (45 pt), the cover title 86 px (64.5 pt), and main content generally 31–40 px (23.25–30 pt). Table headings are 23 px (17.25 pt). Footers carry only identity and page number. The logo preserves its proportions and transparent background. The PPTX declares the intended typefaces. The PDF embeds font subsets and renders them as intended. Use the PDF for presenting; install the Nimbus families if editing on another machine.
 
-The cover gives the logo one clear focal position and preserves its proportions. Technical pages use solid ivory. The pattern appears on the cover and closing page only. The closing page keeps sufficient text contrast over the quiet linework.
+## Visual review
 
-## Page review
+All ten final PDF pages were rendered at 1280×720 and inspected individually. No clipping, accidental overlap, heavy table grid, missing glyphs or unreadable foreground text remained. The approval diagram's final arrow direction and three equal-height nodes were checked after correction. Native tables keep visible column gutters and fine horizontal rules. The repository link in the final page remains clickable.
 
-| Page | Review result |
-| --- | --- |
-| 01 Identity | Logo, title and supporting text occupy distinct fields. Navy pattern preserves a quiet reading area. |
-| 02 Architecture | Arrow direction is correct. Kernel emphasis identifies the enforcement point. Diagram remains native and editable. |
-| 03 Decision kernel | Independent flags and the deterministic denial boundary remain clear. “At or above” matches the runtime threshold. |
-| 04 Live policy | All four observed changes retain their versions and outcomes. The fixture scope remains visible. |
-| 05 Resources | Numbered rows separate reservation, limits and timeout recovery. Line breaks preserve complete phrases. |
-| 06 Ledger | Monospaced balances align by column. Approval and retry behavior remain explicit below the table. |
-| 07 Attack boundaries | Indirect content, artifacts and finite coverage have distinct rows. No universal detection claim appears. |
-| 08 Evidence | The 83-test result has clear visual priority. Other evidence and the 156-record distinction remain readable. |
-| 09 Reporting | Operator visibility, sanitized export and volatile audit limits remain separate and explicit. |
-| 10 Submission | Commands and remaining work occupy separate columns. The brass PR link remains clickable. |
+| Slide | Reading order and coherence |
+|---|---|
+| 1 Product | Title first, concise purpose second, classic shield at right |
+| 2 Architecture | Single central gate, policy above, evidence below, correct arrows |
+| 3 Hybrid defense | Two contrasting requests show hard-denial precedence |
+| 4 Policy | Three reload states with direct consequences |
+| 5 Content/artifacts | Policy-dependent secret redaction/blocking stated accurately |
+| 6 Resources | Reservation precedes dispatch; timeout consequence remains visible |
+| 7 Approval/retry | Exact request, owner and ledger commit; single-node explanation in notes |
+| 8 Reporting | Operator questions mapped to visible evidence, no fabricated screenshot |
+| 9 Assurance | 156 audit records and 187 passed tests separated; empirical detection limit visible |
+| 10 Startup | Three large commands, installed-local-model requirement, repository link |
 
-All ten final PDF pages were rendered at 1280×720 and individually inspected. No visible text clipping, overlap, distorted logo, broken line break or body/footer collision remains at this review size.
+Source facts and limitations were checked against current policy, release tests and the assurance map. In particular, the sample policy may redact ordinary supported secrets; the deck does not falsely call every secret a hard denial. Known-signature denial is the hybrid example. The live local rehearsal is evidence of operation, not detector accuracy.
 
-## Export and coherence checks
+PPTX structural integrity, slide geometry, intended fonts, native table ownership and artifact-tool re-import passed. These checks complement the page inspection. Native PowerPoint execution is not claimed. Dashboard browser visual/download review remains blocked by the remote browser's localhost restriction; its DOM/security tests are separate from PDF review.
 
-- Ten pages at 16:9. Text remains searchable in the PDF.
-- PDF fonts are embedded subsets of Nimbus Roman, Nimbus Sans and Nimbus Mono PS. No fallback face appears in the final PDF's text spans.
-- Four tables on pages 3, 4, 6 and 8 remain native in the editable presentation. The architecture also remains editable.
-- Presentation package and layout checks returned zero findings and zero layout warnings. Re-import succeeded.
-- Text bounds checks found zero out-of-page spans and zero body/footer collisions.
-- The PDF link points to `https://github.com/ljaniec/Mathguard/pull/5`.
-- Original speaker notes and source links remain in the editable deck.
-- Independent content review confirmed the 83/14/16 counts,156-record catalog distinction, balances, policy/feed versions and evidence limits. It found no material factual drift.
-
-An early draft substituted the display face during PDF conversion. The final revision uses Nimbus Roman and verifies the embedded font. Inherited table borders and hyperlink colors were also corrected, followed by another complete export review.
-
-| Text pair | Contrast ratio |
-| --- | ---: |
-| Navy on ivory | 15.34:1 |
-| Slate on ivory | 5.71:1 |
-| Dark brass labels on ivory | 4.92:1 |
-| Light supporting text on navy | 13.08:1 |
-| Brass link on navy | 9.25:1 |
-
-These ratios describe the specified text colors against the solid background fields. They are not a full accessibility certification of the deck.
-
-## Use and review limits
-
-The PDF is the reviewed visual output. The PPTX is editable and may substitute fonts on a computer without the Nimbus families. The artwork is raster imagery, with the transparent logo supplied at 1254×1254. This review covers rendered exports and presentation structure, rather than native PowerPoint execution or a physical projector test.
-
-Live-model quality, unseen evaluation, browser/operator acceptance and submission registration remain pending as stated in the deck. The redesign does not change those evidence boundaries.
-
-See [LOGO-PROMPT.md](LOGO-PROMPT.md) for the meaning, original prompts and asset-use rules.
+Logo meaning and exact generation prompt: [CLASSIC-IDENTITY.md](CLASSIC-IDENTITY.md). Speaking guide: [18-PRESENTATION-TUTORIAL.md](../../docs/18-PRESENTATION-TUTORIAL.md).

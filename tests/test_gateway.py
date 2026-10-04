@@ -256,18 +256,18 @@ class GatewayTests(unittest.TestCase):
         state=self.state();self.assertEqual(state['revision'],0);self.assertEqual(state['pending'],0)
         self.assertEqual(state['balances'],[100000,20000,0]);self.assertEqual(state['spent'][3],1)
     def test_resource_race_cannot_oversubscribe(self):
-        self.update_policy(epoch=8,budget_limit=[1000000,1000000,600000,2])
+        self.update_policy(epoch=8,budget_limit=[1000000,1000000,600000,3])
         with ThreadPoolExecutor(max_workers=2) as pool:
             results=list(pool.map(lambda i:self.chat('benign '+str(i)),range(2)))
         self.assertEqual(sum(r.get('outcome')=='ALLOWED' for r in results),1)
-        self.assertEqual(self.state()['spent'][3],2);self.assertEqual(len(self.provider.calls),2)
+        self.assertEqual(self.state()['spent'][3],3);self.assertEqual(len(self.provider.calls),3)
     def test_disallowed_model_never_calls_guard(self):
         self.denied(self.chat(model='unknown'),'MODEL_NOT_ALLOWED');self.assertEqual(len(self.provider.calls),0)
     def test_management_report_and_stage_metadata(self):
         self.chat();report=self.e.read('/v1/report','operator')
         self.assertFalse(report['ready_for_submission']);self.assertEqual(report['semantic_mode'],'fixture')
         stages=[e for e in self.e.events if e.get('stage')]
-        self.assertEqual([s['stage'] for s in stages],['semantic_model','proposer_model'])
+        self.assertEqual([s['stage'] for s in stages],['semantic_model','proposer_model','semantic_model'])
         self.assertTrue(all(s['charged_bound']==self.e.active['call_bound'] for s in stages))
     def test_worker_death_closes_execution(self):
         self.e.worker.process.kill();self.e.worker.process.wait()
@@ -295,10 +295,10 @@ class GatewayTests(unittest.TestCase):
         self.assertNotEqual(before['policy_sha256'],valid['policy_sha256'])
         self.assertEqual(before['instance_id'],valid['instance_id'])
     def test_validated_semantic_count_excludes_malformed_output(self):
-        self.chat();self.assertEqual(self.e.read('/v1/assurance','agent')['validated_semantic_verdicts'],1)
+        self.chat();self.assertEqual(self.e.read('/v1/assurance','agent')['validated_semantic_verdicts'],2)
         self.provider.complete=lambda *args,**kwargs: ('not JSON',10)
         self.chat('Different question')
-        self.assertEqual(self.e.read('/v1/assurance','agent')['validated_semantic_verdicts'],1)
+        self.assertEqual(self.e.read('/v1/assurance','agent')['validated_semantic_verdicts'],2)
     def test_http_ingress_export_and_unknown_keys(self):
         server=Server(('127.0.0.1',0),self.e)
         thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()

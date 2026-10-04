@@ -1,0 +1,38 @@
+{
+  "timestamp_utc": "2026-10-04T01:36:14.277441+00:00",
+  "engine": "Ollama",
+  "engine_version": "0.35.1",
+  "engine_source": "https://github.com/ollama/ollama/releases/tag/v0.35.1",
+  "model": "qwen2.5:0.5b-instruct",
+  "license": "Apache-2.0",
+  "model_source": "https://ollama.com/library/qwen2.5:0.5b-instruct",
+  "mode": "live-local",
+  "cloud_features": "OLLAMA_NO_CLOUD=1 on actual daemon",
+  "download_note": "Native pull was blocked by sandbox DNS at its Cloudflare redirect. Official registry layers fetched through curl/proxy and each SHA256+size verified against the registry manifest.",
+  "model_digest": "a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67",
+  "model_bytes": 397821319,
+  "endpoint": "http://127.0.0.1:11435/v1",
+  "preflight": "Real inference completed with bounded semantic JSON; not an accuracy benchmark.",
+  "model_details": {
+    "parent_model": "",
+    "format": "gguf",
+    "family": "qwen2",
+    "families": [
+      "qwen2"
+    ],
+    "parameter_size": "494.03M",
+    "quantization_level": "Q4_K_M"
+  },
+  "license_verified_from_installed_model": true,
+  "status": "real-local-preflight-passed",
+  "claim": "Real downloaded local weights and bounded semantic JSON inference; not an adversarial accuracy benchmark.",
+  "gateway_rehearsal": {
+    "evidence": "evidence/live-local-rehearsal-05-baseline.json",
+    "timestamp_utc": "2026-10-04T01:44:23.110602+00:00",
+    "passed": true,
+    "completed_provider_stages": 3,
+    "claim": "Finite real local inference/enforcement/policy/restart checks; no held-out accuracy claim.",
+    "original_evidence_path": "evidence/live-local-rehearsal.json"
+  },
+  "historical_context": "Preserved 0.5B baseline before release model/prompt/schema/output-bound changes. The original record linked the then-current main rehearsal path; reference below now selects its immutable historical copy."
+}

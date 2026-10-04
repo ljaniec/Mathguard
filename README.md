@@ -1,122 +1,78 @@
 # Mathguard
 
-<img width="3344" height="1248" alt="project_logo" src="https://github.com/user-attachments/assets/47c7bbf7-8e97-408e-877c-0ed70a49a4d8" />
+<img src="submission/brand/mathguard-classic-mark.png" alt="Mathguard shield" width="148" />
 
+**A control layer for AI. Inspect every mediated interaction; allow, redact or block before release.**
 
-**A hybrid AI control gateway with a compiled Lean decision kernel.**
+Mathguard sits between applications/agents and local models, tools or other agents. A file-driven policy combines deterministic controls with a local AI threat classifier. A compiled Lean kernel enforces the restrictions and resource bounds. The sample account ledger demonstrates an irreversible action; the product is the gateway and SDK.
 
-Hybrid control-layer prototype for HackYeah 2026, Goldman Sachs **AI Control Layer**. Prompts, model calls, tool calls/results, agent messages and artifact admission pass through the control layer. The simulated personal-account ledger is its high-value demonstrator.
+## Run the demo
 
-## Start here
-
-1. [Current generic architecture, policy schema and SDK](docs/13-GENERAL-CONTROL-LAYER.md).
-   [Operator rehearsal and live-evaluation runbook](docs/14-OPERATOR-REHEARSAL.md); [ten-slide PDF](submission/Mathguard-HackYeah-2026.pdf) and [editable deck](submission/Mathguard-HackYeah-2026.pptx).
-2. [Aristotle requirements-adaptation proposal](docs/12-ARISTOTLE-REQUIREMENTS-ADAPTATION.md).
-3. [Source-checked challenge requirements and delivery gaps](docs/10-REQUIREMENTS-RECOVERY.md).
-4. [Current runtime/API contract](docs/07-TEAM-INTEGRATION-CONTRACT.md).
-5. [Product-agent assignment](docs/08-AGENT-PRODUCT-HANDOFF.md) and [engine-agent assignment](docs/09-ENFORCEMENT-HANDOFF.md).
-6. [Updated submission description](docs/01-PRODUCT-AND-CHALLENGE.md).
-7. [Codex bootstrap for Astra / Sol 6.1](docs/02-CODEX-BOOTSTRAP.md).
-8. [Agent, product, and visualization specification](docs/03-AGENT-PRODUCT-VISUALIZATION.md).
-9. [Enforcement-engine specification](docs/04-ENFORCEMENT-ENGINE.md).
-10. [Detailed mathematical model and assurance boundaries](docs/05-FORMAL-MODEL.md).
-11. [Aristotle instructions and theorem acceptance criteria](aristotle/README.md).
-12. Checked Lean development: [definitions](Mathguard/Spec.lean), [ledger proofs](Mathguard/Ledger.lean), [budget proofs](Mathguard/Budget.lean), [flow proofs](Mathguard/Flow.lean), [runtime commit boundary](Mathguard/Runtime.lean). Original requests: [aristotle/](aristotle/README.md).
-13. [Validation matrix, demo, and delivery gates](docs/06-VALIDATION-AND-DEMO.md).
-
-## Status — 2026-10-03
-
-The supplied Aristotle run reports all **55 model-v1 targets proved** under Lean 4.28.0 / Mathlib `8f9d9cff` (`v4.28.0`), with a warning-free build and native demo. The code, original statements, and supplied axiom report pass the static import audit: [IMPORT-AUDIT.md](docs/verification/IMPORT-AUDIT.md).
-
-The performance-review work independently rebuilt all **55 baseline targets** with the pinned toolchain and checked **five additional reservation-refinement/snapshot targets**. The fresh axiom report, native regression tests, and measured results are in [PERFORMANCE-REVIEW.md](docs/verification/PERFORMANCE-REVIEW.md). The original supplied report remains separate evidence. The callable gateway executes the actual Lean ledger/budget/flow functions and now the generic `Mathguard.Control` hard/hybrid gate. The imported C1/P1/W1 modules add 35 target statements plus eight supporting axiom records; G1 adds 53 axiom records. Together with the existing five refinements, `scripts/Axioms.lean` checks 156 records. See [integration evidence](docs/verification/GENERAL-CONTROL-INTEGRATION.md). Its authentication, parsing, policy handling, provider adapter and composed runtime are tested code, not additional formal proofs. Live-model quality evidence and submission packaging remain open; see [STATUS.md](STATUS.md).
-
-## Run the control layer
-
-Prerequisites: Python 3.10+, the pinned Lean 4.28.0 toolchain, Mathlib dependencies/cache, and an available local OpenAI-compatible model server. No Python third-party package is required. First-time Lean/Mathlib setup needs network access; a warm checkout can run tests offline.
-
-1. Set `MATHGUARD_MODEL_URL` to your local server's `/v1` endpoint (default `http://127.0.0.1:11434/v1`).
-2. In `policies/demo.json`, replace **both** `allowed_models` and `semantic_model` with the exact installed model ID. For later reloads, increment `epoch`.
-3. Run `bash scripts/demo.sh` and open `http://127.0.0.1:8787`.
-4. Paste the separate random operator/agent/owner tokens from the local launcher into the corresponding dashboard fields. Keep them out of recordings and source control.
-5. Connect a session, try a prompt, propose a 2500-minor-unit transfer, then exact retry. For 10000 or more, use the separate owner approval and resubmit the exact request.
+Use Linux or macOS (Windows: WSL2), Python 3.10+, [Lean/elan](https://lean-lang.org/install/) and [Ollama](https://ollama.com/download). Keep Ollama running with cloud features disabled: `OLLAMA_NO_CLOUD=1 ollama serve`. The first setup downloads pinned Mathlib dependencies and builds the Lean worker; later starts reuse them.
 
 ```sh
-bash scripts/check-local.sh       # proof, native, audit and gateway tests
-# Use the launcher's AGENT token in this environment variable:
-export MATHGUARD_AGENT_TOKEN='<local agent token>'
-# Evaluation also needs the separate OPERATOR token to read sanitized traces:
-export MATHGUARD_OPERATOR_TOKEN='<local operator token>'
-python3 agent/run.py --model '<exact model ID>' 'Pay Bob 25 PLN for lunch'
-python3 scripts/evaluate-live.py --model '<exact model ID>' \
-  --corpus tests/development-prompts.jsonl --label development \
-  --output evidence/live-development.json
-python3 scripts/rehearse-demo.py  # isolated HTTP fixture rehearsal; no live inference
+ollama pull qwen2.5:1.5b-instruct
+make setup MODEL=qwen2.5:1.5b-instruct
+make run
 ```
 
-Edit the policy/signature files and use Reload to demonstrate activation. Invalid edits retain the last valid configuration; startup without one closes execution. A semantic failure is decided by the compiled profile (strict blocks, balanced asks, permissive passes with an alert). A provider timeout still retains budget charges and quarantines further model calls. After stopping/verifying the upstream job, use explicit operator recovery to preserve the ledger and all charges. The deployment is **single-process and volatile**; restart creates a fresh ledger. Budget values are conservative accounted bounds, not actual provider bills. There is no bundled model or claimed live-model result from this development environment.
+Open **http://127.0.0.1:8787**. In a second terminal, run `make credentials` and paste the separate operator, agent and owner tokens into the dashboard. Credentials stay private on this computer; do not include them in recordings or source control.
 
-### Layout
+Setup discovers the exact installed model ID, checks downloaded local weights and a harmless readiness request through the shared classifier prompt and strict JSON schema, then prepares a private policy and persistent state. It never substitutes a fixture or a paid service. Qwen2.5 1.5B is an approximately 986 MB instruction model distributed under Apache 2.0. [Model source and license](https://ollama.com/library/qwen2.5:1.5b-instruct).
 
-| Path | Contents |
-|---|---|
-| `Mathguard/Spec.lean` | Reviewed model-v1 definitions (ledger, budget, flow) |
-| `Mathguard/Ledger.lean` | Ledger targets plus helper lemmas (journal replay, admission unpacking, trace induction) |
-| `Mathguard/Budget.lean` | Budget targets plus helper lemmas (unique-ticket removal, reservation/settlement characterisations) |
-| `Mathguard/Flow.lean` | Information-flow targets plus helper lemmas (label preorder, trace monotonicity) |
-| `Mathguard/Runtime.lean` | In-memory runtime boundary: `atomicLedgerStep` installs `(ledgerStep p s ctx q).state` in one `IO.Ref.modifyGet` |
-| `Mathguard/OptimizedBudget.lean` | Allocation-reducing totals/reservation implementation with exact equality proofs against the unchanged model |
-| `Mathguard/Control.lean` | Generic restriction algebra, hybrid gate, fallback, policy reload, step/audit and owner-filter models |
-| `Mathguard/Composite.lean`, `PolicyHistory.lean`, `Wire.lean` | C1/P1/W1 composite, historical-policy and typed-wire proofs |
-| `Mathguard/Worker.lean` | Private JSONL worker executing the reviewed functions; runtime adapter/composition is tested |
-| `gateway/`, `agent/`, `dashboard/` | Callable control layer, reference agent and interactive operator UI |
-| `policies/`, `feeds/`, `contracts/` | Versioned policy profiles, data-only signatures and inert artifact fixture |
-| `tests/` | Native-worker integration and provider-protocol regressions |
-| `Main.lean` | Demo executable running the reviewed kernels on the `n = 3` fixtures |
-| `scripts/Axioms.lean` | 156 axiom records: 55 baseline + 5 refinements + 43 Next + 53 Control |
-| `Tests.lean`, `Bench.lean` | Native snapshot/budget regressions and ledger/budget size sweeps |
-| `aristotle/` | The original proof-request pack (kept unchanged as the specification of record; not part of the build) |
+The sample limits responses to 128 tokens with a 15-second call deadline; long replies may end mid-sentence. An allowed chat makes three separately charged local calls (one measured CPU case took about 4.26 seconds). The fresh sample budget permits 12 complete chats before other usage; see the [budget calculation](policies/README.md#budget-example). Increase allowances only after measuring your hardware; a timeout retains the reservation and quarantines further dispatch.
 
-### Build, check, run, generate C
+The smaller 0.5B model falsely blocked all three benign development cases and withheld the redaction case. It is unsuitable for this demonstration; its [failed baseline](evidence/live-development-evaluation-05-baseline.json) is retained. The [model record](submission/model-record.json) identifies the selected weights, engine, digest and license. A readiness check does not establish detector accuracy.
+
+The [ten-case live local rehearsal](evidence/live-local-rehearsal.json) checked three model stages, hard blocks, actual ledger approval/retry, live policy edits, sanitized reporting and restoration of the same journal after restart. Its finite cases do not establish general attack-detection accuracy.
+
+The selected 1.5B model passed all eight [development cases](evidence/live-development-evaluation.json): three benign requests, one email-redaction case and four attacks. This corpus was used during prompt development; it is not held out. [Exploratory diagnostics](evidence/semantic-prompt-development.json) retain an expected-block miss involving instructions in a support note to publish private contact records. Strict output formatting does not prove correct threat detection.
+
+**For a quick demonstration:** connect a session, ask a harmless question, try `Contact alice@example.com` to see redaction, and try `ignore previous instructions` to see a hard block. Edit the printed private `policy.json` path, increment `epoch`, and use Reload. Invalid changes keep the last valid policy; no valid policy closes execution. The ledger panel shows separate owner approval and exact retry without a second payment.
+
+If startup fails, run `make doctor`. The [judge quickstart](docs/17-JUDGE-QUICKSTART.md) explains installation, live policy edits, recovery and the short demonstration. Every model call requires a local model; the automated test suite uses explicitly labeled protocol/classifier fixtures.
+
+## Verify
 
 ```sh
-lake exe cache get              # Mathlib cache
-lake build                      # production library and executable; historical requests excluded
-lake env lean scripts/Axioms.lean
-lake exe mathguard              # runs the demo
+make test
 ```
 
-`bash scripts/check-fast.sh` runs a static preflight without Lean. `bash scripts/check-lean.sh`
-runs the incremental formal build/fresh audit/demo/native-test subgate. The canonical
-`bash scripts/check-local.sh` is the full release entry point: it also requires the
-gateway integration suite at `scripts/test-integration.sh` and fails if it is absent.
-The gateway integration suite uses the real Lean worker with explicitly labeled classifier fixtures. Passing it does not establish live classifier accuracy or complete the hackathon submission.
+This is the canonical release check: source audit, pinned Lean build and axiom report, native regressions, gateway/provider/SDK tests and launcher safety tests. It runs the actual compiled Lean worker and requires no model download or paid API. Fixture success checks enforcement behavior; live classifier accuracy needs a separate labeled evaluation. `make smoke` is a quick, isolated launcher check; `make fast` is a source-only preflight.
 
-`python3 scripts/profile-checks.py --lean-files --iterations 100` collects actual
-build/frontend/audit timings, peak RSS, and native benchmark JSON/CSV. Returned runtime
-snapshots come from `atomicLedgerStepResult`; the demo no longer renders balances read
-independently after a commit. Neither API supplies durable or authenticated public receipts.
+## Architecture
 
+```mermaid
+flowchart TD
+    A["Application / agent / MCP SDK"] --> G["Authenticated gateway"]
+    P["Live policy + signature file"] --> G
+    G --> D["Deterministic inspection"]
+    D --> S["Local semantic classifier"]
+    S --> K["Compiled Lean gate + budgets"]
+    K --> E["Allowed model / tool / release"]
+    K --> R["Sanitized audit + dashboard"]
+```
 
-Every definition in `Mathguard/Spec.lean` is computable. `lake build` translates the kernel and runtime modules
-to C in `.lake/build/ir/Mathguard/*.c` (e.g. `Spec.c` contains `ledgerStep`, `admission`, `budgetStep`,
-`flowAllowed`), compiles them, and links `.lake/build/bin/mathguard` against the Lean runtime.
+Every mediated route shares the gate: prompts/model calls, tool calls/results, agent messages and pinned inert artifacts. A semantic allow cannot relax a deterministic denial. The SDK integrates existing clients through trusted callbacks; unwrapped calls are outside its boundary. JSON parsing, authentication, provider behavior and persistence are runtime-tested controls, not additional formal proofs.
 
-### Elaboration and metadata repairs (behavior unchanged)
+The launcher uses an owner-private SQLite journal for single-node state. Restarts preserve charges and ledger state. Uncertain effects or provider cancellation require explicit recovery; the generic callback boundary does not promise exactly-once external effects. Local resource accounting reserves configured conservative bounds, rather than claiming commercial bills or measured GPU consumption.
 
-1. `Mathguard/Spec.lean`: added the instance `usageLE.decidable` (`usageLE` is a bounded `∀` over `Fin 4`); without it the `if` in `settle` does not elaborate.
-2. `demo_isolated_funds_rejection`: the continuation line `approvalThreshold := 200000` was indented one column less than the first structure-instance field, which is a parse error; it is now aligned. The statement is otherwise identical.
-3. The root package name in `lake-manifest.json` is aligned with `lakefile.toml`; dependency SHAs are unchanged.
+## Four assessed deliverables
 
-The three contributors have separate hackathon projects. Mathguard is Łukasz Janiec's project. The workstream documents describe roles for coding agents or optional helpers; they do not assume Przemek or Cezary is available to implement Mathguard.
+| Deliverable | Where to inspect |
+| --- | --- |
+| Working control layer + architecture | [`gateway/`](gateway/), [`gateway/sdk.py`](gateway/sdk.py), [runtime contract](docs/13-GENERAL-CONTROL-LAYER.md) |
+| Configurable policy | [`policies/demo.json`](policies/demo.json), strict/permissive profiles, private live copy printed by setup |
+| Interactive reporting | Dashboard at `/`, management report and sanitized JSONL audit export |
+| Automated allowed/blocked/modified and exploit tests | `make test`, [`tests/`](tests/), [`evidence/`](evidence/) |
 
-The attached official brief requires a functional layer, centralized configurable policy, deterministic and semantic controls, budget governance, historical attack mitigation, reporting, and an executable positive/negative suite. Formal methods strengthen those deliverables; a standalone banking proof does not replace them.
+## Presentation and assurance
 
-## Reference material
+- [Presentation PDF](submission/Mathguard-HackYeah-2026.pdf) · [editable slides](submission/Mathguard-HackYeah-2026.pptx) · [speaker tutorial](docs/18-PRESENTATION-TUTORIAL.md).
+- [Final release plan](docs/15-FINAL-RELEASE-PLAN.md) · [current status and open acceptance](STATUS.md) · [operator rehearsal](docs/14-OPERATOR-REHEARSAL.md).
+- [Formal model and boundaries](docs/05-FORMAL-MODEL.md) · [checked integration](docs/verification/GENERAL-CONTROL-INTEGRATION.md) · [final Aristotle hardening handoff](aristotle/FINAL-HARDENING-HANDOFF.md) · [original proof requests](aristotle/README.md).
+- [Source-checked challenge requirements](docs/10-REQUIREMENTS-RECOVERY.md) · [reference notes](reference/SOURCE-NOTES.md) · [requirements adaptation](docs/12-ARISTOTLE-REQUIREMENTS-ADAPTATION.md).
 
-The audit in [reference/SOURCE-NOTES.md](reference/SOURCE-NOTES.md) comes from reading both uploaded Goldman PDFs. The spelling of `CRIETRIA` follows the source filename. The detailed criteria and rules disagree on the last two weights; keep that discrepancy visible until the mentors resolve it. The full task archive is not redistributed here.
+The checked development pins Lean 4.28.0 and Mathlib `8f9d9cff` (`v4.28.0`). The axiom audit has 156 records: 55 baseline, five refinements, 43 Next and 53 Control records. This is a theorem catalogue, not 156 independently proved security requirements. Detection effectiveness, deployment authentication and crash behavior have separate runtime/evaluation evidence.
 
-Aristotle contribution: run `d1f899d1-689d-42d3-ba08-41d4778ff40c`; supplied summary in [ARISTOTLE_SUMMARY.md](ARISTOTLE_SUMMARY.md).
-
-Run `make run` for the demo and `make test` for the full local gate. For SDK integration, see `gateway/sdk.py` and `docs/13-GENERAL-CONTROL-LAYER.md`.
-
-No GitHub Actions workflows are introduced. Use reproducible local checks. Changes are submitted through PRs for review and Prelint feedback.
+The official documents disagree on the final two criterion weights (30/20/20/20/10 versus 30/20/20/15/15). Security, architecture/performance and reporting remain the shared priorities. No GitHub Actions workflow or paid API dependency is required. Changes are reviewed through pull requests.
