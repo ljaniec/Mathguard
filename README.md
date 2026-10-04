@@ -12,6 +12,8 @@ Mathguard sits between applications/agents and local models, tools or other agen
 
 [Project description and submission fields](docs/01-PRODUCT-AND-CHALLENGE.md) · [Presenter tutorial](docs/18-PRESENTATION-TUTORIAL.md).
 
+**Tools used:** Codex/ChatGPT, Aristotle, Prelint, OpenAI image generation, Lean/Mathlib and Ollama with Qwen2.5. [Full tool inventory and roles](THIRD-PARTY-NOTICES.md#tools-used-to-build-check-and-present-mathguard) covers implementation, tests, source research and presentation production, including the supplied Fable compendium.
+
 ## Run the demo
 
 Use Linux or macOS (Windows: WSL2), Python 3.10+, GNU Make, [Lean/elan](https://lean-lang.org/install/) and [Ollama](https://ollama.com/download). Node.js is needed for the dashboard DOM tests. Keep Ollama running with cloud features disabled: `OLLAMA_NO_CLOUD=1 ollama serve`. The first setup downloads pinned Mathlib dependencies and builds the Lean worker; later starts reuse them.
