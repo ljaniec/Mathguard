@@ -6,7 +6,13 @@
 
 Mathguard sits between applications/agents and local models, tools or other agents. A file-driven policy combines deterministic controls with a local AI threat classifier. A compiled Lean kernel enforces the restrictions and resource bounds. The sample account ledger demonstrates an irreversible action; the product is the gateway and SDK.
 
+**For judges:** [Assessment guide](JUDGES-GUIDE.md) · [Dashboard overview](submission/reporting/dashboard-overview.png) · [Decision audit](submission/reporting/dashboard-audit.png).
+
+[Read-only dashboard view](submission/reporting/dashboard-capture.html) · [Capture evidence](evidence/dashboard-capture.json). The dashboard images are offline renders of actual local gateway data.
+
 [Project description and submission fields](docs/01-PRODUCT-AND-CHALLENGE.md) · [Presenter tutorial](docs/18-PRESENTATION-TUTORIAL.md).
+
+**Tools used:** Codex/ChatGPT, Aristotle, Prelint, OpenAI image generation, Lean/Mathlib and Ollama with Qwen2.5. [Full tool inventory and roles](THIRD-PARTY-NOTICES.md#tools-used-to-build-check-and-present-mathguard) covers implementation, tests, source research and presentation production, including the supplied Fable compendium.
 
 ## Run the demo
 
