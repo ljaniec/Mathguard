@@ -12,7 +12,7 @@ EXTRA_TARGETS = {"reservedTotals_eq", "reservedAt_eq", "reserveOptimized_eq",
                  "budgetStepOptimized_eq", "ledgerResultUpdate_eq"}
 
 
-def audit(axioms_path, require_extra=False, require_control=False):
+def audit(axioms_path, require_extra=False, require_control=False, require_release=False):
     targets = {}
     counts = {}
     for stem in ("Ledger", "Budget", "Flow"):
@@ -39,6 +39,7 @@ def audit(axioms_path, require_extra=False, require_control=False):
         raise ValueError("Expected usageLE decidability repair absent")
     production_paths = list((ROOT / "Mathguard").rglob("*.lean")) + [ROOT / "Main.lean", ROOT / "Mathguard.lean"]
     production_paths += [ROOT / "Bench.lean", ROOT / "Tests.lean"]
+    production_paths += list((ROOT / "aristotle/release").rglob("*.lean"))
     forbidden = re.compile(r"\b(sorry|admit|axiom|native_decide)\b|decide\s+\+\s*native|debug\.skipKernelTC|addDecl|set_option\s+.*skip")
     for path in production_paths:
         if not path.exists():
@@ -70,10 +71,18 @@ def audit(axioms_path, require_extra=False, require_control=False):
         for name in new:
             if name.startswith('Control.') and set(reports[name])-{'propext','Quot.sound'}:
                 raise ValueError(f'Unexpected generic control axiom dependency: {name}')
+    if require_release:
+        release=set(re.findall(r'^#print axioms Mathguard\.([\w.]+)$',
+          (ROOT/'scripts/release/ReleaseAxioms.lean').read_text(),re.M))
+        if len(release)!=85 or any(not x.startswith('Release.') for x in release):
+            raise ValueError('Unexpected release-hardening target catalog')
+        if release-set(reports):
+            raise ValueError(f'Missing release-hardening records: {sorted(release-set(reports))}')
     return {"targets": counts, "total": len(targets), "statements_match": True,
             "model_definition_bodies_match": True, "source_holes": False,
             "additional_targets_reported": sorted(EXTRA_TARGETS & set(reports)),
             "additional_targets_required": require_extra,
+            "release_targets_required": require_release,
             "axiom_records": len(reports), "axiom_report": str(axioms_path),
             "lean_execution": "not_performed_by_this_static_script"}
 
@@ -84,8 +93,9 @@ def main():
     parser.add_argument("--require-extra", action="store_true",
                         help="Require the five refinement/snapshot axiom records (fresh report).")
     parser.add_argument('--require-control',action='store_true')
+    parser.add_argument('--require-release',action='store_true')
     args = parser.parse_args()
-    print(json.dumps(audit(args.axioms, args.require_extra,args.require_control), indent=2))
+    print(json.dumps(audit(args.axioms, args.require_extra,args.require_control,args.require_release), indent=2))
 
 
 if __name__ == "__main__":

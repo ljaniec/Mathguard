@@ -52,6 +52,8 @@ This is the canonical release check: source audit, pinned Lean build and axiom r
 
 The [latest runtime receipt](evidence/integration.json) records **189 passed tests, zero failures/errors/skips**. The same release check passed 14 static tests and rebuilt the 156-record axiom audit. [Live operational evidence](evidence/live-local-rehearsal.json) and [assurance limits](docs/verification/RELEASE-ASSURANCE.md) are reported separately.
 
+The [release-hardening proofs](docs/verification/RELEASE-HARDENING-RESULTS.md) add a separate **85-record audit** and **nine native H1 checks**, included in `make test`. H1 now proves correspondence to the financial worker's actual typed dispatch; its JSON-null assumption is removed. A [fresh ten-case local rehearsal](evidence/release-h1-live-rehearsal.json) passed with the revised worker. Earlier evidence and dashboard captures retain their original worker fingerprints. Existing journals are binary-bound; use a separate private runtime for a fresh demo after this update ([upgrade note](docs/17-JUDGE-QUICKSTART.md#where-files-live)).
+
 ## Architecture
 
 ```mermaid

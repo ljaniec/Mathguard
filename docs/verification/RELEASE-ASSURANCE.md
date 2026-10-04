@@ -5,6 +5,22 @@ acceptance boundary for the final hardening work in [the release plan](../15-FIN
 It is an independent agent review, not a human security audit or production certification.
 No new theorem is counted merely because it is described here or in the Aristotle handoff.
 
+The [release-hardening campaign](RELEASE-HARDENING-RESULTS.md) adds checked H1 correspondence
+to the actual typed financial worker dispatch, without a JSON-null fidelity hypothesis.
+Its **85-record axiom report** is separate from the 156-record original catalog. `make test`
+also builds this library, audits both catalogs and runs **nine native H1 checks**. Parts of
+H2 worker replay and H5 worker reload are proved; H3 issuance/admission remains a proposed
+typed model. Host persistence, authentication, raw parsing and detector quality remain
+outside those proofs. Earlier live rehearsals and dashboard views retain their original
+worker fingerprints; only newly collected evidence identifies the revised binary.
+
+Independent post-H1 verification passed 14 static and 189 runtime cases, both axiom
+catalogs and nine native H1 checks; the fresh integration receipt was collected at
+**2026-10-04T08:26:23.703466+00:00**. The revised worker also passed a ten-case actual
+local-model rehearsal at **2026-10-04T08:27:31.112824+00:00**, including approval/retry,
+policy edits and same-journal restart. [Validation and source hashes](../../evidence/release-hardening-validation.json) ·
+[fresh local rehearsal](../../evidence/release-h1-live-rehearsal.json).
+
 ## Evidence states and reproducibility
 
 | State | Required evidence | Does not establish |
@@ -21,9 +37,9 @@ size, not 156 independent security requirements. Control's reported dependencies
 The pinned environment is Lean 4.28.0 and Mathlib
 `8f9d9cff6bd728b17a24e163c9402775d9e6a365`.
 
-The final canonical `make test` passed the pinned Lean build, fresh 156-record axiom audit,
+The earlier canonical `make test` passed the pinned Lean build, fresh 156-record axiom audit,
 native regressions, **14 static regressions and 189 integration cases**, with zero failures,
-errors or skips. `evidence/integration.json` was collected at
+errors or skips. That pre-H1 integration checkpoint was collected at
 **2026-10-04T02:40:39.907793+00:00**. Its suite breakdown is:
 
 | Module | Passed cases |
@@ -51,9 +67,9 @@ owner approval and commit/retry, live policy preservation and same-journal resta
 are finite operational observations. See `evidence/rehearsal.json`,
 `evidence/live-local-rehearsal.json` and `submission/model-record.json`.
 
-Independent comparison found no mismatch in the integration, fixture, development evaluation
-and real rehearsal reports' **60, six, nine and 13** recorded source fingerprints respectively;
-all recorded worker hashes matched the current binary. The selected raw-classifier variant
+At the pre-H1 checkpoint, comparison found no mismatch in the integration, fixture, development
+evaluation and real rehearsal reports' **60, six, nine and 13** recorded source fingerprints
+respectively; all recorded worker hashes matched that checkpoint's binary. The selected raw-classifier variant
 separately has **seven** matching source fingerprints, the current sample policy and the exact
 shared prompt/schema hashes. Historical reports intentionally retain their earlier source
 snapshots; they are not asserted to match the chosen release.
@@ -63,7 +79,8 @@ refused the local page with `net::ERR_BLOCKED_BY_CLIENT`. DOM/request tests do n
 that acceptance. The earlier 83-case checkpoint is historical. A static provenance check
 does not replace a Lean build. Definition-only handoff files do not enlarge the catalog:
 `aristotle/release/RuntimeSpec.lean` independently typechecked on the pinned toolchain, but
-its target correspondence and preservation theorems remain unproved.
+its typed financial correspondence is now proved in `ReleaseH1.lean`. Remaining host-level
+targets are identified in [the release-hardening results](RELEASE-HARDENING-RESULTS.md).
 
 ### Semantic-model acceptance and known failures
 
@@ -135,6 +152,9 @@ the environment evidence, rather than being hidden in a claim of an unmodified s
 | `signature_denied`, `artifact_admitted_pinned_safe` | Compiled rule for matching facts and pinned inert-format facts | Complete normalization/signature coverage, hash/byte/header authenticity and safety of the separately running model server |
 | G1 valid store, `reload_invalid_keeps`, `no_policy_fail_closed` | Worker decodes/validates ControlPolicy and reloads its private store | Atomic host pairing of policy/feed/budget, file ownership, higher source epochs and durable activation |
 | W1 roundtrip/injective projection and account bounds: `Wire.lean` | Worker request decoding uses `Next.fromWire 3` | Raw JSON, duplicate keys, UTF-8, canonical decimal strings, account-name mapping and request-ID encoding |
+| H1 exact financial composition, decoder roundtrip and typed dispatch: `ReleaseH1.lean` | Proved directly against the financial `Worker.dispatch` branch and `executeCore`; JSON-null fidelity assumption removed | Stated financial/budget invariants where required, raw bytes-to-JSON parser, authenticated context, host/provider charges and durable publication |
+| H2 worker invariant/replay and H5 worker reload: `ReleaseDispatch.lean`, `ReleaseReload.lean` | Accepted worker transitions and typed replay/configure definitions | SQLite/fsync/crash protocol, host policy/feed snapshot and external effects |
+| H3 generic approvals: `ReleaseApproval.lean` | Typed binding and proposed issuance/admission/nonce models | Refinement to the actual host digest, authentication, races and restart records |
 | C1 composite invariant/commit/noncommit/replay: `Composite.lean` | Built model; **not the function invoked by the worker** | C1 reserves a pending ticket; financial execute reserves and charges immediately. C1 gates even replay; host replay skips new semantic calls |
 | P1 historical snapshot/linked evidence: `PolicyHistory.lean` | Built separate model | It is not the host audit schema, worker configuration transition or persistent journal |
 | G1 session steps/log/recall | Native model and demo evidence | Host counts attempted requests, emits provider and terminal records, retains bounded windows, and owns session history. It does not execute `sessionRun` or `recall` |
@@ -142,8 +162,8 @@ the environment evidence, rather than being hidden in a claim of an unmodified s
 | Optional SQLite command journal: `gateway/state.py`, `engine.py` | Implemented; 33 focused cases within the passing 189-case actual-worker suite, plus real same-journal restart rehearsal | Runtime-tested IO adapter; no new persistence, JSON, authentication or audit refinement theorem |
 
 The financial worker publishes ledger, charged financial-tool budget and next ticket in one
-returned pure `State`. Existing component proofs apply to their functions. A new refinement
-proof is still needed for that exact composition and for its JSON dispatch branch. A fresh
+returned pure `State`. H1 now proves that exact composition and its typed JSON dispatch
+correspondence, with no JSON-null-test assumption. Host and raw-wire refinement remain open. A fresh
 denial cannot change money; semantic work already performed before that denial remains charged.
 “No charge on rejection” is therefore too broad. Exact ledger replay creates no new model or
 financial charge; generic SDK admission is not an idempotent external commit.

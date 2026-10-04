@@ -89,6 +89,12 @@ The launcher preserves existing policy edits, tokens and state. Selecting a diff
 
 A separate `MATHGUARD_RUNTIME_DIR` deliberately creates a separate demonstration environment. Do not describe it as recovery of the original balances/charges. Changing role credentials while restoring state requires deliberate deployment ownership review.
 
+The H1 decoder update changes the worker binary. A journal created by an older binary is
+intentionally refused by the worker-hash check; this release does not migrate it. Preserve
+the old journal and its matching worker. For a new judge demonstration, use a separate
+private `MATHGUARD_RUNTIME_DIR` consistently for setup, run and credentials as described
+above. Do not delete existing state or edit its stored hash to bypass the check.
+
 ## Live policy edit
 
 Edit the **private `policy.json` path printed by the launcher**, not the tracked sample. Save a valid JSON object, increment `epoch`, and select Reload. For example change `pii_action` from `redact` to `block`. Active version and reload status must change; ledger balances and charges remain intact.
