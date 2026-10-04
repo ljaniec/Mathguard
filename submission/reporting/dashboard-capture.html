@@ -1,0 +1,969 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mathguard · AI control room</title>
+<style>:root {
+  font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:#162c42;
+  background:#f4f3ee;
+  --ink:#162c42;
+  --muted:#526579;
+  --line:#d7dfe3;
+  --accent:#274c6e;
+  --light:#eaf0f5;
+  --warning:#85520d}
+* {
+  box-sizing:border-box}
+body {
+  margin:0}
+button,input,select,textarea {
+  font:inherit}
+button,a,input,select,textarea,summary {
+  outline-offset:4px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible {
+  outline:3px solid #306baf}
+.masthead,main,footer {
+  max-width:1224px;
+  margin:auto;
+  padding:26px 32px}
+.masthead {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--line)}
+.brand {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  color:var(--ink);
+  text-decoration:none;
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:-.6px}
+.brand img {
+  width:58px;
+  height:58px;
+  object-fit:contain}
+.brand small {
+  display:block;
+  font-size:10px;
+  letter-spacing:1.8px;
+  font-weight:600;
+  color:var(--accent)}
+.health-group {
+  text-align:right}
+.status {
+  display:block;
+  font-size:13px;
+  font-weight:650;
+  color:var(--accent)}
+.status.closed {
+  color:#9e362e}
+.subtle {
+  font-size:12px;
+  color:var(--muted)}
+main {
+  padding-top:36px}
+.intro {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  padding:8px 0 28px}
+.eyebrow {
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1.8px;
+  color:var(--accent);
+  margin:0 0 7px}
+h1 {
+  font-size:38px;
+  line-height:1.12;
+  letter-spacing:-1.5px;
+  margin:8px 0 13px}
+h2 {
+  font-size:23px;
+  line-height:1.2;
+  letter-spacing:-.6px;
+  margin:0 0 8px}
+h3 {
+  font-size:16px;
+  margin:0 0 10px}
+p {
+  color:var(--muted);
+  margin:5px 0 12px}
+.intro p {
+  max-width:690px}
+.text-link {
+  white-space:nowrap;
+  color:var(--accent);
+  font-weight:650;
+  font-size:13px}
+.section-heading {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:28px;
+  margin-bottom:20px}
+.section-heading p {
+  max-width:720px;
+  margin-bottom:0}
+section {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:27px;
+  margin-bottom:22px}
+.access {
+  background:#eef1f4}
+.credentials {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px}
+label {
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:600;
+  margin:0 0 14px}
+input,select,textarea {
+  display:block;
+  background:white;
+  color:var(--ink);
+  border:1px solid #aabbb1;
+  border-radius:5px;
+  padding:10px 12px;
+  width:100%;
+  margin-top:6px}
+input[type=password] {
+  font-size:14px}
+textarea {
+  resize:vertical;
+  min-height:110px;
+  max-height:420px;
+  font-size:14px;
+  line-height:1.5}
+button {
+  cursor:pointer;
+  border:1px solid var(--accent);
+  background:var(--accent);
+  color:white;
+  padding:10px 14px;
+  border-radius:5px;
+  font-size:12px;
+  font-weight:650;
+  min-height:40px;
+  white-space:normal}
+button:hover {
+  background:#163e31}
+button.secondary {
+  background:transparent;
+  color:var(--accent);
+  border-color:#99b3a5}
+button.secondary:hover {
+  background:var(--light)}
+button:disabled {
+  opacity:.5;
+  cursor:not-allowed}
+.toolbar {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px}
+.toolbar>span {
+  font-size:12px;
+  color:var(--muted);
+  flex:1;
+  min-width:200px}
+.help {
+  font-size:12px;
+  flex:0 0 170px;
+  margin-top:2px}
+.help[open] {
+  flex-basis:300px}
+.help p {
+  font-size:12px;
+  padding-top:10px}
+.metrics {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  border-bottom:1px solid var(--line);
+  padding-bottom:21px}
+.metric {
+  padding:0 20px;
+  border-left:1px solid var(--line)}
+.metric:first-child {
+  padding-left:0;
+  border-left:0}
+.metric strong {
+  display:block;
+  font-size:36px;
+  line-height:1.3;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-1px}
+.metric span {
+  font-size:12px;
+  font-weight:650;
+  color:var(--muted)}
+.metric.allow strong {
+  color:#215945}
+.metric.block strong {
+  color:#9d3b31}
+.metric.review strong {
+  color:#9e6b14}
+.metric.redact strong {
+  color:#3b6493}
+.caption {
+  font-size:11px;
+  margin:10px 0 0;
+  color:var(--muted)}
+.posture-strip {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:25px;
+  margin:26px 0}
+.label {
+  display:block;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+  color:var(--muted);
+  margin-bottom:5px}
+.posture-strip strong {
+  display:block;
+  font-size:14px;
+  overflow-wrap:anywhere}
+.posture-strip small {
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:5px}
+.notice {
+  border-left:3px solid #b88530;
+  background:#fff5df;
+  padding:16px 20px;
+  margin:18px 0;
+  color:var(--warning);
+  font-size:13px;
+  overflow-wrap:anywhere}
+.notice p {
+  color:var(--warning)}
+.notice[hidden],#recovery[hidden] {
+  display:none}
+.check {
+  font-weight:500;
+  font-size:13px;
+  color:var(--warning)}
+input[type=checkbox] {
+  display:inline-block;
+  width:auto;
+  margin:0 7px 0 0}
+.resource-heading {
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:20px;
+  margin-top:24px}
+.resource-heading p {
+  font-size:11px;
+  max-width:580px}
+.resource {
+  display:grid;
+  grid-template-columns:150px 1fr 190px;
+  gap:15px;
+  align-items:center;
+  padding:11px 0;
+  border-bottom:1px solid #e8eeea;
+  font-size:12px}
+.resource-name {
+  font-weight:600}
+.resource-values {
+  text-align:right;
+  font-variant-numeric:tabular-nums}
+.resource-values strong,.resource-values small {
+  display:block}
+.resource-values small {
+  color:var(--muted);
+  font-size:10px}
+progress {
+  appearance:none;
+  width:100%;
+  height:7px;
+  border:0;
+  border-radius:3px;
+  background:#e6eee8}
+progress::-webkit-progress-bar {
+  background:#e6eee8;
+  border-radius:3px}
+progress::-webkit-progress-value {
+  background:var(--accent);
+  border-radius:3px}
+progress::-moz-progress-bar {
+  background:var(--accent);
+  border-radius:3px}
+.workbench {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:28px}
+.workbench-pane {
+  min-width:0}
+.workbench-pane+.workbench-pane {
+  border-left:1px solid var(--line);
+  padding-left:28px}
+.two-fields {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px}
+.result-explanation {
+  font-size:12px;
+  min-height:38px;
+  margin:13px 0}
+.result-details {
+  margin-top:12px}
+.ledger-demo {
+  margin-top:24px;
+  border-top:1px solid var(--line);
+  padding-top:18px}
+.ledger-demo>p {
+  margin:16px 0;
+  font-size:13px}
+.ledger-demo .two-fields {
+  max-width:620px}
+.policy-summary {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+  margin-bottom:15px}
+.policy-summary p {
+  font-size:12px}
+.policy-summary strong {
+  display:block;
+  color:var(--ink);
+  margin-bottom:4px}
+details {
+  font-size:12px}
+summary {
+  cursor:pointer;
+  color:var(--accent);
+  font-weight:650;
+  line-height:1.6}
+pre {
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  background:#f1f5f2;
+  border:1px solid #dfe8e1;
+  padding:14px;
+  border-radius:5px;
+  font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+  max-height:290px;
+  overflow:auto;
+  color:var(--ink)}
+code {
+  font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+  background:#e3ebe5;
+  border-radius:3px;
+  padding:2px 4px;
+  overflow-wrap:anywhere}
+.scroll {
+  overflow:auto;
+  max-height:440px;
+  border-top:1px solid var(--line);
+  margin-bottom:16px}
+table {
+  width:100%;
+  border-collapse:collapse;
+  font-size:11px}
+th,td {
+  text-align:left;
+  padding:12px 10px;
+  border-bottom:1px solid #e0e8e3;
+  vertical-align:top}
+th {
+  font-weight:650;
+  color:var(--muted);
+  background:white;
+  position:sticky;
+  top:0}
+td:nth-child(3) {
+  max-width:350px;
+  overflow-wrap:anywhere}
+.outcome-blocked,.outcome-error_closed {
+  color:#9d3b31}
+.outcome-pending_approval {
+  color:#99660e}
+.outcome-allowed,.outcome-committed {
+  color:var(--accent)}
+.assurance {
+  background:transparent;
+  border:0;
+  border-top:1px solid var(--line);
+  border-radius:0;
+  padding:25px 0}
+.assurance p {
+  font-size:12px;
+  max-width:930px}
+footer {
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  font-size:11px;
+  color:var(--muted);
+  border-top:1px solid var(--line);
+  padding-top:22px;
+  padding-bottom:35px}
+footer strong {
+  font-weight:650;
+  color:var(--accent)}
+.sr-only {
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0}
+
+@media(max-width:900px) {
+  .posture-strip {
+  grid-template-columns:1fr 1fr}
+.credentials {
+  grid-template-columns:1fr}
+.help {
+  flex-basis:130px}
+.policy-summary {
+  grid-template-columns:1fr;
+  gap:5px}
+.workbench {
+  grid-template-columns:1fr}
+.workbench-pane+.workbench-pane {
+  border-left:0;
+  padding-left:0;
+  border-top:1px solid var(--line);
+  padding-top:25px}
+.intro .text-link {
+  display:none}
+}
+
+@media(max-width:600px) {
+  .masthead,main,footer {
+  padding:20px}
+.masthead {
+  align-items:flex-start;
+  gap:14px}
+.brand {
+  font-size:18px;
+  gap:9px}
+.brand img {
+  width:45px;
+  height:45px}
+.brand small {
+  font-size:8px}
+.health-group .subtle {
+  display:none}
+h1 {
+  font-size:31px}
+section {
+  padding:20px}
+.section-heading {
+  display:block}
+.section-heading>button,.section-heading>.toolbar {
+  margin-top:15px}
+.help {
+  margin-top:14px}
+.metrics {
+  grid-template-columns:1fr 1fr;
+  gap:18px}
+.metric:nth-child(3) {
+  padding-left:0;
+  border-left:0}
+.metric strong {
+  font-size:31px}
+.posture-strip {
+  gap:20px}
+.resource {
+  grid-template-columns:1fr 1fr;
+  gap:7px}
+.resource progress {
+  grid-column:1/-1;
+  grid-row:2}
+.resource-values {
+  grid-column:2;
+  grid-row:1}
+.resource-heading {
+  display:block}
+.two-fields {
+  grid-template-columns:1fr;
+  gap:0}
+footer {
+  display:block}
+footer span {
+  display:block;
+  margin-top:8px}
+}
+
+
+/* Read-only evidence view: controls remain in the DOM but cannot be used. */
+.access,#try,section[aria-labelledby="policy-title"] {display:none}
+.capture-banner {margin:0 0 22px;padding:14px 18px;border-left:3px solid #a78b44;background:#eeeadf;color:#162c42;font-size:12px;line-height:1.5}
+.capture-banner strong {display:block;font-size:10px;letter-spacing:1.3px;margin-bottom:4px}
+.masthead,main,footer {padding-top:22px;padding-bottom:22px}
+.intro {padding-top:0;padding-bottom:18px}
+.text-link {display:none}
+.overview {margin-bottom:18px}
+.resource-values small {font-size:11px}
+</style>
+<style>
+@page {size:1224px 1900px;margin:0}
+html,body {width:1224px;margin:0;background:#f4f3ee;font-family:DejaVu Sans,sans-serif}
+* {animation:none;transition:none}
+.capture-progress {display:block;background:#e6eee8;height:7px;border-radius:3px;overflow:hidden}
+.capture-progress>span {display:block;height:7px;background:#274c6e;border-radius:3px}
+button {display:none}
+.masthead,main,footer {max-width:1224px;padding:22px 32px}
+.brand {font-size:22px}
+.intro {display:block;padding:0 0 12px}
+h1 {font-size:32px}
+section {break-inside:avoid}
+.scroll {overflow:visible;max-height:none}
+table {width:100%;font-size:11px;table-layout:fixed}
+th:nth-child(1),td:nth-child(1) {width:7%}
+th:nth-child(2),td:nth-child(2) {width:18%}
+th:nth-child(3),td:nth-child(3) {width:28%}
+th:nth-child(4),td:nth-child(4) {width:13%}
+th:nth-child(5),td:nth-child(5) {width:12%}
+th:nth-child(6),td:nth-child(6) {width:22%}
+pre,details,summary {display:none}
+.section-heading {margin-bottom:18px;display:block}
+.section-heading>div {width:100%}
+</style></head>
+<body>
+<header class="masthead">
+<a class="brand" href="/" aria-label="Mathguard control room">
+<img src="../brand/mathguard-classic-mark.png" alt="Mathguard logo">
+<span>Mathguard<small>AI CONTROL LAYER</small>
+</span>
+</a>
+<div class="health-group">
+<span id="health" class="status" role="status">Controls ready</span>
+<span id="poll-state" class="subtle">Frozen evidence · not polling</span>
+</div>
+</header>
+<main>
+<div class="intro">
+<div>
+<p class="eyebrow">THE AGENT PROPOSES. THE GATE DECIDES.</p>
+<h1>Control every AI interaction.</h1>
+<p>Inspect content, enforce policy and reserve resources before release or execution.</p>
+</div>
+<a href="#try" class="text-link">Try the control layer ↓</a>
+</div>
+<aside class="capture-banner"><strong>READ-ONLY CAPTURE · ACTUAL LOCAL-MODEL DATA</strong>Captured 2026-10-04T07:44:54.969735+00:00 · Qwen2.5 1.5B / Ollama 0.35.1 / compiled Lean / SQLite.<br>Frozen gateway responses rendered by the existing dashboard. Controls are disabled; this is not a live browser session.</aside>
+<section class="access" aria-labelledby="access-title">
+<div class="section-heading">
+<div>
+<h2 id="access-title">Connect your local session</h2>
+<p>Use <code>make credentials</code> in a second terminal to show the private role credentials. This tab never saves them.</p>
+</div>
+<details class="help">
+<summary>Startup help</summary>
+<p>First run <code>make setup MODEL=&lt;exact-installed-ollama-model&gt;</code>, then <code>make run</code>. If already configured, only <code>make run</code> is needed. Open the printed dashboard URL; use <code>make credentials</code> to show the separate operator, agent and owner credentials. A local model must be installed and serving; this page does not fall back to fixtures.</p>
+</details>
+</div>
+<div class="credentials">
+<label>Operator · observe and reload<input type="password" id="operator" autocomplete="off" spellcheck="false" disabled="">
+</label>
+<label>Agent · submit interactions<input type="password" id="agent" autocomplete="off" spellcheck="false" disabled="">
+</label>
+<label>Owner · approve exact requests<input type="password" id="owner" autocomplete="off" spellcheck="false" disabled="">
+</label>
+</div>
+<div class="toolbar">
+<button id="connect" disabled="">Connect &amp; create session</button>
+<button id="disconnect" class="secondary" disabled="">Clear credentials</button>
+<span id="connection" role="status" aria-live="polite">Use operator and agent credentials to connect. Owner is needed only for approvals.</span>
+</div>
+</section>
+<section class="overview" aria-labelledby="posture-title">
+<div class="section-heading">
+<div>
+<p class="eyebrow">LIVE CONTROL POSTURE</p>
+<h2 id="posture-title">What the gate is doing</h2>
+</div>
+<button id="refresh" class="secondary" disabled="">Refresh now</button>
+</div>
+<div id="metrics" class="metrics" aria-live="polite"><div class="metric allow"><strong>2</strong><span>Allowed / committed</span></div><div class="metric block"><strong>2</strong><span>Blocked / closed</span></div><div class="metric review"><strong>1</strong><span>Review required</span></div><div class="metric redact"><strong>1</strong><span>Redacted</span></div></div>
+<p class="caption">Counts are request records. Redaction is an additional control flag and can overlap with allowed traffic; retries can create additional records.</p>
+<div class="posture-strip">
+<div>
+<span class="label">Hybrid defense</span>
+<strong id="hybrid">Deterministic + semantic</strong>
+<small>Hard denial cannot be relaxed by semantic approval.</small>
+</div>
+<div>
+<span class="label">Local provider</span>
+<strong id="provider">Local inference</strong>
+<small id="provider-detail">qwen2.5:1.5b-instruct · 4 live provider calls observed</small>
+</div>
+<div>
+<span class="label">Policy / feed</span>
+<strong id="versions">Policy 7 / feed 1</strong>
+<small id="strictness">balanced · 0 semantic fallback alerts</small>
+</div>
+<div>
+<span class="label">Request / control p95</span>
+<strong id="latency">1967.6 ms / 0.4 ms</strong>
+<small id="latency-detail">Request 6 samples · control 42 samples; provider excluded from control timing.</small>
+</div>
+</div>
+<div id="warnings" class="notice warning" role="alert" hidden=""></div>
+<div id="recovery" class="notice warning" hidden="">
+<h3>Provider calls are quarantined</h3>
+<p id="quarantine-reason">A provider call did not finish within its configured bounds.</p>
+<p>A timeout does not prove that the upstream model stopped. Verify completion or stop that job before restoring calls. Recovery preserves resource charges and the ledger.</p>
+<label class="check">
+<input type="checkbox" id="upstream-stopped" disabled=""> I verified that the upstream job has stopped.</label>
+<button id="recover" disabled="">Restore model calls</button>
+</div>
+<div class="resource-heading">
+<h3>Resource headroom</h3>
+<p>Configured bounds are charged conservatively. A local cost allowance is a policy unit, not a measured invoice.</p>
+</div>
+<div id="resources" class="resource-list"><div class="resource"><span class="resource-name">Cost allowance · micros</span><span class="capture-progress" aria-label="Cost allowance · micros accounted 0 of 1000000"><span style="width: 0%;"></span></span><span class="resource-values"><strong>1,000,000 headroom</strong><small>0 charged + 0 reserved / 1,000,000</small></span></div><div class="resource"><span class="resource-name">Token allowance</span><span class="capture-progress" aria-label="Token allowance accounted 65536 of 1000000"><span style="width: 6.5536%;"></span></span><span class="resource-values"><strong>934,464 headroom</strong><small>65,536 charged + 0 reserved / 1,000,000</small></span></div><div class="resource"><span class="resource-name">Compute allowance · ms</span><span class="capture-progress" aria-label="Compute allowance · ms accounted 64000 of 600000"><span style="width: 10.666666666666666%;"></span></span><span class="resource-values"><strong>536,000 headroom</strong><small>64,000 charged + 0 reserved / 600,000</small></span></div><div class="resource"><span class="resource-name">Provider call slots</span><span class="capture-progress" aria-label="Provider call slots accounted 4 of 200"><span style="width: 2%;"></span></span><span class="resource-values"><strong>196 headroom</strong><small>4 charged + 0 reserved / 200</small></span></div></div>
+<p id="observed" class="caption">Observed provider returns: 836 reported tokens across 4 token-reporting calls; 2,593.5 ms elapsed adapter time across 4 calls. Unreported usage is not zero; elapsed time is not measured GPU utilization.</p>
+<p id="instance" class="caption">Single-node durable SQLite · healthy · restored sessions are invalidated · instance d68fffb063562ba7 · started 10/4/2026, 8:44:52 AM</p>
+</section>
+<section id="try" aria-labelledby="try-title">
+<div class="section-heading">
+<div>
+<p class="eyebrow">USE THE SHARED CONTROL LAYER</p>
+<h2 id="try-title">Try an interaction</h2>
+<p>Prompts, tool traffic and agent messages share the same inspection path.</p>
+</div>
+</div>
+<div class="workbench">
+<div class="workbench-pane">
+<h3>Model request</h3>
+<p id="chat-limits" class="caption">Output cap: 128 tokens per stage. An allowed chat uses 3 separately charged local calls. Replies can end at the cap; CPU inference takes seconds.</p>
+<div class="two-fields">
+<label>Configured model<input id="model" value="local-model" autocomplete="off" disabled="">
+</label>
+<label>Content provenance<select id="source" disabled="">
+<option value="user">User input</option>
+<option value="document">Retrieved document</option>
+<option value="tool">Tool output</option>
+</select>
+</label>
+</div>
+<label>Prompt<textarea id="prompt" rows="4" disabled="">Explain why duplicate payments should not debit twice.</textarea>
+</label>
+<button id="chat" disabled="">Send through the gate</button>
+<p id="chat-explanation" class="result-explanation">The response will show the decision and filtered output.</p>
+<details class="result-details" open="">
+<summary>Request result</summary>
+<pre id="chat-result">No request yet.</pre>
+</details>
+</div>
+<div class="workbench-pane">
+<h3>Agent or tool traffic</h3>
+<div class="two-fields">
+<label>Interaction<select id="interaction-kind" disabled="">
+<option value="agent_message">Agent message</option>
+<option value="prompt">Prompt</option>
+<option value="tool_call">Tool call</option>
+<option value="tool_result">Tool result</option>
+<option value="model_output">Model output</option>
+</select>
+</label>
+<label>Tool name · tool traffic only<input id="interaction-target" value="demo.echo" autocomplete="off" disabled="">
+</label>
+</div>
+<label>Content<textarea id="interaction-content" rows="4" disabled="">Summarize this harmless project note.</textarea>
+</label>
+<div class="toolbar">
+<button id="intercept" disabled="">Inspect content</button>
+<button id="interaction-approve" class="secondary" disabled="">Approve exact request</button>
+<button id="interaction-retry" class="secondary" disabled="">Retry unchanged</button>
+</div>
+<p id="interaction-explanation" class="result-explanation">This endpoint filters content. The SDK integration performs approved tool dispatch. <code>demo.publish</code> requires owner approval.</p>
+<details class="result-details" open="">
+<summary>Interaction result</summary>
+<pre id="interaction-result">No interaction yet.</pre>
+</details>
+</div>
+</div>
+<details class="ledger-demo">
+<summary>Irreversible action demo · ledger transfer and exact retry</summary>
+<p>This is a demonstration tool, not the control layer itself. Enter PLN minor units: <strong>2500 = PLN 25.00</strong>. Approval issuance never transfers money; a retry submits the unchanged request.</p>
+<div class="two-fields">
+<label>Destination<select id="destination" disabled="">
+<option value="bob-main">Bob</option>
+<option value="merchant">Merchant</option>
+</select>
+</label>
+<label>Amount · PLN minor units<input id="amount" value="2500" inputmode="numeric" autocomplete="off" disabled="">
+</label>
+</div>
+<div class="toolbar">
+<button id="transfer" disabled="">Propose transfer</button>
+<button id="approve" class="secondary" disabled="">Approve exact request</button>
+<button id="retry" class="secondary" disabled="">Retry unchanged</button>
+</div>
+<p id="decision-explanation" class="result-explanation">
+</p>
+<p id="approval-status" class="caption" aria-live="polite">
+</p>
+<pre id="transfer-result">No financial action yet.</pre>
+</details>
+</section>
+<section aria-labelledby="policy-title">
+<div class="section-heading">
+<div>
+<p class="eyebrow">LIVE FILE CONFIGURATION</p>
+<h2 id="policy-title">Edit, validate, then activate</h2>
+<p id="policy-path-help">Use the policy and signature-feed paths printed by the launcher.</p>
+</div>
+<button id="reload" disabled="">Reload files</button>
+</div>
+<div class="policy-summary">
+<p>
+<strong>Valid edit:</strong> increase the policy epoch or feed version. The validated candidate activates atomically.</p>
+<p>
+<strong>Invalid edit:</strong> keep the last valid configuration. With no valid configuration, execution stays closed.</p>
+<p>
+<strong>Strictness:</strong> strict blocks semantic failure; balanced requests review; permissive passes with an alert. Quarantine still stops model dispatch.</p>
+</div>
+<details>
+<summary>Active policy, feed and ledger details</summary>
+<pre id="policy">{
+  "policy": {
+    "schema_version": "mathguard-policy-3",
+    "epoch": 7,
+    "profile": "balanced",
+    "pii_action": "redact",
+    "semantic_threshold": 60,
+    "allowed_models": [
+      "qwen2.5:1.5b-instruct"
+    ],
+    "semantic_model": "qwen2.5:1.5b-instruct",
+    "budget_limit": [
+      1000000,
+      1000000,
+      600000,
+      200
+    ],
+    "call_bound": [
+      0,
+      16384,
+      16000,
+      1
+    ],
+    "deadline_seconds": 15,
+    "max_output_tokens": 128,
+    "max_input_bytes": 4096,
+    "max_session_steps": 20,
+    "repeat_limit": 3,
+    "max_transfer": 50000,
+    "approval_threshold": 10000,
+    "model_clearance": 2,
+    "artifact_repositories": [
+      "mathguard/demo-safe"
+    ],
+    "artifact_sha256": [
+      "a9311856600eeba2a2c803baf41eec2eb10d885fefe9f2dffbe5c0a77a317e28"
+    ],
+    "allowed_tools": [
+      "ledger.transfer",
+      "demo.echo",
+      "demo.publish"
+    ],
+    "irreversible_tools": [
+      "demo.publish"
+    ],
+    "pii_redact_at": 60,
+    "pii_block_at": 100,
+    "semantic_review_at": 55
+  },
+  "feed_version": 1,
+  "storage": {
+    "mode": "sqlite",
+    "healthy": true,
+    "error": null,
+    "commands": 9,
+    "audit_events": 19,
+    "max_commands": 20000,
+    "max_audit_events": 100000,
+    "max_database_bytes": 134217728,
+    "recovered": true,
+    "session_restore": "invalidated"
+  },
+  "ledger": {
+    "revision": 0,
+    "balances": [
+      100000,
+      20000,
+      0
+    ]
+  }
+}</pre>
+</details>
+</section>
+<section aria-labelledby="audit-title">
+<div class="section-heading">
+<div>
+<p class="eyebrow">EVIDENCE FOR OPERATORS AND MANAGEMENT</p>
+<h2 id="audit-title">Decision audit</h2>
+<p id="audit-scope">Latest 30 records shown. 19 durable records; downloads are a bounded server window (up to 2000). Use the paginated audit API for complete retained history.</p><p class="caption">Read-only offline capture of actual local gateway data. Mode identifies provider configuration; STATE_COMMITTED rows are private-journal metadata, not additional model calls.</p>
+</div>
+<div class="toolbar">
+<button id="report" class="secondary" disabled="">Download management JSON</button>
+<button id="export" class="secondary" disabled="">Download sanitized audit</button>
+</div>
+</div>
+<div class="scroll">
+<table>
+<caption class="sr-only">Latest decision records. No raw interaction content or credentials are included.</caption>
+<thead>
+<tr>
+<th scope="col">Record</th>
+<th scope="col">Decision</th>
+<th scope="col">Reason</th>
+<th scope="col">Policy / feed</th>
+<th scope="col">Latency</th>
+<th scope="col">Mode</th>
+</tr>
+</thead>
+<tbody id="events"><tr><td>19</td><td class="outcome-pending_approval">PENDING_APPROVAL</td><td>APPROVAL_REQUIRED</td><td>7 / 1</td><td>0.5 ms</td><td>Local inference</td></tr><tr><td>18</td><td class="outcome-blocked">BLOCKED</td><td>TOOL_NOT_ALLOWED</td><td>7 / 1</td><td>0.6 ms</td><td>Local inference</td></tr><tr><td>17</td><td class="outcome-blocked">BLOCKED</td><td>SIGNATURE_PROMPT_INJECTION</td><td>7 / 1</td><td>0.6 ms</td><td>Local inference</td></tr><tr><td>16</td><td class="outcome-allowed">ALLOWED</td><td></td><td>7 / 1</td><td>638.1 ms</td><td>Local inference</td></tr><tr><td>15</td><td class="outcome-call_completed">CALL_COMPLETED</td><td></td><td>7 / 1</td><td>634.8 ms</td><td>Local inference</td></tr><tr><td>14</td><td class="outcome-state_committed">STATE_COMMITTED</td><td></td><td>— / —</td><td>—</td><td>Unknown provider</td></tr><tr><td>13</td><td class="outcome-state_committed">STATE_COMMITTED</td><td></td><td>— / —</td><td>—</td><td>Unknown provider</td></tr><tr><td>12</td><td class="outcome-allowed">ALLOWED</td><td></td><td>7 / 1</td><td>1967.6 ms</td><td>Local inference</td></tr><tr><td>11</td><td class="outcome-call_completed">CALL_COMPLETED</td><td></td><td>7 / 1</td><td>685.5 ms</td><td>Local inference</td></tr><tr><td>10</td><td class="outcome-state_committed">STATE_COMMITTED</td><td></td><td>— / —</td><td>—</td><td>Unknown provider</td></tr><tr><td>9</td><td class="outcome-state_committed">STATE_COMMITTED</td><td></td><td>— / —</td><td>—</td><td>Unknown provider</td></tr><tr><td>8</td><td class="outcome-call_completed">CALL_COMPLETED</td><td></td><td>7 / 1</td><td>572.6 ms</td><td>Local inference</td></tr><tr><td>7</td><td class="outcome-state_committed">STATE_COMMITTED</td><td></td><td>— / —</td><td>—</td><td>Unknown provider</td></tr><tr><td>6</td><td class="outcome-state_committed">STATE_COMMITTED</td><td></td><td>— / —</td><td>—</td><td>Unknown provider</td></tr><tr><td>5</td><td class="outcome-call_completed">CALL_COMPLETED</td><td></td><td>7 / 1</td><td>700.7 ms</td><td>Local inference</td></tr><tr><td>4</td><td class="outcome-state_committed">STATE_COMMITTED</td><td></td><td>— / —</td><td>—</td><td>Unknown provider</td></tr><tr><td>3</td><td class="outcome-state_committed">STATE_COMMITTED</td><td></td><td>— / —</td><td>—</td><td>Unknown provider</td></tr><tr><td>2</td><td class="outcome-control">CONTROL</td><td></td><td>7 / 1</td><td>0.2 ms</td><td>Local inference</td></tr><tr><td>1</td><td class="outcome-state_committed">STATE_COMMITTED</td><td></td><td>— / —</td><td>—</td><td>Unknown provider</td></tr></tbody>
+</table>
+</div>
+<details>
+<summary>Management summary</summary>
+<pre id="report-result">{
+  "generated_at": 1791099894,
+  "deployment": "single-node, owned SQLite journal",
+  "storage": {
+    "mode": "sqlite",
+    "healthy": true,
+    "error": null,
+    "commands": 9,
+    "audit_events": 19,
+    "max_commands": 20000,
+    "max_audit_events": 100000,
+    "max_database_bytes": 134217728,
+    "recovered": true,
+    "session_restore": "invalidated"
+  },
+  "observed_usage": {
+    "tokens": 836,
+    "compute_ms": 2593.543,
+    "calls": 4,
+    "reported_token_calls": 4
+  },
+  "audit_export": {
+    "scope": "newest bounded window by default; start full pagination with after=0",
+    "max_events_per_page": 2000,
+    "id_field": "audit_id"
+  },
+  "decisions": 5,
+  "outcomes": {
+    "CONTROL": 1,
+    "ALLOWED": 2,
+    "BLOCKED": 2,
+    "PENDING_APPROVAL": 1
+  },
+  "top_reasons": [
+    [
+      "SIGNATURE_PROMPT_INJECTION",
+      1
+    ],
+    [
+      "TOOL_NOT_ALLOWED",
+      1
+    ],
+    [
+      "APPROVAL_REQUIRED",
+      1
+    ]
+  ],
+  "security_posture": {
+    "redacted_interactions": 1,
+    "awaiting_review": 1
+  },
+  "active_policy_epoch": 7,
+  "config_errors": [],
+  "quarantined": false,
+  "resource_accounting": "configured upper bounds charged; not measured financial bills",
+  "semantic_mode": "live",
+  "live_calls_observed": 4,
+  "retained_events": 11,
+  "events_dropped": 0,
+  "assurance": "model-v1:55;refinement:5;Next:43;Control:53;compiled-gate;runtime-tested",
+  "ready_for_submission": false,
+  "remaining_evidence": [
+    "live model quality evaluation",
+    "submission deck and operator rehearsal"
+  ]
+}</pre>
+</details>
+</section>
+<section class="assurance" aria-labelledby="assurance-title">
+<h2 id="assurance-title">What the assurance covers</h2>
+<p>The compiled Lean kernel enforces modeled decision, ledger, budget and flow rules. Detector accuracy, authentication, parsing, adapters and runtime composition need tests and operational evidence. A local model verdict is evidence, not a proof of safety.</p>
+<details>
+<summary>Build identity, storage boundary and limitations</summary>
+<pre id="assurance">{
+  "model_targets": 55,
+  "additional_equality_targets": 5,
+  "next_axiom_records": 43,
+  "control_axiom_records": 53,
+  "generic_gate": "compiled Mathguard.Control.storeDecision / hardDecision",
+  "runtime": "tested serialized worker with owned durable journal",
+  "storage": {
+    "mode": "sqlite",
+    "healthy": true,
+    "error": null,
+    "commands": 9,
+    "audit_events": 19,
+    "max_commands": 20000,
+    "max_audit_events": 100000,
+    "max_database_bytes": 134217728,
+    "recovered": true,
+    "session_restore": "invalidated"
+  },
+  "worker_sha256": "13368e2720221f70dfb714a77c0405b94a0fd1706e088f40237e098030b7bf32",
+  "semantic_mode": "live",
+  "instance_id": "d68fffb063562ba7",
+  "policy_sha256": "b0ecde7ebe45c36ad781e3dc4656009d7b1c54511d05296d8e61634e2dd6e20a",
+  "feed_sha256": "d159a17f94eb9f209288389efaec932dc7f595c9989393fffe1cf623896f9460",
+  "policy_epoch": 7,
+  "feed_version": 1,
+  "semantic_model": "qwen2.5:1.5b-instruct",
+  "config_errors": [],
+  "validated_semantic_verdicts": 3,
+  "live_calls_observed": 4,
+  "quarantined": false,
+  "limitations": [
+    "No distributed quotas; sessions and approvals are invalidated on restart",
+    "Unknown durable command tails require verified backup/operator repair; no automatic rollback",
+    "Storage integrity assumes trusted local file ownership; hashes are not an anti-rollback anchor",
+    "No complete prompt-injection or artifact-safety guarantee",
+    "Provider bounds, authentication, parsing and runtime composition are not proved",
+    "Timeout kills adapter, not necessarily the upstream GPU job; further calls are quarantined",
+    "SDK authorization does not make arbitrary external callbacks exactly once or crash atomic"
+  ]
+}</pre>
+</details>
+</section>
+</main>
+<footer>
+<strong>MATHGUARD / HackYeah 2026</strong>
+<span>The control layer is the product. The ledger is the demonstrator.</span>
+</footer>
+
+
+
+
+
+</body></html>
