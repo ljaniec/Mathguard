@@ -64,6 +64,29 @@ The checked-in corpus remains development data. A team member who did not tune t
 
 ## Human demo acceptance
 
+### Configuration and API migration
+
+Schema 2 is deliberately rejected; use a reviewed schema-3 profile and inspect every setting before launching. Unknown/missing fields fail validation. `profile` now governs actual classifier fallback: strict denies, balanced withholds for review, permissive allows with an alert. Provider quarantine still prevents further model dispatch. `PENDING_APPROVAL` always withholds content; the reference agent and SDK release only `ALLOWED` responses. A balanced classifier review/unavailability is not an approvable authorization request; owner approval cannot clear it.
+
+`ledger.transfer` uses `/v1/actions` and `/v1/approvals`. Generic SDK tools use `/v1/interactions` and `/v1/interactions/approve`. The shared endpoint refuses a ledger-transfer target, so a generic approval never authorizes a ledger payment. Adding the ledger to `irreversible_tools` requires the ledger owner flow for every positive transfer. Explain the two routes before operating the demo.
+
+SDK callbacks validate tool-specific argument schemas after filtering and parse JSON output only after result admission. Redaction may replace a string value and change its meaning; integrators must explicitly accept placeholders or reject the sanitized result according to their own schema. A blocked result is not returned to the application, but a callback effect already performed cannot be rolled back by its output gate. No transparent preservation of every external tool schema is claimed.
+
+### Thirty-second assurance explanation
+
+“Mathguard combines deterministic facts and a local classifier in a compiled Lean gate. A safe classifier verdict cannot clear a hard denial. The ledger demonstrates an irreversible effect protected by ownership, approval and replay checks. We prove the pure model, test the host integration, and separately measure model detection.”
+
+| Proof catalog | Records | Live-use boundary |
+|---|---:|---|
+| Baseline ledger/budget/flow | 55 | Reviewed pure functions used by the worker; IO/auth/detector assumptions tested |
+| Refinements/snapshot | 5 | Equality to unchanged budget/state model; no new detector guarantee |
+| Next C1/P1/W1 | 43 | Composite/history model evidence; W1 typed decoder used after host JSON validation |
+| Generic Control | 53 | Actual hard/hybrid decision rules used; step/log/recall remain model evidence |
+
+The total 156 is a catalog of axiom-report records, not 156 independent end-to-end requirements. This table explains the boundary; rehearse it with the team before the pitch.
+
+### Browser and human acceptance
+
 Open the dashboard on desktop and mobile. Rehearse prompt allowance, indirect attack, PII redaction, exact financial proposal/owner approval/retry, policy and feed edits, budget stop, and export. Verify inert rendering using HTML-looking input, no console errors, visible provider mode/quarantine/reload errors and usable controls. Capture screenshots with credentials removed. Do not record an unobserved model behavior or present fixture trials as live.
 
 The ten-slide PDF and editable PPTX are under `submission/`. They describe current implementation/evidence and mark remaining live/browser/registration work. Confirm registered team/member details, installed model/license record and current judge-accessible links before uploading the PDF to HackTribe. No upload, final registration, organizer deadline confirmation or PR merge was performed by this checkpoint.

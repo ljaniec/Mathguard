@@ -18,6 +18,19 @@ The checker identified misleading evaluation accounting and later reproduced thr
 
 The checker found no further substantive evaluator/rehearsal defect in its final review. This is an independent agent review, not a human audit or security certification. The branch's remote Git tree must match the local reviewed tree before publication is reported complete.
 
+## Prelint follow-up
+
+Prelint feedback became visible after the initial checker lookup. Its
+[encoded-data finding](https://github.com/ljaniec/Mathguard/pull/5#discussion_r4175434805)
+was checked against the exact current runtime: `Engine.observe` separately refuses
+`facts['encoded']` before releasing content, independently of Lean PII score thresholds.
+The existing encoded-secret regression now also sets both thresholds to 101 and checks
+document prompts, shared tool results and model outputs. It passed, with no model dispatch
+for the encoded input. No enforcement bypass was reproduced and no runtime relaxation
+was made. The product-review concerns about schema 3 migration, approval-route distinction
+and rehearsing the assurance story are documented in the operator runbook. Human rehearsal
+remains open; this agent review does not replace the team's final acceptance.
+
 ## Still open
 
 Actual installed local-model quality/latency and license evidence, independent human-authored unseen evaluation, browser/human operator rehearsal, registered member details, final submission acceptance and HackTribe upload. No Ollama executable/configured local endpoint was available in this workspace. Durable storage/crash recovery remain P2. The existing volatility and classifier-coverage limits are preserved.
