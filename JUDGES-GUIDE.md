@@ -93,7 +93,13 @@ The sample has a **128-token output cap and a 15-second deadline per call**. All
 
 **Where is the dashboard?** At the loopback URL printed by `make run`; source is [dashboard/index.html](dashboard/index.html), [app.js](dashboard/app.js) and [style.css](dashboard/style.css). [Operator guide](docs/16-DASHBOARD-GUIDE.md).
 
-**Dashboard screenshot status:** this release contains no checked static dashboard screenshot. View the actual dashboard after connection; the presentation's operator-view slide is an explanation, not a screenshot. For a submission capture, show the overview after an allow, redaction and block, with credential fields concealed. Browser visual/download acceptance remains separate from the passing DOM/request tests. This guide does not substitute a mock image for a captured runtime view.
+**Dashboard evidence views:** the overview and audit below render fresh responses from the actual local Ollama / compiled Lean / SQLite gateway. Five showcase cases passed: ordinary chat, email redaction, signature denial, unknown-tool denial and an irreversible-tool approval hold. The view records two allows, two blocks, one approval hold and one redaction, with four observed model calls. No role credentials are included.
+
+![Dashboard overview from actual local gateway data](submission/reporting/dashboard-overview.png)
+
+This is a **read-only offline render, not a browser screenshot**. Cloud Browser blocked both workspace loopback and local-file navigation. The existing dashboard JavaScript produced the reporting DOM; document rendering adds print-layout adaptations and hides/disables credential and action controls. Browser click/download acceptance remains open. A literal browser screenshot can be taken on the judge machine after `make run`, connection and the short demonstration, with credential fields concealed.
+
+[Full audit image](submission/reporting/dashboard-audit.png) · [Frozen HTML view](submission/reporting/dashboard-capture.html) · [Actual responses, five-case receipt, source/binary/render hashes](evidence/dashboard-capture.json).
 
 | Implemented metric / report | Meaning |
 | --- | --- |
