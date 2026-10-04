@@ -6,6 +6,10 @@
 
 Mathguard sits between applications/agents and local models, tools or other agents. A file-driven policy combines deterministic controls with a local AI threat classifier. A compiled Lean kernel enforces the restrictions and resource bounds. The sample account ledger demonstrates an irreversible action; the product is the gateway and SDK.
 
+**For judges:** [Assessment guide](JUDGES-GUIDE.md) · [Dashboard overview](submission/reporting/dashboard-overview.png) · [Decision audit](submission/reporting/dashboard-audit.png).
+
+[Read-only dashboard view](submission/reporting/dashboard-capture.html) · [Capture evidence](evidence/dashboard-capture.json). The dashboard images are offline renders of actual local gateway data.
+
 [Project description and submission fields](docs/01-PRODUCT-AND-CHALLENGE.md) · [Presenter tutorial](docs/18-PRESENTATION-TUTORIAL.md).
 
 ## Run the demo
