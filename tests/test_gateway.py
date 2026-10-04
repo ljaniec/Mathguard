@@ -276,6 +276,22 @@ class GatewayTests(unittest.TestCase):
     def test_fixture_evidence_never_becomes_live(self):
         self.chat();r=self.e.read('/v1/assurance','operator')
         self.assertEqual(r['semantic_mode'],'fixture');self.assertEqual(r['live_calls_observed'],0)
+    def test_assurance_fingerprints_last_good_configuration(self):
+        before=self.e.read('/v1/assurance','agent')
+        self.pp.write_text('{invalid');self.e.handle('/v1/policy/reload',{},'operator')
+        invalid=self.e.read('/v1/assurance','agent')
+        self.assertEqual(before['policy_sha256'],invalid['policy_sha256'])
+        self.assertTrue(invalid['config_errors'])
+        self.pp.write_bytes((ROOT/'policies/demo.json').read_bytes())
+        self.update_policy(epoch=8)
+        valid=self.e.read('/v1/assurance','agent')
+        self.assertNotEqual(before['policy_sha256'],valid['policy_sha256'])
+        self.assertEqual(before['instance_id'],valid['instance_id'])
+    def test_validated_semantic_count_excludes_malformed_output(self):
+        self.chat();self.assertEqual(self.e.read('/v1/assurance','agent')['validated_semantic_verdicts'],1)
+        self.provider.complete=lambda *args,**kwargs: ('not JSON',10)
+        self.chat('Different question')
+        self.assertEqual(self.e.read('/v1/assurance','agent')['validated_semantic_verdicts'],1)
     def test_http_ingress_export_and_unknown_keys(self):
         server=Server(('127.0.0.1',0),self.e)
         thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()

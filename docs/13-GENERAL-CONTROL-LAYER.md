@@ -152,9 +152,10 @@ distinct end-to-end security requirements. Control records require no axioms bey
 | Reporting | Dashboard prompt/tool trials, redaction/review counts, p50/p95, budget, reload alarms, JSONL and management export |
 | Positive/negative self-testing | `make test`; native proofs/demos, actual-worker integration, provider and SDK HTTP cases |
 
-Remaining submission evidence: a real installed local model and its license/version, live
-accuracy and latency results, an independently supplied unseen corpus, final <=10-slide PDF,
-HackTribe entry and a live operator rehearsal. Detector completeness, crash recovery,
+Follow-up evaluation/runbook and the prepared ten-slide PDF are in
+[14-OPERATOR-REHEARSAL.md](14-OPERATOR-REHEARSAL.md). Remaining submission evidence: a real installed
+local model and its license/version, live accuracy and latency results, an independently supplied
+unseen corpus, final deck/team acceptance, HackTribe entry and a live operator rehearsal. Detector completeness, crash recovery,
 durable audit, distributed budgets, arbitrary model loading and full MCP authentication are
 not delivered. The official brief allows an SDK/middleware approach; those production
 extensions are not stated as mandatory protocols.

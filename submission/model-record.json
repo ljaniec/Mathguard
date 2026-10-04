@@ -1,0 +1,13 @@
+{
+  "status": "pending_operator_evidence",
+  "model_id": null,
+  "model_card_url": null,
+  "weights_revision_or_sha256": null,
+  "weights_license": null,
+  "license_source_url": null,
+  "serving_engine": null,
+  "serving_engine_version": null,
+  "validated_at_utc": null,
+  "live_report_path": null,
+  "note": "Complete from the actual installed model and original license source. No weights are bundled or live model result claimed."
+}

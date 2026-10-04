@@ -10,6 +10,7 @@ Hybrid control-layer prototype for HackYeah 2026, Goldman Sachs **AI Control Lay
 ## Start here
 
 1. [Current generic architecture, policy schema and SDK](docs/13-GENERAL-CONTROL-LAYER.md).
+   [Operator rehearsal and live-evaluation runbook](docs/14-OPERATOR-REHEARSAL.md); [ten-slide PDF](submission/Mathguard-HackYeah-2026.pdf) and [editable deck](submission/Mathguard-HackYeah-2026.pptx).
 2. [Aristotle requirements-adaptation proposal](docs/12-ARISTOTLE-REQUIREMENTS-ADAPTATION.md).
 3. [Source-checked challenge requirements and delivery gaps](docs/10-REQUIREMENTS-RECOVERY.md).
 4. [Current runtime/API contract](docs/07-TEAM-INTEGRATION-CONTRACT.md).
@@ -43,10 +44,13 @@ Prerequisites: Python 3.10+, the pinned Lean 4.28.0 toolchain, Mathlib dependenc
 bash scripts/check-local.sh       # proof, native, audit and gateway tests
 # Use the launcher's AGENT token in this environment variable:
 export MATHGUARD_AGENT_TOKEN='<local agent token>'
+# Evaluation also needs the separate OPERATOR token to read sanitized traces:
+export MATHGUARD_OPERATOR_TOKEN='<local operator token>'
 python3 agent/run.py --model '<exact model ID>' 'Pay Bob 25 PLN for lunch'
 python3 scripts/evaluate-live.py --model '<exact model ID>' \
   --corpus tests/development-prompts.jsonl --label development \
   --output evidence/live-development.json
+python3 scripts/rehearse-demo.py  # isolated HTTP fixture rehearsal; no live inference
 ```
 
 Edit the policy/signature files and use Reload to demonstrate activation. Invalid edits retain the last valid configuration; startup without one closes execution. A semantic failure is decided by the compiled profile (strict blocks, balanced asks, permissive passes with an alert). A provider timeout still retains budget charges and quarantines further model calls. After stopping/verifying the upstream job, use explicit operator recovery to preserve the ledger and all charges. The deployment is **single-process and volatile**; restart creates a fresh ledger. Budget values are conservative accounted bounds, not actual provider bills. There is no bundled model or claimed live-model result from this development environment.

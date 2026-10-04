@@ -99,6 +99,7 @@ class Engine:
         self.started_at = int(time.time())
         self.config_errors = []
         self.live_calls = 0
+        self.semantic_verdicts = 0
         self.current_trace = None
         self.reload()
 
@@ -281,6 +282,7 @@ class Engine:
                 keys(value,{'risk','verdict'})
                 integer(value['risk'],0,100)
                 if value['verdict'] not in ('allow','block','review'): raise Denied('SEMANTIC_SCHEMA')
+                self.semantic_verdicts += 1
         except Denied:
             fallback={'status':'malformed'}
             value=None
@@ -536,6 +538,14 @@ class Engine:
                   'control_axiom_records':53,'generic_gate':'compiled Mathguard.Control.storeDecision / hardDecision',
                   'runtime':'tested volatile serialized worker',
                   'worker_sha256':self.worker.binary_sha256,'semantic_mode':self.provider.mode,
+                  'instance_id':self.instance_id,
+                  'policy_sha256':hashlib.sha256(self.policy_bytes).hexdigest() if self.policy_bytes else None,
+                  'feed_sha256':hashlib.sha256(self.feed_bytes).hexdigest() if self.feed_bytes else None,
+                  'policy_epoch':self.active['epoch'] if self.active else None,
+                  'feed_version':self.feed['version'] if self.feed else None,
+                  'semantic_model':self.active['semantic_model'] if self.active else None,
+                  'config_errors':list(self.config_errors),
+                  'validated_semantic_verdicts':self.semantic_verdicts,
                   'live_calls_observed':self.live_calls,'quarantined':self.quarantined,
                   'limitations':['No durable storage or distributed quotas','No complete prompt-injection or artifact-safety guarantee',
                     'Provider bounds, authentication, parsing and runtime composition are not proved',

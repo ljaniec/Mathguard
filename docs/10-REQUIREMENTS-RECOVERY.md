@@ -59,7 +59,7 @@ R p1 §5 says 23:00 on 3 October to 23:00 on 4 October. The compendium reports a
 | T1, D p3 §5 | Stack/license flexibility | Python standard library; pinned Lean/Mathlib | Complete actual model/weights and dependency notices / coordinator |
 | T2, D p4 §7 | Self-supplied setup/local models | Configurable loopback OpenAI-compatible endpoint; no model weights bundled | Set exact installed model name; record live smoke evidence / operator |
 | S1, R p1 §5 | Title/team/members/description | Revised text in `01-PRODUCT-AND-CHALLENGE.md` | Enter actual team members and final checked status in HackTribe / Łukasz |
-| S2, R p1 §5 | PDF, maximum 10 slides | Slide-by-slide evidence plan in product handoff | **OPEN actual submission PDF**, links/screenshots and dry run / product |
+| S2, R p1 §5 | PDF, maximum 10 slides | Actual ten-slide PDF and editable deck in `submission/`; source-grounded implementation evidence | Final team/model acceptance, live screenshots and HackTribe upload / product |
 | S3, R p2 §8 | Platform assessment then live finals | Local operator runbook and self-tests | Clean-clone walkthrough; accessible materials and short pitch / coordinator |
 | S4, R p3 §13 | Submission freeze | SHA/evidence-based release discipline | Freeze reviewed commit and artifacts before confirmed cutoff / coordinator |
 
