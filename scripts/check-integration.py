@@ -27,7 +27,7 @@ class RecordedResult(unittest.TextTestResult):
 
 
 def main():
-    paths=[ROOT/'Mathguard/Worker.lean',ROOT/'Mathguard/Spec.lean',ROOT/'Mathguard/OptimizedBudget.lean',ROOT/'lakefile.toml',ROOT/'lean-toolchain',ROOT/'lake-manifest.json']
+    paths=[*ROOT.glob('Mathguard/*.lean'),ROOT/'lakefile.toml',ROOT/'lean-toolchain',ROOT/'lake-manifest.json']
     for folder in ['gateway','agent','dashboard','policies','feeds','contracts','tests','scripts']:
         paths.extend(p for p in (ROOT/folder).rglob('*') if p.is_file() and p.suffix in {'.py','.sh','.json','.jsonl','.js','.css','.html','.lean'})
     source={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(set(paths))}

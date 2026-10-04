@@ -61,12 +61,13 @@ POLICY_KEYS = {'schema_version','epoch','profile','pii_action','semantic_thresho
  'allowed_models','semantic_model','budget_limit','call_bound','deadline_seconds',
  'max_output_tokens','max_input_bytes','max_session_steps','repeat_limit',
  'max_transfer','approval_threshold','model_clearance','artifact_repositories','artifact_sha256'}
+POLICY_KEYS |= {'allowed_tools','irreversible_tools','pii_redact_at','pii_block_at','semantic_review_at'}
 
 
 def policy(raw):
     p = strict_json(raw)
     keys(p, POLICY_KEYS)
-    if p['schema_version'] != 'mathguard-policy-2' or p['profile'] not in ('strict','balanced','permissive'):
+    if p['schema_version'] != 'mathguard-policy-3' or p['profile'] not in ('strict','balanced','permissive'):
         raise Denied('POLICY_INVALID')
     if p['pii_action'] not in ('block','redact'):
         raise Denied('POLICY_INVALID')
@@ -75,6 +76,15 @@ def policy(raw):
       ('max_session_steps',1,1000),('repeat_limit',1,20),('max_transfer',1,50000),
       ('approval_threshold',1,50000),('model_clearance',0,2)]:
         integer(p[field],low,high)
+    for field in ['pii_redact_at','pii_block_at','semantic_review_at']:
+        integer(p[field],1,101)
+    if p['pii_redact_at'] > p['pii_block_at']:
+        raise Denied('POLICY_INVALID')
+    for field in ['allowed_tools','irreversible_tools']:
+        a=p[field]
+        if type(a) is not list or len(a)>32 or any(type(v) is not str or not re.fullmatch(r'[A-Za-z0-9_.-]{1,100}',v) for v in a):
+            raise Denied('POLICY_INVALID')
+        if len(set(a))!=len(a): raise Denied('POLICY_INVALID')
     for field in ['allowed_models','artifact_repositories','artifact_sha256']:
         a = p[field]
         if type(a) is not list or not 1 <= len(a) <= 32 or any(type(v) is not str or not 1 <= len(v) <= 200 for v in a):
@@ -128,22 +138,40 @@ def variants(value):
     return candidates
 
 
-def inspect_text(value, p, f):
-    value = text(value,p['max_input_bytes'])
-    candidates = variants(value)
+def catalog_id(value):
+    """Injective, length-preserving catalog IDs, never collision-prone hash IDs."""
+    return int.from_bytes(b'\x01'+value.encode('utf-8'),'big')
+
+
+def signature_text(value):
+    return ' '.join(variants(value)[0].casefold().split())
+
+
+def control_policy(p,f):
+    return dict(strictness=p['profile'],allowedModels=[catalog_id(x) for x in p['allowed_models']],
+      allowedTools=[catalog_id(x) for x in p['allowed_tools']],
+      irreversibleTools=[catalog_id(x) for x in p['irreversible_tools']],
+      pinnedArtifacts=[catalog_id(x) for x in p['artifact_sha256']],
+      signatures=[list(signature_text(x['contains']).encode()) for x in f['signatures']],
+      piiRedactAt=p['pii_redact_at'],
+      piiBlockAt=min(p['pii_block_at'],p['pii_redact_at']) if p['pii_action']=='block' else p['pii_block_at'],
+      semReviewAt=min(p['semantic_review_at'],p['semantic_threshold']),semBlockAt=p['semantic_threshold'],
+      maxSteps=p['max_session_steps'])
+
+
+def detection(value,p):
+    """Detector facts only. The compiled Lean gate decides their enforcement."""
+    candidates=variants(text(value,p['max_input_bytes']))
+    found=[(kind,pattern) for kind,pattern in PATTERNS if any(pattern.search(c) for c in candidates)]
+    encoded=any(pattern.search(c) for _,pattern in found for c in candidates[1:] if c!=candidates[0])
+    score=100 if encoded else 80 if any(k=='SECRET' for k,_ in found) else 60 if found else 0
+    clean=candidates[0]
+    for kind,pattern in found: clean=pattern.sub('[REDACTED_'+kind+']',clean)
+    content=[]
     for candidate in candidates:
-        for sig in f['signatures']:
-            if sig['contains'].casefold() in candidate.casefold():
-                raise Denied('SIGNATURE_'+sig['reason'])
-    detected = [(kind,pattern) for kind,pattern in PATTERNS if any(pattern.search(c) for c in candidates)]
-    if not detected: return value, [], 0
-    if p['pii_action'] == 'block': raise Denied('SENSITIVE_DATA')
-    # Encoded findings are blocked: masking only the decoded copy would leak the original.
-    if any(pattern.search(c) for _,pattern in detected for c in candidates[1:] if c != candidates[0]):
-        raise Denied('ENCODED_SENSITIVE_DATA')
-    sanitized = candidates[0]
-    for kind,pattern in detected: sanitized = pattern.sub('[REDACTED_'+kind+']',sanitized)
-    return sanitized, sorted({k for k,_ in detected}), 2 if any(k=='SECRET' for k,_ in detected) else 1
+        content.extend(' '.join(candidate.casefold().split()).encode());content.append(256)
+    return {'content':content,'piiScore':score,'clean':clean,'kinds':sorted({k for k,_ in found}),
+            'level':2 if any(k=='SECRET' for k,_ in found) else 1 if found else 0,'encoded':encoded}
 
 
 def artifact(manifest,p):

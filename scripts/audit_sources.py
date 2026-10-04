@@ -12,7 +12,7 @@ EXTRA_TARGETS = {"reservedTotals_eq", "reservedAt_eq", "reserveOptimized_eq",
                  "budgetStepOptimized_eq", "ledgerResultUpdate_eq"}
 
 
-def audit(axioms_path, require_extra=False):
+def audit(axioms_path, require_extra=False, require_control=False):
     targets = {}
     counts = {}
     for stem in ("Ledger", "Budget", "Flow"):
@@ -60,6 +60,16 @@ def audit(axioms_path, require_extra=False):
     missing = (set(targets) | (EXTRA_TARGETS if require_extra else set())) - set(reports)
     if missing:
         raise ValueError(f"Missing axiom records: {sorted(missing)}")
+    if require_control:
+        listed=set(re.findall(r'^#print axioms Mathguard\.([\w.]+)$',
+          (ROOT/'scripts/Axioms.lean').read_text(),re.M))
+        new={x for x in listed if x.startswith(('Next.','Control.'))}
+        if len(new)!=96 or len([x for x in new if x.startswith('Control.')])!=53:
+            raise ValueError('Unexpected Next/Control target catalog')
+        if new-set(reports): raise ValueError(f'Missing Next/Control records: {sorted(new-set(reports))}')
+        for name in new:
+            if name.startswith('Control.') and set(reports[name])-{'propext','Quot.sound'}:
+                raise ValueError(f'Unexpected generic control axiom dependency: {name}')
     return {"targets": counts, "total": len(targets), "statements_match": True,
             "model_definition_bodies_match": True, "source_holes": False,
             "additional_targets_reported": sorted(EXTRA_TARGETS & set(reports)),
@@ -73,8 +83,9 @@ def main():
     parser.add_argument("--axioms", type=Path, default=ROOT / "docs/verification/axioms.txt")
     parser.add_argument("--require-extra", action="store_true",
                         help="Require the five refinement/snapshot axiom records (fresh report).")
+    parser.add_argument('--require-control',action='store_true')
     args = parser.parse_args()
-    print(json.dumps(audit(args.axioms, args.require_extra), indent=2))
+    print(json.dumps(audit(args.axioms, args.require_extra,args.require_control), indent=2))
 
 
 if __name__ == "__main__":

@@ -1,3 +1,5 @@
+> **Next/G1 completed:** the latest supplied archive contains C1/P1/W1 and `Mathguard.Control`; imported production modules are built and audited. See [GENERAL-CONTROL-INTEGRATION.md](../docs/verification/GENERAL-CONTROL-INTEGRATION.md) and [the supplied run summary](REQUIREMENTS-RUN-SUMMARY.md). The request files under `next/` retain intentional holes outside the build.
+
 > **Historical model-v1 requests.** The supplied Aristotle return completes these 55 targets in `Mathguard/Ledger.lean`, `Mathguard/Budget.lean`, and `Mathguard/Flow.lean`. Do not resubmit them or add the duplicate standalone files to the Lake build. See `docs/verification/IMPORT-AUDIT.md` for provenance and rebuild limits.
 
 # Aristotle handoff — Mathguard model-v1

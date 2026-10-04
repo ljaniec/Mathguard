@@ -1,0 +1,263 @@
+{
+  "timestamp_utc": "2026-10-03T23:54:47.801524+00:00",
+  "mode": "fixture",
+  "passed": true,
+  "cases": [
+    {
+      "case": "normal prompt",
+      "passed": true,
+      "outcome": "ALLOWED",
+      "reason_codes": [],
+      "trace_id": "7ec2342e1ca7cb9f"
+    },
+    {
+      "case": "secret/PII redaction",
+      "passed": true,
+      "outcome": "ALLOWED",
+      "reason_codes": [],
+      "trace_id": "6f7c4a1eb69004ff"
+    },
+    {
+      "case": "indirect signature",
+      "passed": true,
+      "outcome": "BLOCKED",
+      "reason_codes": [
+        "SIGNATURE_PROMPT_INJECTION"
+      ],
+      "trace_id": "eea736d28963cce8"
+    },
+    {
+      "case": "valid financial effect",
+      "passed": true,
+      "outcome": "COMMITTED",
+      "reason_codes": [
+        "ADMITTED"
+      ],
+      "trace_id": "a7d4e5d2fdaaa101"
+    },
+    {
+      "case": "exact retry",
+      "passed": true,
+      "outcome": "REPLAYED",
+      "reason_codes": [
+        "EXACT_RETRY"
+      ],
+      "trace_id": "b16ecbf858c7be2a"
+    },
+    {
+      "case": "missing approval",
+      "passed": true,
+      "outcome": "PENDING_APPROVAL",
+      "reason_codes": [
+        "APPROVAL_REQUIRED"
+      ],
+      "trace_id": "6720ea4ac0234266"
+    },
+    {
+      "case": "owner approval issuance",
+      "passed": true,
+      "outcome": "ISSUED_NO_EFFECT"
+    },
+    {
+      "case": "bound approval effect",
+      "passed": true,
+      "outcome": "COMMITTED",
+      "reason_codes": [
+        "ADMITTED"
+      ],
+      "trace_id": "11dbbf21b6df15be"
+    },
+    {
+      "case": "approved retry",
+      "passed": true,
+      "outcome": "REPLAYED",
+      "reason_codes": [
+        "EXACT_RETRY"
+      ],
+      "trace_id": "fb6ee2f996691911"
+    },
+    {
+      "case": "live feed addition",
+      "passed": true,
+      "outcome": "BLOCKED",
+      "reason_codes": [
+        "SIGNATURE_REHEARSAL"
+      ],
+      "trace_id": "46fe335bcdea6371"
+    },
+    {
+      "case": "live feed removal",
+      "passed": true,
+      "outcome": "ALLOWED",
+      "reason_codes": [],
+      "trace_id": "0325dfbf488bcb61"
+    },
+    {
+      "case": "valid policy activation preserves charges",
+      "passed": true,
+      "outcome": "EPOCH_8"
+    },
+    {
+      "case": "tightened PII policy",
+      "passed": true,
+      "outcome": "BLOCKED",
+      "reason_codes": [
+        "PII_REDACTED",
+        "SENSITIVE_DATA"
+      ],
+      "trace_id": "8e3f3ea7903d8a80"
+    },
+    {
+      "case": "invalid policy retains last good",
+      "passed": true,
+      "outcome": "EPOCH_8_RETAINED"
+    },
+    {
+      "case": "budget stops before provider",
+      "passed": true,
+      "outcome": "BLOCKED",
+      "reason_codes": [
+        "BUDGET_EXHAUSTED"
+      ],
+      "trace_id": "d3691cfb48de3563"
+    },
+    {
+      "case": "sanitized audit and management export",
+      "passed": true,
+      "outcome": "EXPORTED"
+    }
+  ],
+  "assurance_before": {
+    "model_targets": 55,
+    "additional_equality_targets": 5,
+    "next_axiom_records": 43,
+    "control_axiom_records": 53,
+    "generic_gate": "compiled Mathguard.Control.storeDecision / hardDecision",
+    "runtime": "tested volatile serialized worker",
+    "worker_sha256": "13368e2720221f70dfb714a77c0405b94a0fd1706e088f40237e098030b7bf32",
+    "semantic_mode": "fixture",
+    "instance_id": "93e6e629cf371ad2",
+    "policy_sha256": "7a1742175b5e7573b8775296bef633dfe22a2cfc5b3489172a4a2bec8c2fbd93",
+    "feed_sha256": "7300d67b5df7e8f13ac6fbe8e4444318f258f8498011d08446e2347719e2bc64",
+    "policy_epoch": 7,
+    "feed_version": 1,
+    "semantic_model": "local-model",
+    "config_errors": [],
+    "validated_semantic_verdicts": 0,
+    "live_calls_observed": 0,
+    "quarantined": false,
+    "limitations": [
+      "No durable storage or distributed quotas",
+      "No complete prompt-injection or artifact-safety guarantee",
+      "Provider bounds, authentication, parsing and runtime composition are not proved",
+      "Timeout kills adapter, not necessarily the upstream GPU job; further calls are quarantined"
+    ]
+  },
+  "assurance_after": {
+    "model_targets": 55,
+    "additional_equality_targets": 5,
+    "next_axiom_records": 43,
+    "control_axiom_records": 53,
+    "generic_gate": "compiled Mathguard.Control.storeDecision / hardDecision",
+    "runtime": "tested volatile serialized worker",
+    "worker_sha256": "13368e2720221f70dfb714a77c0405b94a0fd1706e088f40237e098030b7bf32",
+    "semantic_mode": "fixture",
+    "instance_id": "93e6e629cf371ad2",
+    "policy_sha256": "2d044e556f183e04a2bd4491989643763a5e95d4c3f617a2b3bff8811199f22f",
+    "feed_sha256": "a8e0758811b7d6539b0ae658b690dc8f50c6b60e2168529481b20fb0e5f349a7",
+    "policy_epoch": 9,
+    "feed_version": 3,
+    "semantic_model": "local-model",
+    "config_errors": [],
+    "validated_semantic_verdicts": 6,
+    "live_calls_observed": 0,
+    "quarantined": false,
+    "limitations": [
+      "No durable storage or distributed quotas",
+      "No complete prompt-injection or artifact-safety guarantee",
+      "Provider bounds, authentication, parsing and runtime composition are not proved",
+      "Timeout kills adapter, not necessarily the upstream GPU job; further calls are quarantined"
+    ]
+  },
+  "management_report": {
+    "generated_at": 1791071687,
+    "deployment": "single-process, volatile",
+    "decisions": 12,
+    "outcomes": {
+      "CONTROL": 14,
+      "ALLOWED": 3,
+      "BLOCKED": 4,
+      "COMMITTED": 2,
+      "REPLAYED": 2,
+      "PENDING_APPROVAL": 1
+    },
+    "top_reasons": [
+      [
+        "ADMITTED",
+        2
+      ],
+      [
+        "EXACT_RETRY",
+        2
+      ],
+      [
+        "SIGNATURE_PROMPT_INJECTION",
+        1
+      ],
+      [
+        "APPROVAL_REQUIRED",
+        1
+      ],
+      [
+        "SIGNATURE_REHEARSAL",
+        1
+      ],
+      [
+        "PII_REDACTED",
+        1
+      ],
+      [
+        "SENSITIVE_DATA",
+        1
+      ],
+      [
+        "BUDGET_EXHAUSTED",
+        1
+      ]
+    ],
+    "security_posture": {
+      "redacted_interactions": 1,
+      "awaiting_review": 1
+    },
+    "active_policy_epoch": 9,
+    "config_errors": [],
+    "quarantined": false,
+    "resource_accounting": "configured upper bounds charged; not measured financial bills",
+    "semantic_mode": "fixture",
+    "live_calls_observed": 0,
+    "retained_events": 35,
+    "events_dropped": 0,
+    "assurance": "model-v1:55;refinement:5;Next:43;Control:53;compiled-gate;runtime-tested",
+    "ready_for_submission": false,
+    "remaining_evidence": [
+      "live model quality evaluation",
+      "submission deck and operator rehearsal"
+    ]
+  },
+  "financial_result": {
+    "revision": 2,
+    "balances": [
+      87500,
+      32500,
+      0
+    ]
+  },
+  "source_sha256": {
+    "scripts/rehearse-demo.py": "35dc265e622b91e743f28587cb745f5305ed9c48d17370a9d048d5a74f23e9bc",
+    "gateway/engine.py": "e6d10d3acfdbf32de6c4e8a5e00f755463a6a8ff7973819d959539bd750d510a",
+    "gateway/server.py": "9605c3dc900d9d6a27f881d48dcee015d2fdfb323e94e17657d46bf71977db4d",
+    "policies/demo.json": "7a1742175b5e7573b8775296bef633dfe22a2cfc5b3489172a4a2bec8c2fbd93",
+    "feeds/demo-signatures.json": "7300d67b5df7e8f13ac6fbe8e4444318f258f8498011d08446e2347719e2bc64"
+  },
+  "claim": "Actual worker and public HTTP workflow; fixture verdicts; no live-model accuracy or browser/operator visual rehearsal."
+}

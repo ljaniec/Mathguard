@@ -3,29 +3,32 @@
 <img width="3344" height="1248" alt="project_logo" src="https://github.com/user-attachments/assets/47c7bbf7-8e97-408e-877c-0ed70a49a4d8" />
 
 
-**LLMs propose actions. Mathguard checks which actions may change the ledger.**
+**A hybrid AI control gateway with a compiled Lean decision kernel.**
 
-Hybrid control-layer prototype for HackYeah 2026, Goldman Sachs **AI Control Layer**. The reference application is a simulated personal-account ledger; the assessed product is the AI control layer around agents, model calls, and ledger/MCP tools.
+Hybrid control-layer prototype for HackYeah 2026, Goldman Sachs **AI Control Layer**. Prompts, model calls, tool calls/results, agent messages and artifact admission pass through the control layer. The simulated personal-account ledger is its high-value demonstrator.
 
 ## Start here
 
-1. [Source-checked challenge requirements and delivery gaps](docs/10-REQUIREMENTS-RECOVERY.md).
-2. [Current runtime/API contract](docs/07-TEAM-INTEGRATION-CONTRACT.md).
-3. [Product-agent assignment](docs/08-AGENT-PRODUCT-HANDOFF.md) and [engine-agent assignment](docs/09-ENFORCEMENT-HANDOFF.md).
-4. [Updated submission description](docs/01-PRODUCT-AND-CHALLENGE.md).
-5. [Codex bootstrap for Astra / Sol 6.1](docs/02-CODEX-BOOTSTRAP.md).
-6. [Agent, product, and visualization specification](docs/03-AGENT-PRODUCT-VISUALIZATION.md).
-7. [Enforcement-engine specification](docs/04-ENFORCEMENT-ENGINE.md).
-8. [Detailed mathematical model and assurance boundaries](docs/05-FORMAL-MODEL.md).
-9. [Aristotle instructions and theorem acceptance criteria](aristotle/README.md).
-10. Checked Lean development: [definitions](Mathguard/Spec.lean), [ledger proofs](Mathguard/Ledger.lean), [budget proofs](Mathguard/Budget.lean), [flow proofs](Mathguard/Flow.lean), [runtime commit boundary](Mathguard/Runtime.lean). Original requests: [aristotle/](aristotle/README.md).
-11. [Validation matrix, demo, and delivery gates](docs/06-VALIDATION-AND-DEMO.md).
+1. [Current generic architecture, policy schema and SDK](docs/13-GENERAL-CONTROL-LAYER.md).
+   [Operator rehearsal and live-evaluation runbook](docs/14-OPERATOR-REHEARSAL.md); [ten-slide PDF](submission/Mathguard-HackYeah-2026.pdf) and [editable deck](submission/Mathguard-HackYeah-2026.pptx).
+2. [Aristotle requirements-adaptation proposal](docs/12-ARISTOTLE-REQUIREMENTS-ADAPTATION.md).
+3. [Source-checked challenge requirements and delivery gaps](docs/10-REQUIREMENTS-RECOVERY.md).
+4. [Current runtime/API contract](docs/07-TEAM-INTEGRATION-CONTRACT.md).
+5. [Product-agent assignment](docs/08-AGENT-PRODUCT-HANDOFF.md) and [engine-agent assignment](docs/09-ENFORCEMENT-HANDOFF.md).
+6. [Updated submission description](docs/01-PRODUCT-AND-CHALLENGE.md).
+7. [Codex bootstrap for Astra / Sol 6.1](docs/02-CODEX-BOOTSTRAP.md).
+8. [Agent, product, and visualization specification](docs/03-AGENT-PRODUCT-VISUALIZATION.md).
+9. [Enforcement-engine specification](docs/04-ENFORCEMENT-ENGINE.md).
+10. [Detailed mathematical model and assurance boundaries](docs/05-FORMAL-MODEL.md).
+11. [Aristotle instructions and theorem acceptance criteria](aristotle/README.md).
+12. Checked Lean development: [definitions](Mathguard/Spec.lean), [ledger proofs](Mathguard/Ledger.lean), [budget proofs](Mathguard/Budget.lean), [flow proofs](Mathguard/Flow.lean), [runtime commit boundary](Mathguard/Runtime.lean). Original requests: [aristotle/](aristotle/README.md).
+13. [Validation matrix, demo, and delivery gates](docs/06-VALIDATION-AND-DEMO.md).
 
 ## Status — 2026-10-03
 
 The supplied Aristotle run reports all **55 model-v1 targets proved** under Lean 4.28.0 / Mathlib `8f9d9cff` (`v4.28.0`), with a warning-free build and native demo. The code, original statements, and supplied axiom report pass the static import audit: [IMPORT-AUDIT.md](docs/verification/IMPORT-AUDIT.md).
 
-The performance-review work independently rebuilt all **55 baseline targets** with the pinned toolchain and checked **five additional reservation-refinement/snapshot targets**. The fresh axiom report, native regression tests, and measured results are in [PERFORMANCE-REVIEW.md](docs/verification/PERFORMANCE-REVIEW.md). The original supplied report remains separate evidence. The callable gateway now executes the actual Lean ledger/budget/flow functions. Its authentication, parsing, policy handling, provider adapter and composed runtime are tested code, not additional formal proofs. Live-model quality evidence and submission packaging remain open; see [STATUS.md](STATUS.md).
+The performance-review work independently rebuilt all **55 baseline targets** with the pinned toolchain and checked **five additional reservation-refinement/snapshot targets**. The fresh axiom report, native regression tests, and measured results are in [PERFORMANCE-REVIEW.md](docs/verification/PERFORMANCE-REVIEW.md). The original supplied report remains separate evidence. The callable gateway executes the actual Lean ledger/budget/flow functions and now the generic `Mathguard.Control` hard/hybrid gate. The imported C1/P1/W1 modules add 35 target statements plus eight supporting axiom records; G1 adds 53 axiom records. Together with the existing five refinements, `scripts/Axioms.lean` checks 156 records. See [integration evidence](docs/verification/GENERAL-CONTROL-INTEGRATION.md). Its authentication, parsing, policy handling, provider adapter and composed runtime are tested code, not additional formal proofs. Live-model quality evidence and submission packaging remain open; see [STATUS.md](STATUS.md).
 
 ## Run the control layer
 
@@ -41,13 +44,16 @@ Prerequisites: Python 3.10+, the pinned Lean 4.28.0 toolchain, Mathlib dependenc
 bash scripts/check-local.sh       # proof, native, audit and gateway tests
 # Use the launcher's AGENT token in this environment variable:
 export MATHGUARD_AGENT_TOKEN='<local agent token>'
+# Evaluation also needs the separate OPERATOR token to read sanitized traces:
+export MATHGUARD_OPERATOR_TOKEN='<local operator token>'
 python3 agent/run.py --model '<exact model ID>' 'Pay Bob 25 PLN for lunch'
 python3 scripts/evaluate-live.py --model '<exact model ID>' \
   --corpus tests/development-prompts.jsonl --label development \
   --output evidence/live-development.json
+python3 scripts/rehearse-demo.py  # isolated HTTP fixture rehearsal; no live inference
 ```
 
-Edit the policy/signature files and use Reload to demonstrate activation. Invalid edits retain the last valid configuration; startup without one closes execution. Model failure/timeout retains budget charges and quarantines further calls. After stopping/verifying the upstream job, use explicit operator recovery to preserve the ledger and all charges. The deployment is **single-process and volatile**; restart creates a fresh ledger. Budget values are conservative accounted bounds, not actual provider bills. There is no bundled model or claimed live-model result from this development environment.
+Edit the policy/signature files and use Reload to demonstrate activation. Invalid edits retain the last valid configuration; startup without one closes execution. A semantic failure is decided by the compiled profile (strict blocks, balanced asks, permissive passes with an alert). A provider timeout still retains budget charges and quarantines further model calls. After stopping/verifying the upstream job, use explicit operator recovery to preserve the ledger and all charges. The deployment is **single-process and volatile**; restart creates a fresh ledger. Budget values are conservative accounted bounds, not actual provider bills. There is no bundled model or claimed live-model result from this development environment.
 
 ### Layout
 
@@ -59,12 +65,14 @@ Edit the policy/signature files and use Reload to demonstrate activation. Invali
 | `Mathguard/Flow.lean` | Information-flow targets plus helper lemmas (label preorder, trace monotonicity) |
 | `Mathguard/Runtime.lean` | In-memory runtime boundary: `atomicLedgerStep` installs `(ledgerStep p s ctx q).state` in one `IO.Ref.modifyGet` |
 | `Mathguard/OptimizedBudget.lean` | Allocation-reducing totals/reservation implementation with exact equality proofs against the unchanged model |
+| `Mathguard/Control.lean` | Generic restriction algebra, hybrid gate, fallback, policy reload, step/audit and owner-filter models |
+| `Mathguard/Composite.lean`, `PolicyHistory.lean`, `Wire.lean` | C1/P1/W1 composite, historical-policy and typed-wire proofs |
 | `Mathguard/Worker.lean` | Private JSONL worker executing the reviewed functions; runtime adapter/composition is tested |
 | `gateway/`, `agent/`, `dashboard/` | Callable control layer, reference agent and interactive operator UI |
 | `policies/`, `feeds/`, `contracts/` | Versioned policy profiles, data-only signatures and inert artifact fixture |
 | `tests/` | Native-worker integration and provider-protocol regressions |
 | `Main.lean` | Demo executable running the reviewed kernels on the `n = 3` fixtures |
-| `scripts/Axioms.lean` | `#print axioms` for 55 baseline and 5 additional targets |
+| `scripts/Axioms.lean` | 156 axiom records: 55 baseline + 5 refinements + 43 Next + 53 Control |
 | `Tests.lean`, `Bench.lean` | Native snapshot/budget regressions and ledger/budget size sweeps |
 | `aristotle/` | The original proof-request pack (kept unchanged as the specification of record; not part of the build) |
 
@@ -81,7 +89,7 @@ lake exe mathguard              # runs the demo
 runs the incremental formal build/fresh audit/demo/native-test subgate. The canonical
 `bash scripts/check-local.sh` is the full release entry point: it also requires the
 gateway integration suite at `scripts/test-integration.sh` and fails if it is absent.
-The gateway integration suite now exists and uses the real Lean worker with explicitly labeled classifier fixtures. Passing it does not establish live classifier accuracy or complete the hackathon submission.
+The gateway integration suite uses the real Lean worker with explicitly labeled classifier fixtures. Passing it does not establish live classifier accuracy or complete the hackathon submission.
 
 `python3 scripts/profile-checks.py --lean-files --iterations 100` collects actual
 build/frontend/audit timings, peak RSS, and native benchmark JSON/CSV. Returned runtime
@@ -108,5 +116,7 @@ The attached official brief requires a functional layer, centralized configurabl
 The audit in [reference/SOURCE-NOTES.md](reference/SOURCE-NOTES.md) comes from reading both uploaded Goldman PDFs. The spelling of `CRIETRIA` follows the source filename. The detailed criteria and rules disagree on the last two weights; keep that discrepancy visible until the mentors resolve it. The full task archive is not redistributed here.
 
 Aristotle contribution: run `d1f899d1-689d-42d3-ba08-41d4778ff40c`; supplied summary in [ARISTOTLE_SUMMARY.md](ARISTOTLE_SUMMARY.md).
+
+Run `make run` for the demo and `make test` for the full local gate. For SDK integration, see `gateway/sdk.py` and `docs/13-GENERAL-CONTROL-LAYER.md`.
 
 No GitHub Actions workflows are introduced. Use reproducible local checks. Changes are submitted through PRs for review and Prelint feedback.

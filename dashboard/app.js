@@ -9,7 +9,7 @@ const show=(id,value)=>$(id).textContent=JSON.stringify(value,(key,v)=>key==='ap
 async function refresh(){
  status=await api('/v1/status');if(status.policy&&!status.policy.allowed_models.includes($('model').value))$('model').value=status.policy.allowed_models[0];$('health').textContent=(status.ready?'Controls ready':'Controls closed')+' / '+status.mode;
  const counts=status.counters;$('metrics').replaceChildren();
- for(const [label,value] of [['Blocked',counts.BLOCKED||0],['Committed',counts.COMMITTED||0],['p95 request ms',status.latency_ms.p95?.toFixed(1)||'—'],['Observed live calls',status.live_calls]]){
+ for(const [label,value] of [['Blocked',counts.BLOCKED||0],['Redacted',status.security_posture?.redacted_interactions||0],['Review required',counts.PENDING_APPROVAL||0],['p95 request ms',status.latency_ms.p95?.toFixed(1)||'—'],['p95 control ms',status.control_latency_ms?.p95?.toFixed(1)||'—'],['Observed live calls',status.live_calls]]){
   const div=document.createElement('div');div.className='metric';const strong=document.createElement('strong');strong.textContent=value;const span=document.createElement('span');span.textContent=label;div.append(strong,span);$('metrics').append(div);
  }
  $('warnings').textContent=[...status.config_errors,...(status.quarantined?['Provider quarantined; stop the upstream job, then use operator recovery below.']:[])].join(' · ');
@@ -27,8 +27,8 @@ function action(id,fn){$(id).addEventListener('click',async()=>{const b=$(id);b.
 action('connect',async()=>{const r=await api('/v1/sessions',{},'agent');if(!r.session_id)throw Error(r.reason_codes?.join(', '));sid=r.session_id;$('connection').textContent='Session connected. Local model must match the configured ID.';await refresh();});
 action('refresh',refresh);
 action('chat',async()=>{show('chat-result',await api('/v1/models/chat',{session_id:sid,model:$('model').value,prompt:$('prompt').value,source:$('source').value},'agent'));await refresh();});
-action('transfer',async()=>{if(!sid)throw Error('Connect a session first');await refresh();if(!status.ready)throw Error('Valid policy/feed and worker required');last={schema_version:'mathguard-action-1',request_id:'ui-'+crypto.randomUUID(),session_id:sid,expected_revision:String(status.state.revision),policy_epoch:String(status.policy.epoch),tool:'ledger.transfer',arguments:{source:'alice-main',destination:$('destination').value,amount_minor:$('amount').value,currency:'PLN'},approval_ref:null};const decision=await api('/v1/actions',last,'agent');show('transfer-result',{proposal:last,decision});explain(decision);$('approve').disabled=decision.outcome!=='PENDING_APPROVAL';await refresh();});
-action('retry',async()=>{if(!last)throw Error('Propose a transfer first');const decision=await api('/v1/actions',last,'agent');show('transfer-result',{proposal:last,decision});explain(decision);$('approve').disabled=decision.outcome!=='PENDING_APPROVAL';await refresh();});
+action('transfer',async()=>{if(!sid)throw Error('Connect a session first');await refresh();if(!status.ready)throw Error('Valid policy/feed and worker required');last={schema_version:'mathguard-action-1',request_id:'ui-'+crypto.randomUUID(),session_id:sid,expected_revision:String(status.state.revision),policy_epoch:String(status.policy.epoch),tool:'ledger.transfer',arguments:{source:'alice-main',destination:$('destination').value,amount_minor:$('amount').value,currency:'PLN'},approval_ref:null};const decision=await api('/v1/actions',last,'agent');show('transfer-result',{proposal:last,decision});explain(decision);$('approve').disabled=decision.outcome!=='PENDING_APPROVAL'||!decision.approval_requirements?.includes('high_value');await refresh();});
+action('retry',async()=>{if(!last)throw Error('Propose a transfer first');const decision=await api('/v1/actions',last,'agent');show('transfer-result',{proposal:last,decision});explain(decision);$('approve').disabled=decision.outcome!=='PENDING_APPROVAL'||!decision.approval_requirements?.includes('high_value');await refresh();});
 action('approve',async()=>{if(!last)throw Error('Propose a transfer first');const r=await api('/v1/approvals',{...last,approval_ref:null},'owner');if(r.approval_ref){last.approval_ref=r.approval_ref;approvalExpires=r.expires;show('transfer-result',{proposal:last,...r,next:'Use Exact retry to submit the approved, unchanged request.'});}else show('transfer-result',r);await refresh();});
 action('reload',async()=>{show('policy',await api('/v1/policy/reload',{}));await refresh();});
 action('export',async()=>{const r=await fetch('/v1/audit/export',{headers:{Authorization:'Bearer '+$('operator').value}});if(!r.ok)throw Error('Export unauthorized');const blob=await r.blob();const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='mathguard-audit.jsonl';link.click();URL.revokeObjectURL(link.href);});
@@ -36,12 +36,34 @@ fetch('/health').then(r=>r.json()).then(r=>$('health').textContent=r.mode+' / co
 
 action('report',async()=>{const r=await api('/v1/report');show('assurance',r);$('assurance').scrollIntoView({behavior:'smooth'});});
 
+let lastInteraction=null;
+async function inspectInteraction(){
+ const result=await api('/v1/interactions',lastInteraction,'agent');
+ show('interaction-result',result);
+ $('interaction-approve').disabled=result.outcome!=='PENDING_APPROVAL'||!result.reason_codes?.includes('APPROVAL_REQUIRED');
+ await refresh();
+}
+action('intercept',async()=>{
+ if(!sid)throw Error('Connect a session first');
+ const kind=$('interaction-kind').value;
+ lastInteraction={schema_version:'mathguard-interaction-1',session_id:sid,kind,
+  target:kind.startsWith('tool_')?$('interaction-target').value:'',content:$('interaction-content').value,approval_ref:null};
+ await inspectInteraction();
+});
+action('interaction-retry',async()=>{if(!lastInteraction)throw Error('Inspect an interaction first');await inspectInteraction();});
+action('interaction-approve',async()=>{
+ const result=await api('/v1/interactions/approve',{...lastInteraction,approval_ref:null},'owner');
+ if(result.approval_ref)lastInteraction.approval_ref=result.approval_ref;
+ show('interaction-result',result);await refresh();
+});
+
 function explain(decision){
  const codes=decision.reason_codes||[];let message='';
  if(codes.some(c=>c==='SEMANTIC_DENIED'))message='The AI classifier blocked this proposal. Active threshold: '+status.policy.semantic_threshold+'. Owner approval cannot override this control.';
  else if(codes.some(c=>c==='APPROVAL_EXPIRED'))message='The approval expired before execution, possibly while the guard was running. No transfer was committed. The owner can issue a fresh approval for the unchanged request.';
  else if(decision.outcome==='BLOCKED')message='A deterministic policy or resource gate blocked the proposal: '+codes.join(', ')+'.';
  else if(decision.outcome==='ERROR_CLOSED')message='A required component was unavailable. Execution stayed closed: '+codes.join(', ')+'.';
+ else if(codes.some(c=>c==='SEMANTIC_REVIEW'||c==='SEMANTIC_UNAVAILABLE'))message='The classifier requires review or is unavailable. Owner approval does not bypass this control. Re-evaluate after resolving the cause.';
  else if(decision.outcome==='PENDING_APPROVAL')message='Review the exact proposal below, then approve with the separate owner credential.';
  if(['COMMITTED','REPLAYED'].includes(decision.outcome))approvalExpires=null;
  $('decision-explanation').textContent=message;

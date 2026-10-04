@@ -5,12 +5,12 @@ This is our mapping from primary OWASP guidance to the implemented control layer
 | Agentic category | Current control / evidence | Remaining risk |
 |---|---|---|
 | ASI01 Goal hijack | Real-model classifier adapter, signatures, immutable hard gates; indirect-content test | Classifier accuracy and unseen attacks require live evaluation |
-| ASI02 Tool misuse | One allowlisted typed ledger operation; strict arguments; no shell executor | Full MCP/tool ecosystem integration remains future work |
+| ASI02 Tool misuse | Configurable tool allowlist, exact irreversible approvals, SDK call/result gates; dedicated typed ledger protocol | Tool-specific schema validation belongs to the integration; no MCP transport/OAuth server |
 | ASI03 Identity/privilege abuse | Separate roles, principal-bound sessions, exact owner approval | Demo tokens/host isolation are deployment assumptions |
 | ASI04 Supply chain | Allowlisted repository/digest, actual bounded byte hash, safe header checks, remote code denied | Configured provider weights/serving stack still need their own provenance check |
 | ASI05 Unexpected code execution | No deserialization/execution of supplied artifacts; unsafe loader patterns blocked | No general sandbox or malware detector is claimed |
 | ASI06 Memory/context poisoning | Bounded per-principal session history; separate confidentiality/trust; same input controls for documents/tools | No persistent/shared retrieval system is implemented |
-| ASI07 Inter-agent communication | Clients use authenticated gateway routes; identity never comes from generated arguments | No signed federation or generic multi-agent protocol claim |
+| ASI07 Inter-agent communication | Explicit agent-message route and SDK; principal-bound session; identity never comes from generated arguments | No signed federation or generic multi-agent protocol claim |
 | ASI08 Cascading failures | Conservative reservations, timeout quarantine, fail-closed worker, bounded ingress | No distributed recovery or upstream cancellation proof |
 | ASI09 Human-agent trust exploitation | Explicit canonical approval card, separate human token, inert rendering | Social engineering remains possible; live operator rehearsal required |
 | ASI10 Rogue agents | Hard action constraints, global resource cap, session step/repeat limits | No assurance that arbitrary agents lack independent host/network capabilities |

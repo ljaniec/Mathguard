@@ -1,5 +1,5 @@
 {
-  "schema_version": "mathguard-policy-2",
+  "schema_version": "mathguard-policy-3",
   "epoch": 7,
   "profile": "balanced",
   "pii_action": "redact",
@@ -33,5 +33,16 @@
   ],
   "artifact_sha256": [
     "a9311856600eeba2a2c803baf41eec2eb10d885fefe9f2dffbe5c0a77a317e28"
-  ]
+  ],
+  "allowed_tools": [
+    "ledger.transfer",
+    "demo.echo",
+    "demo.publish"
+  ],
+  "irreversible_tools": [
+    "demo.publish"
+  ],
+  "pii_redact_at": 60,
+  "pii_block_at": 100,
+  "semantic_review_at": 55
 }

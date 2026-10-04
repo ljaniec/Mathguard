@@ -1,4 +1,6 @@
--- Prints 55 model-v1 targets plus 5 refinement/snapshot bridge targets.
+-- 55 baseline + 5 refinement/snapshot + 43 Next + 53 Control records.
+-- Prints the axiom dependencies of the 55 baseline model-v1 targets, the 35 Mathguard.Next
+-- targets (C1/P1/W1), the 8 exported supporting theorems introduced with them, and the G1 Mathguard.Control theorems.
 -- Run: lake env lean scripts/Axioms.lean
 import Mathguard
 open Mathguard
@@ -57,7 +59,109 @@ open Mathguard
 #print axioms demo_secret_export_denied
 #print axioms demo_internal_export_allowed
 #print axioms demo_public_export_allowed
--- Additional refinement/snapshot bridge targets, separate from the baseline 55.
+-- C1 composite financial admission (14)
+#print axioms Mathguard.Next.composite_initial_invariant
+#print axioms Mathguard.Next.composite_commit_exact
+#print axioms Mathguard.Next.composite_commit_gates
+#print axioms Mathguard.Next.composite_step_invariant
+#print axioms Mathguard.Next.composite_label_never_lowers
+#print axioms Mathguard.Next.composite_observation_retained
+#print axioms Mathguard.Next.composite_noncommit_financial_nonmutation
+#print axioms Mathguard.Next.composite_hard_deny_cannot_be_overridden
+#print axioms Mathguard.Next.composite_sensitive_flow_denied
+#print axioms Mathguard.Next.composite_budget_denial_prevents_commit
+#print axioms Mathguard.Next.composite_replay_no_new_reservation
+#print axioms Mathguard.Next.composite_trace_invariant
+#print axioms Mathguard.Next.composite_trace_label_never_lowers
+#print axioms Mathguard.Next.demo_composite_accepts
+-- P1 policy activation and historical evidence (12)
+#print axioms Mathguard.Next.governed_initial_invariant
+#print axioms Mathguard.Next.governed_step_invariant
+#print axioms Mathguard.Next.governed_trace_invariant
+#print axioms Mathguard.Next.policy_reload_preserves_financial_state
+#print axioms Mathguard.Next.nonincreasing_policy_epoch_rejected
+#print axioms Mathguard.Next.policy_epoch_never_decreases
+#print axioms Mathguard.Next.policy_epoch_trace_monotone
+#print axioms Mathguard.Next.old_epoch_cannot_fresh_commit_after_reload
+#print axioms Mathguard.Next.governed_history_extends
+#print axioms Mathguard.Next.historical_authorization_uses_own_snapshot
+#print axioms Mathguard.Next.demo_reload_blocks_old_request
+#print axioms Mathguard.Next.demo_reload_accepts_new_request
+-- W1 typed wire projection (9)
+#print axioms Mathguard.Next.wire_roundtrip
+#print axioms Mathguard.Next.wire_decode_preserves_fields
+#print axioms Mathguard.Next.wire_projection_injective
+#print axioms Mathguard.Next.wire_source_out_of_range
+#print axioms Mathguard.Next.wire_destination_out_of_range
+#print axioms Mathguard.Next.wire_valid_indices_decode
+#print axioms Mathguard.Next.wire_approval_cannot_match_changed_fields
+#print axioms Mathguard.Next.demo_wire_decodes
+#print axioms Mathguard.Next.demo_wire_rejects_unknown_account
+-- Mathguard.Next supporting theorems (8)
+#print axioms Mathguard.Next.compositeStep_label
+#print axioms Mathguard.Next.compositeStep_of_commit
+#print axioms Mathguard.Next.compositeStep_committed_iff
+#print axioms Mathguard.Next.compositeStep_noncommit
+#print axioms Mathguard.Next.transferGate_eq_true_iff
+#print axioms Mathguard.Next.EvidenceChain.snoc
+#print axioms Mathguard.Next.evidenceSound_of_step
+#print axioms Mathguard.Next.evidenceAuthorized_of_sound
+-- G1 generic control-layer decision kernel (Mathguard.Control)
+#print axioms Mathguard.Control.Decision.executes_eq_true_iff
+#print axioms Mathguard.Control.Decision.combine_executes
+#print axioms Mathguard.Control.Decision.AtMost.refl
+#print axioms Mathguard.Control.Decision.AtMost.trans
+#print axioms Mathguard.Control.Decision.AtMost.combine
+#print axioms Mathguard.Control.Decision.AtMost.combine_left
+#print axioms Mathguard.Control.Decision.AtMost.combine_right
+#print axioms Mathguard.Control.Decision.AtMost.when
+#print axioms Mathguard.Control.Decision.AtMost.executes
+#print axioms Mathguard.Control.hard_atMost_gate
+#print axioms Mathguard.Control.semantic_atMost_gate
+#print axioms Mathguard.Control.gate_executes_imp_hard
+#print axioms Mathguard.Control.gate_executes_imp_semantic
+#print axioms Mathguard.Control.strict_timeout_denies
+#print axioms Mathguard.Control.strict_malformed_denies
+#print axioms Mathguard.Control.balanced_timeout_not_executed
+#print axioms Mathguard.Control.permissive_timeout_alerts
+#print axioms Mathguard.Control.hardDecision_deny
+#print axioms Mathguard.Control.unauthenticated_denied
+#print axioms Mathguard.Control.signature_denied
+#print axioms Mathguard.Control.model_not_allowed_denied
+#print axioms Mathguard.Control.tool_not_allowed_denied
+#print axioms Mathguard.Control.irreversible_requires_approval
+#print axioms Mathguard.Control.artifact_admitted_pinned_safe
+#print axioms Mathguard.Control.pii_block_denied
+#print axioms Mathguard.Control.pii_redact_flagged
+#print axioms Mathguard.Control.signatureHit_mono
+#print axioms Mathguard.Control.kindDecision_mono
+#print axioms Mathguard.Control.piiDecision_mono
+#print axioms Mathguard.Control.hardDecision_mono
+#print axioms Mathguard.Control.fallbackDecision_mono
+#print axioms Mathguard.Control.semanticDecision_mono
+#print axioms Mathguard.Control.gate_mono
+#print axioms Mathguard.Control.gate_mono_executes
+#print axioms Mathguard.Control.reload_invalid_keeps
+#print axioms Mathguard.Control.reload_valid_activates
+#print axioms Mathguard.Control.reload_epoch_mono
+#print axioms Mathguard.Control.reloadAll_preserves_valid
+#print axioms Mathguard.Control.reloadAll_active_valid
+#print axioms Mathguard.Control.no_policy_fail_closed
+#print axioms Mathguard.Control.sessionStep_steps_le
+#print axioms Mathguard.Control.sessionRun_steps_le
+#print axioms Mathguard.Control.sessionStep_log
+#print axioms Mathguard.Control.sessionRun_log
+#print axioms Mathguard.Control.blockedCount_step
+#print axioms Mathguard.Control.recall_owned
+#print axioms Mathguard.Control.demo_control_policy_valid
+#print axioms Mathguard.Control.demo_benign_prompt_executes
+#print axioms Mathguard.Control.demo_feed_signature_blocks
+#print axioms Mathguard.Control.demo_pii_redacted_not_blocked
+#print axioms Mathguard.Control.demo_pickle_artifact_blocked
+#print axioms Mathguard.Control.demo_transfer_waits_for_approval
+#print axioms Mathguard.Control.demo_invalid_reload_keeps_last_good
+
+-- Existing performance refinements preserved.
 #print axioms reservedTotals_eq
 #print axioms reservedAt_eq
 #print axioms reserveOptimized_eq

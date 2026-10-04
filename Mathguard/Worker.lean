@@ -1,6 +1,8 @@
 import Lean
 import Mathguard.Spec
 import Mathguard.OptimizedBudget
+import Mathguard.Control
+import Mathguard.Wire
 
 /-! Private JSONL adapter. Executes the reviewed kernels; parsing, IO and their
 composition are tested runtime code, not additional formal-verification claims. -/
@@ -14,10 +16,60 @@ structure State where
   policy : Policy 3 := demoPolicy
   initialized : Bool := false
   nextTicket : Nat := 0
+  controls : Control.PolicyStore := Control.PolicyStore.empty
 
 def field (j : Json) (k : String) : Except String Json := j.getObjVal? k
 def nat (j : Json) (k : String) : Except String Nat := do (← field j k).getNat?
 def str (j : Json) (k : String) : Except String String := do (← field j k).getStr?
+def nums (j : Json) : Except String (List Nat) := do
+  return (← (← j.getArr?).mapM Json.getNat?).toList
+def controlPolicy (j : Json) : Except String Control.ControlPolicy := do
+  let strictness ← match (← str j "strictness") with
+    | "strict" => pure Control.Strictness.strict
+    | "balanced" => pure Control.Strictness.balanced
+    | "permissive" => pure Control.Strictness.permissive
+    | _ => throw "invalid strictness"
+  let p : Control.ControlPolicy := {
+    strictness, allowedModels := (← nums (← field j "allowedModels")),
+    allowedTools := (← nums (← field j "allowedTools")),
+    irreversibleTools := (← nums (← field j "irreversibleTools")),
+    pinnedArtifacts := (← nums (← field j "pinnedArtifacts")),
+    signatures := (← (← (← field j "signatures").getArr?).mapM nums).toList,
+    piiRedactAt := (← nat j "piiRedactAt"), piiBlockAt := (← nat j "piiBlockAt"),
+    semReviewAt := (← nat j "semReviewAt"), semBlockAt := (← nat j "semBlockAt"),
+    maxSteps := (← nat j "maxSteps") }
+  if !p.valid then throw "invalid control policy"
+  return p
+def interaction (j : Json) : Except String Control.Interaction := do
+  let kind ← match (← str j "kind") with
+    | "prompt" => pure Control.Kind.prompt
+    | "model" => pure (Control.Kind.modelCall (← nat j "target"))
+    | "tool" => pure (Control.Kind.toolCall (← nat j "target"))
+    | "artifact" =>
+        let format ← match (← str j "format") with
+          | "safetensors" => pure Control.ArtifactFormat.safetensors
+          | "gguf" => pure Control.ArtifactFormat.gguf
+          | "pickle" => pure Control.ArtifactFormat.pickle
+          | _ => pure Control.ArtifactFormat.unknown
+        pure (Control.Kind.artifactLoad (← nat j "target") format)
+    | _ => throw "invalid interaction kind"
+  return {
+    principal := (← nat j "principal")
+    authenticated := (← (← field j "authenticated").getBool?)
+    kind
+    content := (← nums (← field j "content"))
+    piiScore := (← nat j "piiScore")
+    approved := (← (← field j "approved").getBool?) }
+def semanticResult (j : Json) : Except String Control.SemanticResult := do
+  match (← str j "status") with
+  | "risk" => return .risk (← nat j "score")
+  | "timeout" => return .timeout
+  | "malformed" => return .malformed
+  | _ => throw "invalid semantic result"
+def decisionJson (d : Control.Decision) (generation : Nat) : Json := Json.mkObj [
+  ("deny", toJson d.deny), ("ask", toJson d.ask), ("redact", toJson d.redact),
+  ("executes", toJson d.executes), ("generation", toJson generation),
+  ("reasons", toJson (d.reasons.map (fun r => reprStr r)))]
 def fin3 (n : Nat) : Except String (Fin 3) :=
   if h : n < 3 then .ok ⟨n, h⟩ else .error "account out of range"
 def usage (j : Json) : Except String Usage := do
@@ -27,7 +79,13 @@ def usage (j : Json) : Except String Usage := do
   return fun i => values[i.val]!
 def uj (u : Usage) : Json := toJson ((List.finRange 4).map u)
 def request (j : Json) : Except String (Request 3) := do
-  return { id := (← nat j "id"), source := (← fin3 (← nat j "source")), destination := (← fin3 (← nat j "destination")), amount := (← nat j "amount"), expectedRevision := (← nat j "expectedRevision"), policyEpoch := (← nat j "policyEpoch") }
+  let wire : Next.WireTransfer := {
+    id := (← nat j "id"),
+    sourceIndex := (← nat j "source"), destinationIndex := (← nat j "destination"),
+    amount := (← nat j "amount"), expectedRevision := (← nat j "expectedRevision"),
+    policyEpoch := (← nat j "policyEpoch") }
+  let some q := Next.fromWire 3 wire | throw "account out of range"
+  return q
 def context (j : Json) : Except String (Context 3) := do
   let mut approval := none
   let a ← field j "approval"
@@ -61,13 +119,32 @@ def blockReason (s : State) (ctx : Context 3) (q : Request 3) : String :=
 def dispatch (s : State) (j : Json) : Except String (State × Json) := do
   let op ← str j "op"
   if op == "snapshot" then return (s, snapshot s)
+  if op == "control_decide" || op == "control_hard" then
+    let i ← interaction (← field j "interaction")
+    let steps ← nat j "steps"
+    let sem ← semanticResult (← field j "semantic")
+    let d := if op == "control_hard" then
+      match s.controls.active with
+      | none => Control.Decision.denyBy .noValidPolicy
+      | some p => Control.hardDecision p steps i
+      else Control.storeDecision s.controls { steps, log := [] } i sem
+    return (s, decisionJson d s.controls.epoch)
+  if op == "control_configure" then
+    let p ← controlPolicy (← field j "controls")
+    let s' := { s with controls := s.controls.reload p }
+    return (s', toJson s'.controls.epoch)
   if op == "configure" then
     let epoch ← nat j "epoch"
     if s.initialized && epoch ≤ s.policy.epoch then throw "epoch must increase"
     let limit ← usage (← field j "limit")
     let some b := budgetReconfigure s.budget limit | throw "limit below spent plus reserved"
     let p := { s.policy with epoch, maxTransfer := (← nat j "maxTransfer"), approvalThreshold := (← nat j "approvalThreshold") }
-    let s' := { s with policy := p, budget := b, initialized := true }
+    let controls ← controlPolicy (← field j "controls")
+    let s' := { s with
+      policy := p
+      budget := b
+      initialized := true
+      controls := s.controls.reload controls }
     return (s', snapshot s')
   if !s.initialized then throw "worker not configured"
   if op == "reserve" then
