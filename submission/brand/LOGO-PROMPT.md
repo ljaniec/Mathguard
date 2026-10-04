@@ -1,5 +1,7 @@
 # Mathguard proof-gate logo
 
+Archived design experiment. The final release restores the original shield direction through [CLASSIC-IDENTITY.md](CLASSIC-IDENTITY.md).
+
 The mark combines an open **G** with the mathematical proof turnstile **⊢**. The G represents the guard boundary. The turnstile represents the evidence required for admission. The deliberate gap suggests a controlled passage. This is brand symbolism, rather than an additional security claim.
 
 The cover places the mark at 288 px in a 288 px square image frame, preserving its proportions and transparency. It stands apart from editable type. The nested gate contours support the same boundary metaphor. The mark appears once as the cover's identity focus.
@@ -37,4 +39,3 @@ Composition: the LEFT TWO THIRDS is entirely clean uniform navy negative space f
 - Preserve the mark's aspect ratio and open counter. Avoid using it as a small body-text icon.
 - Keep explanatory text clear of the contours. Use solid ivory for technical evidence pages.
 - The editable presentation remains the source for text, diagrams and tables. The identity artwork is embedded raster imagery.
-

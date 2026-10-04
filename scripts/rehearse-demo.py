@@ -113,7 +113,7 @@ def rehearse(output):
                 assurance_before=before,assurance_after=after,management_report=report,
                 financial_result=dict(revision=ledger['revision'],balances=ledger['balances']),
                 source_sha256={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in
-                    ['scripts/rehearse-demo.py','gateway/engine.py','gateway/server.py','policies/demo.json','feeds/demo-signatures.json']},
+                    ['scripts/rehearse-demo.py','gateway/engine.py','gateway/semantic.py','gateway/server.py','policies/demo.json','feeds/demo-signatures.json']},
                 claim='Actual worker and public HTTP workflow; fixture verdicts; no live-model accuracy or browser/operator visual rehearsal.')
             output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(evidence,indent=2)+'\n')
             print(json.dumps(dict(report=str(output),cases=len(rows),passed=True,mode='fixture')))

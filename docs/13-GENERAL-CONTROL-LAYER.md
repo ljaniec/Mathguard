@@ -28,7 +28,10 @@ patterns and prepares redacted content. It sends those facts to the private long
 `storeDecision` combines hard facts with the classifier verdict/fallback. Python never
 reimplements that restriction algebra. The worker also owns the ledger and global budgets.
 The model classifier itself is budgeted and model-allowlisted; it does not recursively classify
-its own calls. Model outputs pass through the deterministic Lean gate before return. Adding `ledger.transfer` to `irreversible_tools` also lowers the effective ledger approval threshold to 1, so every positive transfer requires approval.
+its own calls. Chat uses three separately budgeted local stages: semantic input inspection,
+generation, and semantic output inspection. The output also passes the deterministic Lean
+gate before return. Adding `ledger.transfer` to `irreversible_tools` lowers the effective
+ledger approval threshold to 1, so every positive transfer requires approval.
 
 ## Interception API
 
@@ -130,8 +133,8 @@ external callback completion/crash recovery is the integrator's responsibility.
 | G1 hard/hybrid gate, fallback, allowlists, signature denial, PII flags | Yes: shared interactions, chat/model dispatch, ledger tool admission, artifact admission | Proved pure rules; facts/JSON/IO integration tested |
 | G1 validated policy store | Yes: `ControlPolicy.valid` and `PolicyStore.reload` | Parser and atomic host configuration protocol tested |
 | W1 typed wire projection | Yes: worker's ledger request decoder calls `Next.fromWire` | Begins after JSON and number validation |
-| Existing ledger/budget/flow + optimized budget | Yes | Existing proofs preserved; volatile composition tested |
-| C1 composite state / P1 historical-policy state | Imported and built; separate model evidence | No durable database or event-store claim |
+| Existing ledger/budget/flow + optimized budget | Yes | Existing proofs preserved; runtime composition and optional durable replay tested |
+| C1 composite state / P1 historical-policy state | Imported and built; separate model evidence | Separate from the actual worker and SQLite journal protocol |
 | G1 bounded steps / one-event audit / owner-filtered recall | Model theorems and native demo | Runtime counts attempted requests conservatively; audit is a bounded metadata window; session history is isolated by host checks |
 
 The 156 axiom records are **55 baseline + 5 refinements + 43 Next + 53 Control**. Next contains
@@ -152,13 +155,24 @@ distinct end-to-end security requirements. Control records require no axioms bey
 | Reporting | Dashboard prompt/tool trials, redaction/review counts, p50/p95, budget, reload alarms, JSONL and management export |
 | Positive/negative self-testing | `make test`; native proofs/demos, actual-worker integration, provider and SDK HTTP cases |
 
-Follow-up evaluation/runbook and the prepared ten-slide PDF are in
-[14-OPERATOR-REHEARSAL.md](14-OPERATOR-REHEARSAL.md). Remaining submission evidence: a real installed
-local model and its license/version, live accuracy and latency results, an independently supplied
-unseen corpus, final deck/team acceptance, HackTribe entry and a live operator rehearsal. Detector completeness, crash recovery,
-durable audit, distributed budgets, arbitrary model loading and full MCP authentication are
-not delivered. The official brief allows an SDK/middleware approach; those production
-extensions are not stated as mandatory protocols.
+The judge launcher uses a private SQLite transition journal with one process owner. It records
+intent before a mutating worker command, and atomically records its result and operation audit
+before acknowledgment. Restart replays exact commands through the same binary and verifies
+responses. Unresolved intents, incompatible binaries and inconsistent stores fail closed.
+Pending provider reservations retain their charge and quarantine. Acknowledged ledger receipts
+survive restart; sessions and unconsumed approval references do not. The latest dashboard audit
+window is bounded, with pagination over the durable metadata archive. Hash chains detect
+inconsistency, not a malicious host administrator rewriting or rolling back the entire store.
+These are runtime-tested single-node guarantees, not new Lean theorems.
+
+Follow [17-JUDGE-QUICKSTART.md](17-JUDGE-QUICKSTART.md) for setup and
+[18-PRESENTATION-TUTORIAL.md](18-PRESENTATION-TUTORIAL.md) for the ten-slide presentation.
+The installed local CPU model and license/preflight record are in
+`submission/model-record.json`. Independent unseen detector evaluation, browser visual/download
+rehearsal, team acceptance and external HackTribe submission remain open. Distributed budgets,
+arbitrary model loading, full MCP authentication and exactly-once external SDK callbacks are
+outside this demonstrator. Further exact-runtime verification is scoped in the
+[Aristotle release handoff](../aristotle/FINAL-HARDENING-HANDOFF.md).
 
 Sources: original brief/rules and page/hash references in
 [10-REQUIREMENTS-RECOVERY.md](10-REQUIREMENTS-RECOVERY.md); secondary compendium and imported

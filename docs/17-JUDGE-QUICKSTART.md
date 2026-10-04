@@ -1,0 +1,122 @@
+# Judge quickstart
+
+Mathguard is a gateway and SDK for existing AI clients. The reference account ledger is a demonstration client. This guide starts a real local-model demo without editing model fields by hand.
+
+## First preparation
+
+Use Linux/macOS or WSL2, Python 3.10+, GNU Make, and several GB of free disk for the pinned Lean/Mathlib toolchain plus local model weights. Python uses only the standard library. Install [elan/Lean](https://lean-lang.org/install/) and [Ollama](https://ollama.com/download) from their official distributions. `lean-toolchain` selects Lean 4.28.0; do not substitute a different Lean version. First-time builds and weight downloads need internet; a prepared machine can demonstrate locally.
+
+Start the actual Ollama daemon in local-only mode. If a background Ollama service is already running, stop/reconfigure that service and restart it; setting this variable on the Mathguard launcher cannot alter an already running daemon.
+
+```sh
+OLLAMA_NO_CLOUD=1 ollama serve
+```
+
+Leave that terminal running. Alternatively set `"disable_ollama_cloud": true` in Ollama's `~/.ollama/server.json`, preserving any existing settings, and restart Ollama. The official [Ollama FAQ](https://docs.ollama.com/faq#how-do-i-disable-ollama-cloud-features) explains configuration; verify its startup log says cloud disabled. Keep it bound to `127.0.0.1`. A loopback URL alone does not establish offline inference: a cloud-capable daemon can relay requests.
+
+In a second terminal, inside this checkout:
+
+```sh
+ollama pull qwen2.5:1.5b-instruct
+make setup MODEL=qwen2.5:1.5b-instruct
+make run
+```
+
+The selected [Qwen2.5 1.5B instruction model](https://ollama.com/library/qwen2.5:1.5b-instruct) is roughly 986 MB in its listed Q4_K_M package and uses Apache 2.0. This exact tag is the tested release choice. Its finite development behavior is recorded below; independently unseen detector quality remains unmeasured. The smaller 0.5B variant overblocked benign development cases under the earlier classifier prompt and is retained as historical evidence. No weights are redistributed in this repository. Retain the exact installed digest and model license when recording your final evaluation.
+
+The [model record](../submission/model-record.json) identifies the tested 1.5B weights, Ollama 0.35.1, downloaded digest and installed Apache 2.0 license with cloud disabled. The [selected development run](../evidence/live-development-evaluation.json) completed all eight public cases: three benign allows, one redaction and four detected blocks, with nine valid semantic verdicts and no control errors. The classifier prompt was developed using this corpus; this result does not estimate unseen accuracy.
+
+Historical failures and exploratory probe results remain linked in the model record. The selected [nine raw classifier probes](../evidence/semantic-prompt-development.json) matched eight expectations and missed an indirect public-paste instruction with a valid `0/allow`. Strict schema fixes output shape; it does not prove detector judgment. An independent unseen evaluation remains open.
+
+In this restricted development environment, the native pull's redirect DNS resolution was blocked. An isolated cache was populated from the official registry using a proxy-compatible download and every layer's SHA256 and size was verified against its manifest. A normal judge machine should use `ollama pull` as shown above rather than reproducing that environment-specific workaround.
+
+The [live local rehearsal](../evidence/live-local-rehearsal.json) ran clean private setup and the public HTTP gateway with those weights. Its ten logical checks recorded an allowed three-stage chat, hard signature/PII blocks without inference, actual 25 PLN single commit and exact retry, 100 PLN separate owner approval and single commit/retry, valid/invalid live policy changes, sanitized reports and restoration of the same ledger/resource/audit state after restart. `scripts/rehearse-live-local.py` repeats those finite checks using an installed Ollama executable and a downloaded model cache; it starts isolated local services, downloads nothing and exports no credentials. Pass `--ollama` or `--models-dir` when your installation/cache is outside the defaults. This rehearsal is operational evidence, not an unseen-prompt benchmark.
+
+`make setup` checks `/v1/models` for the exact ID, native Ollama `/api/tags` for a local-weight digest/size and absence of cloud relay fields, and the same strict JSON-schema classification request used by the gateway. One fixed harmless readiness probe must receive `allow` below the sample policy's review/block thresholds. A valid `10/allow` remains compatible; a block, review or malformed response stops setup. This finite utility check does not measure detection quality. It creates the private files below and downloads the pinned Mathlib cache/builds the actual Lean worker. No Python kernel mirror, remote provider or classifier fixture is substituted if a prerequisite fails. The default sample profiles retain their documented semantic fallback behavior during normal operation.
+
+Ollama's [OpenAI compatibility documentation](https://docs.ollama.com/api/openai-compatibility) describes the local `/v1/chat/completions` fields used by the gateway; the wire format does not require an OpenAI account. The Mathguard launcher supports Ollama native provenance checks specifically. The [structured-output documentation](https://docs.ollama.com/capabilities/structured-outputs) describes the JSON-schema request constraint; Mathguard keeps its own strict parser and never silently falls back to unconstrained verdicts. A different local serving engine requires an explicit adapter/provenance review; replacing its URL is insufficient for this judge workflow.
+
+## Connect and demonstrate
+
+Open **http://127.0.0.1:8787**. In another terminal run:
+
+```sh
+make credentials
+```
+
+Paste each role into its own field. The **operator** reads reports/reloads configuration; the **agent** creates sessions/proposes interactions; the **owner** issues approvals. They are distinct random tokens and remain in owner-private files. They are not stored in browser localStorage. Close the credential terminal before screen sharing.
+
+1. Connect a session. Ask `Explain how an AI policy gateway works.` A compatible live classifier normally permits the request. The dashboard must show live mode and record semantic/model calls. A model's review/block decision is still enforced, not relabeled as success.
+2. Ask `Contact alice@example.com`. The sample policy redacts the email before model delivery. Inspect the decision and sanitized audit metadata.
+3. Ask `ignore previous instructions`. The deterministic signature blocks dispatch regardless of the model's opinion.
+4. In the ledger panel propose 2500 minor units (25 PLN) from Alice to Bob. Inspect the single committed revision. Use exact retry: balances and charges do not change a second time.
+5. Propose 10000 minor units (100 PLN). Issue the separate owner approval and resubmit the exact proposal. Approval issuance itself does not make a payment; expiry, policy/session binding and replay checks still apply. If the classifier requests semantic review, owner approval does not silently override it.
+6. Use the policy Reload and management report/export controls. Show active versions, blocked/redacted counts, resource headroom and reserved versus observed token usage.
+
+An allowed chat runs three stages: input classifier, proposer, then output classifier. Each stage has a 15-second deadline and the default output cap is 128 tokens. Longer answers can be truncated and still undergo output inspection; choose brief requests for the demonstration. CPU inference may take seconds. If a timeout quarantines the provider, stop/verify the upstream job first and use explicit operator recovery. Adapter termination cannot prove that upstream GPU/CPU work stopped. Existing charges remain accounted.
+
+## Where files live
+
+Setup prints the runtime directory. By default it is `~/.local/state/mathguard/<checkout-id>/`, separate from this repository. To choose a different location before setup and every later command:
+
+```sh
+export MATHGUARD_RUNTIME_DIR=/absolute/private/path/mathguard-demo
+```
+
+| File | Purpose | Handling |
+| --- | --- | --- |
+| `credentials.json` | Stable distinct operator/agent/owner credentials | Owner-only; never commit/export/record |
+| `policy.json` | Exact local model IDs plus sample guardrails | Owner-only; this is the file edited live |
+| `signatures.json` | Versioned, data-only defensive signatures | Owner-only; increment `version` when editing |
+| `model.json` | Selected engine/model/digest and preflight result | Setup evidence; not classifier accuracy |
+| `state.sqlite3` and journal companions | Single-node durable budget/ledger/audit state | Keep together; never delete to bypass limits/recovery |
+
+The launcher preserves existing policy edits, tokens and state. Selecting a different installed model through `make setup MODEL=<exact-id>` updates the model allowlist/semantic model and increments the policy epoch; it preserves other configured controls and resource state. Invalid existing configuration is retained for repair rather than replaced by a permissive sample. Runtime files must be owned by the current user, regular files, with mode 600; the directory uses mode 700. Symbolic links are refused.
+
+A separate `MATHGUARD_RUNTIME_DIR` deliberately creates a separate demonstration environment. Do not describe it as recovery of the original balances/charges. Changing role credentials while restoring state requires deliberate deployment ownership review.
+
+## Live policy edit
+
+Edit the **private `policy.json` path printed by the launcher**, not the tracked sample. Save a valid JSON object, increment `epoch`, and select Reload. For example change `pii_action` from `redact` to `block`. Active version and reload status must change; ledger balances and charges remain intact.
+
+To show invalid-edit behavior, save an invalid JSON candidate and reload. The dashboard exposes the rejection and last valid policy remains active. Restore valid JSON with a newer epoch. If there has never been a valid policy, interaction execution stays closed. Similar feed edits require a larger `version`; do not place code into the signature feed.
+
+Do not raise limits during a budget-stop demonstration unless explaining the new policy. Budget reservations use a four-value vector: configured cost micros, token bound, compute/deadline milliseconds and call slots. Local cost is normally zero. Conservative token/time reservations are not the model's observed usage or an electricity/GPU invoice.
+
+## Test and troubleshoot
+
+```sh
+make test
+```
+
+The canonical check includes the real compiled Lean kernel, native/audit checks, all runtime/security tests and the private launcher checks. It uses labeled classifier and HTTP protocol fixtures, so it needs no running LLM or API key. `make smoke` runs only the fast isolated launcher safety suite and does not replace the release gate.
+
+| Symptom | Action |
+| --- | --- |
+| Lean missing | Install elan from the official link, reopen the terminal, rerun setup. The pinned toolchain is downloaded by elan. |
+| Mathlib/cache build failed | Check network/disk; retry setup. A warm checkout can use `lake build mathguard-worker` without fetching the cache again. |
+| Model unavailable | Start the actual Ollama daemon with cloud disabled. Run `make doctor` and `ollama list`. |
+| Selected model not installed | Use the exact ID printed by `make doctor`, including the tag, or explicitly pull the desired local weights. |
+| Cloud alias or remote metadata rejected | Choose downloaded local weights; disable cloud on the daemon and restart it. Do not supply an API key. |
+| Semantic preflight incompatible or harmless probe withheld | Use the exact tested instruction model and an Ollama version supporting strict JSON-schema output. Review the model's finite evaluation; malformed, review or block verdicts do not become allows. |
+| Private file permissions rejected | Use `chmod 700` for the printed runtime directory and `chmod 600` for its files. Preserve ownership; do not move state through untrusted symlinks. |
+| Port 8787 already used | Stop the earlier Mathguard process, or run `bash scripts/demo.sh --port 8788` and open that URL. One process owns a state database. |
+| State lock, corruption or uncertain effect | Stop the competing process. Preserve all state files and restore from a private known-good backup or investigate recovery. Do not delete the database to erase charges. |
+| Provider quarantined | Stop/verify the upstream model job, then acknowledge explicit operator recovery. This preserves charges and balances. |
+| Invalid private policy after setup | Repair that file with valid JSON and a newer epoch. The launcher will not overwrite the judge's candidate silently. |
+
+`make doctor` prints dependencies, endpoint, installed model IDs and the private location; it prints no credentials and does not call a paid service. The launcher rejects remote endpoints, provider redirects, cloud aliases, oversized responses and API-key environment configuration.
+
+## SDK and evaluation
+
+For integration examples see [the shared gateway/SDK contract](13-GENERAL-CONTROL-LAYER.md) and `gateway/sdk.py`. The reference `agent/run.py` is optional. Use the agent token only for that client; the operator token is needed by the evaluation script to read sanitized traces.
+
+```sh
+python3 scripts/evaluate-live.py --model '<exact installed ID>' \
+  --corpus tests/development-prompts.jsonl --label development \
+  --output evidence/live-development.json
+```
+
+Set `MATHGUARD_AGENT_TOKEN` and `MATHGUARD_OPERATOR_TOKEN` privately before that command. Do not paste actual values into documentation. This development corpus is not held out. Final quality reporting needs an independently labeled unseen corpus, false-positive/false-negative reporting and the exact model/engine/digest/license; preflight or fixture tests establish none of those accuracy figures.
+
+The single-node journal and trusted-callback SDK are explicit deployment boundaries. A proof about the Lean model does not prove host JSON parsing, authentication, local-daemon trust or exactly-once external effects. Review [current acceptance/status](../STATUS.md) before presenting any broader claim.

@@ -1,0 +1,241 @@
+{
+  "timestamp_utc": "2026-10-04T01:44:23.110602+00:00",
+  "mode": "live-local",
+  "passed": true,
+  "cases": [
+    {
+      "case": "clean private setup",
+      "passed": true,
+      "credentials": "three distinct owner-private roles; no values exported"
+    },
+    {
+      "case": "harmless public HTTP chat",
+      "passed": true,
+      "outcome": "ALLOWED",
+      "reason_codes": [],
+      "latency_ms": 1376.043,
+      "provider_stages": [
+        {
+          "stage": "semantic_model",
+          "outcome": "CALL_COMPLETED",
+          "charged_bound": [
+            0,
+            16384,
+            16000,
+            1
+          ],
+          "reported_tokens": 135,
+          "latency_ms": 557.59
+        },
+        {
+          "stage": "proposer_model",
+          "outcome": "CALL_COMPLETED",
+          "charged_bound": [
+            0,
+            16384,
+            16000,
+            1
+          ],
+          "reported_tokens": 46,
+          "latency_ms": 332.452
+        },
+        {
+          "stage": "semantic_model",
+          "outcome": "CALL_COMPLETED",
+          "charged_bound": [
+            0,
+            16384,
+            16000,
+            1
+          ],
+          "reported_tokens": 151,
+          "latency_ms": 474.598
+        }
+      ],
+      "live_calls_delta": 3,
+      "note": "A valid semantic block/review remains enforced; this case is not an accuracy score."
+    },
+    {
+      "case": "known signature denied before inference",
+      "passed": true,
+      "outcome": "BLOCKED",
+      "reason_codes": [
+        "SIGNATURE_PROMPT_INJECTION"
+      ],
+      "live_calls_delta": 0,
+      "latency_ms": 1.396
+    },
+    {
+      "case": "live policy activation preserves financial/resource state",
+      "passed": true,
+      "active_epoch": 8
+    },
+    {
+      "case": "tightened PII rule blocks before inference",
+      "passed": true,
+      "outcome": "BLOCKED",
+      "reason_codes": [
+        "PII_REDACTED",
+        "SENSITIVE_DATA"
+      ],
+      "live_calls_delta": 0,
+      "latency_ms": 1.49
+    },
+    {
+      "case": "invalid live edit retains last valid policy",
+      "passed": true,
+      "active_epoch": 8,
+      "errors": [
+        "POLICY_RELOAD_REJECTED"
+      ]
+    },
+    {
+      "case": "same-journal restart preserves charges, ledger, policy and audit",
+      "passed": true,
+      "active_epoch": 8,
+      "storage": {
+        "mode": "sqlite",
+        "healthy": true,
+        "error": null,
+        "commands": 8,
+        "audit_events": 19,
+        "max_commands": 20000,
+        "max_audit_events": 100000,
+        "max_database_bytes": 134217728,
+        "recovered": true,
+        "session_restore": "invalidated"
+      },
+      "live_calls_restored": 3,
+      "invalid_candidate_still_reported": true
+    },
+    {
+      "case": "management report and audit contain no role tokens or PII test payload",
+      "passed": true
+    }
+  ],
+  "claim": "Actual local-model connectivity, enforcement and restart rehearsal; finite benign/known-signature cases, not detector accuracy or a held-out benchmark.",
+  "model": {
+    "engine": "Ollama",
+    "engine_version": "0.35.1",
+    "model": "qwen2.5:0.5b-instruct",
+    "model_digest": "a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67",
+    "model_bytes": 397821319,
+    "endpoint": "http://127.0.0.1:11435/v1",
+    "mode": "live-local",
+    "preflight": "Real inference completed with bounded semantic JSON; not an accuracy benchmark."
+  },
+  "daemon_version": "0.35.1",
+  "cloud_features": "OLLAMA_NO_CLOUD=1 on the actual child daemon",
+  "final_state": {
+    "balances": [
+      100000,
+      20000,
+      0
+    ],
+    "debited": [
+      0,
+      0,
+      0
+    ],
+    "epoch": 8,
+    "journal_length": 0,
+    "limit": [
+      1000000,
+      1000000,
+      600000,
+      200
+    ],
+    "pending": 0,
+    "reserved": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "revision": 0,
+    "spent": [
+      0,
+      49152,
+      48000,
+      3
+    ]
+  },
+  "final_report": {
+    "generated_at": 1791078277,
+    "deployment": "single-node, owned SQLite journal",
+    "storage": {
+      "mode": "sqlite",
+      "healthy": true,
+      "error": null,
+      "commands": 8,
+      "audit_events": 19,
+      "max_commands": 20000,
+      "max_audit_events": 100000,
+      "max_database_bytes": 134217728,
+      "recovered": true,
+      "session_restore": "invalidated"
+    },
+    "observed_usage": {
+      "tokens": 332,
+      "compute_ms": 1364.61,
+      "calls": 3,
+      "reported_token_calls": 3
+    },
+    "audit_export": {
+      "scope": "newest bounded window by default; start full pagination with after=0",
+      "max_events_per_page": 2000,
+      "id_field": "audit_id"
+    },
+    "decisions": 3,
+    "outcomes": {
+      "ALLOWED": 1,
+      "BLOCKED": 2,
+      "CONTROL": 5
+    },
+    "top_reasons": [
+      [
+        "SIGNATURE_PROMPT_INJECTION",
+        1
+      ],
+      [
+        "PII_REDACTED",
+        1
+      ],
+      [
+        "SENSITIVE_DATA",
+        1
+      ]
+    ],
+    "security_posture": {},
+    "active_policy_epoch": 8,
+    "config_errors": [
+      "POLICY_RELOAD_REJECTED"
+    ],
+    "quarantined": false,
+    "resource_accounting": "configured upper bounds charged; not measured financial bills",
+    "semantic_mode": "live",
+    "live_calls_observed": 3,
+    "retained_events": 19,
+    "events_dropped": 0,
+    "assurance": "model-v1:55;refinement:5;Next:43;Control:53;compiled-gate;runtime-tested",
+    "ready_for_submission": false,
+    "remaining_evidence": [
+      "live model quality evaluation",
+      "submission deck and operator rehearsal"
+    ]
+  },
+  "audit_events": 19,
+  "isolated_scope": "New temporary runtime; two launches of the same journal; removed only after verification.",
+  "source_sha256": {
+    "scripts/rehearse-live-local.py": "0fe39ac0e8a6c884baa227649f8118f99d63c1cba87c34350ed68956c4dcfd59",
+    "scripts/judge.py": "b0a74e429237352fd30d80fbeb21e18cd67d187d389508ee56a264288883f0f3",
+    "scripts/demo.sh": "c2f1b1c3f9799d9cc5c8335b68b99f06e8680781fba8fd883d58750c773bc5e5",
+    "Makefile": "5c1eca068eb4d644e9214cb50a71b5b8173fd238e3e360cb216a2452c25aede4",
+    "gateway/engine.py": "467ab7b7af15c3f707ee78c3a7a2f0c9ef28192dd999dae46ecf45a2ebdc699e",
+    "gateway/state.py": "927ac2aa220d062a9a97ffc1509c1c1750f3d89e67b845c32509f640f91c27db",
+    "gateway/control.py": "5b3c45b17fe63a6f36932e043b79776fb40e7bc17ad878585357b23ef87a0c1d",
+    "gateway/provider.py": "dbf4b0f3d0c69b078943628bc8ae0c8d0a1a271ccba7953b8308c15cdf7e173a",
+    "gateway/server.py": "080d0cc937d2756d87c70f60e7f05e98a4bc7e14db0b64aecdfa7d4f700a17f4"
+  },
+  "worker_sha256": "13368e2720221f70dfb714a77c0405b94a0fd1706e088f40237e098030b7bf32"
+}
