@@ -48,4 +48,4 @@ Independent unseen prompt evaluation remains open. The review browser rejected l
 
 [Judge quickstart](docs/17-JUDGE-QUICKSTART.md) · [Dashboard guide](docs/16-DASHBOARD-GUIDE.md) · [Presenter tutorial](docs/18-PRESENTATION-TUTORIAL.md) · [Full release plan](docs/15-FINAL-RELEASE-PLAN.md).
 
-Changes are prepared on `hardening/final-control-release` after the earlier integration PR was merged. This release does not merge or rewrite main. No GitHub Actions or paid APIs are required.
+The implementation and Prelint follow-up were merged into `main` in PR #6 (`2539ac4`). The [project description and submission fields](docs/01-PRODUCT-AND-CHALLENGE.md) reflect that release. No GitHub Actions or paid inference APIs are required.

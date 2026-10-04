@@ -1,12 +1,12 @@
 # Mathguard: challenge requirements, delivery gaps, and recovery plan
 
-Checked 3 October 2026 against the original four-page challenge brief and three-page rules. This document controls the current delivery scope. The ledger is the demonstrator; **the product is an integrable hybrid AI control layer**. Proving more ledger theorems alone does not deliver the challenge.
+Sources checked 3 October 2026 against the original four-page challenge brief and three-page rules; implementation status refreshed 4 October after PR #6 merged. This document controls the delivery scope. The ledger is the demonstrator; **the product is an integrable hybrid AI control layer**. Proving more ledger theorems alone does not deliver the challenge.
 
-> **General-kernel integration:** [13-GENERAL-CONTROL-LAYER.md](13-GENERAL-CONTROL-LAYER.md) describes the compiled G1 path, shared SDK API and schema-3 controls. Fresh 156-record/70-case evidence is in [GENERAL-CONTROL-INTEGRATION.md](verification/GENERAL-CONTROL-INTEGRATION.md). Source interpretations below remain unchanged.
+> **Current release:** [13-GENERAL-CONTROL-LAYER.md](13-GENERAL-CONTROL-LAYER.md) describes the compiled G1 path, shared SDK API and schema-3 controls. [RELEASE-ASSURANCE.md](verification/RELEASE-ASSURANCE.md) records the 156-record catalog, 189-case runtime suite and actual local-model evidence. [GENERAL-CONTROL-INTEGRATION.md](verification/GENERAL-CONTROL-INTEGRATION.md) retains the earlier 70-case integration checkpoint. Source interpretations below remain unchanged.
 
 ## What the source audit actually found
 
-The earlier repository already listed most official requirements, including the two scoring tables. The failure was treating those descriptions as delivery progress: `main` had a formal model and native demos, without a callable gateway, policy loader, real-model adapter, interactive dashboard, or gateway integration suite. The new implementation closes a substantial part of that gap; live-model evidence and submission packaging remain open.
+The earlier repository already listed most official requirements, including the two scoring tables. The failure was treating those descriptions as delivery progress: at that checkpoint, `main` had a formal model and native demos, without a callable gateway, policy loader, real-model adapter, interactive dashboard or gateway integration suite. The merged implementation supplies all four deliverables, actual local-model operational evidence and a ten-slide presentation. Independent unseen detection evaluation, human browser rehearsal and external submission acceptance remain open.
 
 Primary sources, retrieved directly and checked visually:
 
@@ -42,24 +42,24 @@ R p1 §5 says 23:00 on 3 October to 23:00 on 4 October. The compendium reports a
 
 | ID / source | Required capability | Current implementation and test evidence | Remaining acceptance / owner |
 |---|---|---|---|
-| D1, D p2 §3.1 | Functional control layer + diagram | `gateway/` + SDK, compiled G1/W1 and ledger/budget/flow worker, `agent/run.py`; HTTP, native-state and replay tests | Run reference agent with actual local model / engine + product |
-| D2, D p2–3 §3.2 | Documented configurable policies | `policies/`, strict validation, semantic threshold, PII block/redact, model allowlist, budgets | Judge edits actual file; show valid activation + invalid retention / engine |
-| D3, D p3 §3.3 | Interactive dashboard | `dashboard/`: prompt, transfer, approval, policy/feed, metrics, audit, assurance | Live model run and operator rehearsal / product |
-| D4, D p3 §3.4 | Ready-to-run automated suite | `scripts/test-integration.sh`, real worker plus labeled guard fixture | Add human-authored unseen corpus; run live evaluator / QA |
+| D1, D p2 §3.1 | Functional control layer + diagram | `gateway/` + SDK, compiled G1/W1 and ledger/budget/flow worker; README diagram; actual HTTP/local-model/ledger rehearsal | Judge clean-clone walkthrough; the SDK must mediate each integrated boundary / engine + product |
+| D2, D p2–3 §3.2 | Documented configurable policies | `policies/`, strict validation, thresholds, PII block/redact, model/tool allowlists, budgets; valid/invalid live edits exercised | Judge changes the printed private runtime file; independent operator rehearsal / engine |
+| D3, D p3 §3.3 | Interactive dashboard | `dashboard/`: model/tool/message inspection, approval, policy/feed, posture, resources and exports; 12 DOM/request cases plus actual HTTP serving | Browser layout/download/human-click rehearsal remains open / product |
+| D4, D p3 §3.4 | Ready-to-run automated suite | `make test`: 189 actual-worker runtime cases, 14 static cases and pinned Lean/native audit checks; fixtures explicitly labeled | Human-authored independently unseen corpus and live evaluation / QA |
 | C1, D p2 §2 + p3 §4.1 | Central source of controls | Validated immutable policy snapshot; higher epochs; bounded data-only feed | Broader ownership/beneficiary catalogs are future work; current three-account policy explicit |
-| C2, D p3 §4.2.1 | Deterministic controls | Auth, exact schema, ledger gates, secret/email/IBAN facts, compiled input/output redact/block thresholds and tool allowlists | Pattern coverage remains finite; test additional Polish PII / engine |
-| C3, D p2 §2 + p3 §4.2.2 | Semantic AI controls | Bounded local OpenAI-compatible classifier; compiled risk review/block and profile fallback; cannot override hard Lean gates | **OPEN live validation**: model ID/revision, verdict quality, false positives, timeouts / engine |
-| C4, D p3 §4.3 | Budget/resource governance | Actual Lean reserve/charge kernels; before every guard/model call; atomic financial call slot | Global accounting + session steps/repeats; per-session vector quotas and actual-usage refunds are follow-ups |
+| C2, D p3 §4.2.1 | Deterministic controls | Role auth, bounded exact schemas, ledger gates, supported PII/secrets, Polish/Unicode/encoded/split facts, structured redaction and allowlists; current-policy history recheck | Pattern coverage remains finite; independent unseen variants / engine |
+| C3, D p2 §2 + p3 §4.2.2 | Semantic AI controls | Actual Ollama 0.35.1 / Qwen2.5 1.5B, shared strict-schema prompt and bounded host verdict fusion; eight development outcomes and operational traces recorded | Known indirect-input miss and independently unseen quality remain open; valid JSON is not correct detection / engine |
+| C4, D p3 §4.3 | Budget/resource governance | Lean reserve/charge kernels, durable reservation before provider dispatch, full conservative charge and separate observed usage; atomic financial call slot | Global vector only; sample permits 12 complete chats before other usage. Per-session vectors/distributed quotas are follow-ups; uncertainty is not refunded |
 | C5, D p3 §4.4 | Historical exploit mitigation | Reloadable literal signatures; block unsafe loaders; bounded artifact byte hash/header/repository checks; no execution | Link representative signatures to primary incident/advisory sources; expand corpus / security |
-| C6, D p3 §4.5 | Security and management reports | Counters, request latency, resources, reasons, JSONL export, explicit assurance | Management export and detector/gate p95 implemented; live baseline/overhead measurement remains; audit is bounded and volatile / product |
+| C6, D p3 §4.5 | Security and management reports | Counters, request/control latency, resources, sanitized reasons/JSONL/management export; SQLite durable metadata with bounded paginated exports | Independent judge-hardware performance baseline; browser downloads/human review / product |
 | C7, D p3 §4.6 | Positive and negative self-tests | Real state assertions, approvals/replay/conflict, redaction, policy/feed, races, resource/failure tests | No classifier-accuracy claim from fixture tests / QA |
-| V1, D p4 §6 | Unprepared prompts | Live prompt panel and shared enforcement path | Rehearse arbitrary mentor prompts on local model / product |
-| V2, D p4 §6 | Judges modify config/feeds | Reload at next request; higher epoch/version; last-good retention | Expose active version/error and demonstrate changing/removing optional signatures / engine |
-| V3, D p4 §6 | Performance telemetry | Real request p50/p95, sample count; earlier native-only benchmarks separate | Measure stage/direct-provider/control-layer overhead on GB10 / QA |
-| T1, D p3 §5 | Stack/license flexibility | Python standard library; pinned Lean/Mathlib | Complete actual model/weights and dependency notices / coordinator |
-| T2, D p4 §7 | Self-supplied setup/local models | Configurable loopback OpenAI-compatible endpoint; no model weights bundled | Set exact installed model name; record live smoke evidence / operator |
-| S1, R p1 §5 | Title/team/members/description | Revised text in `01-PRODUCT-AND-CHALLENGE.md` | Enter actual team members and final checked status in HackTribe / Łukasz |
-| S2, R p1 §5 | PDF, maximum 10 slides | Actual ten-slide PDF and editable deck in `submission/`; source-grounded implementation evidence | Final team/model acceptance, live screenshots and HackTribe upload / product |
+| V1, D p4 §6 | Unprepared prompts | Live prompt panel and shared enforcement path; known-input follow-up recorded without a universal detection claim | Arbitrary unseen mentor prompts remain an evaluation task / product |
+| V2, D p4 §6 | Judges modify config/feeds | Higher epoch/version, last-good retention, active version/errors; valid/invalid changes exercised through public routes | Independent judge/operator edit sequence / engine |
+| V3, D p4 §6 | Performance telemetry | Real request/control p50/p95 and sample counts; actual provider-stage timings and separately observed tokens/time | Independent direct-provider/overhead benchmark on judge hardware / QA |
+| T1, D p3 §5 | Stack/license flexibility | Python stdlib; pinned Lean/Mathlib; exact model/digest/installed Apache-2.0 license and Ollama MIT source recorded | Project-owner distribution license and current deployment notices / coordinator |
+| T2, D p4 §7 | Self-supplied setup/local models | `make setup MODEL=<exact-id>` checks local weights and actual strict-schema readiness; real local evidence; no silent fixtures/cloud relay | Prepared judge machine with weights/toolchain cached and actual cloud-disabled daemon / operator |
+| S1, R p1 §5 | Title/team/members/description | Updated form answers, technology/resources, evidence/limits and deliverable links in `01-PRODUCT-AND-CHALLENGE.md` | Exact registered team/roster/contact and actual platform field limits / coordinator |
+| S2, R p1 §5 | PDF, maximum 10 slides | Rendered/checked ten-slide PDF, editable deck and Polish tutorial/English scripts in `submission/` and `docs/` | Final registered identity and actual HackTribe upload/acceptance / product |
 | S3, R p2 §8 | Platform assessment then live finals | Local operator runbook and self-tests | Clean-clone walkthrough; accessible materials and short pitch / coordinator |
 | S4, R p3 §13 | Submission freeze | SHA/evidence-based release discipline | Freeze reviewed commit and artifacts before confirmed cutoff / coordinator |
 
@@ -93,14 +93,13 @@ Stop adding generalized ledger features and new performance representations unti
 
 | Priority | Work | Done when |
 |---|---|---|
-| P0 / first | Configure actual local proposer/guard and run positive/negative smoke | Two real outcomes, model identity, timings, and no fixture label confusion |
-| P0 | Execute canonical local gate + inspect Prelint | All required local checks pass; meaningful findings resolved |
-| P0 | Operator rehearsal: prompt, policy edit, feed edit, approval, budget exhaustion, export | A teammate can run the sequence from README without code edits |
-| P0 | Produce actual <=10-slide PDF and finalize submission | Screenshots/results match frozen SHA; links open for judges |
+| P0 / first | Confirm roster, cutoff, field limits and platform acceptance | Submit current text/PDF against the registered team and confirmed platform record |
+| P0 | Human operator/browser walkthrough | A teammate runs the README sequence, policy edits, approval/retry and downloads without code edits |
+| P0 completed | Actual local setup, canonical gate, Prelint follow-up and presentation | Recorded model/license, 189 runtime/14 static cases, finite live rehearsals and checked ten-slide PDF |
 | P1 | Human-authored unseen prompt set + live evaluation | Per-category attack success/false positives and closed-error rate, not a single inflated accuracy |
-| P1 | Stage latency, management summary, failure/race coverage | Measured report includes baseline, controls overhead and classifier cost |
-| P1 | Source-backed historical signatures + model license inventory | Every claim maps to a source, test, and explicit limitation |
-| P2 | Per-session resource vectors, durable outbox/store, scalable global quotas | Separate design and tests; no multiworker launch with duplicated allowances |
+| P1 | Independent performance and threat coverage review | Judge-hardware baseline/overhead and broader source-backed signature coverage, with explicit limitations |
+| P1 | Exact host/worker and persistence formalization | Checked Aristotle H1 first, followed by the scoped H2–H7 campaigns; no new proof claim from proposed tasks |
+| P2 | Per-session vectors, external-tool effect protocols and scalable global quotas | Separate design/tests; no multiworker launch with duplicated allowances or exactly-once SDK claim |
 | Completed model import | C1/P1/W1 + G1 proof campaign | 156 fresh axiom records; C1/P1 remain separate model evidence; runtime mapping in document 13 |
 
-`P0` means critical to a credible submission; it is not an official binary eligibility classification. Keep [STATUS.md](../STATUS.md) honest. A working adapter without a live run remains “implemented, live validation pending.”
+`P0` means critical to a credible submission; it is not an official binary eligibility classification. Keep [STATUS.md](../STATUS.md) honest. Actual finite local runs are now recorded; independently unseen quality and human acceptance are separate open tasks.

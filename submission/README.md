@@ -1,5 +1,7 @@
 # Mathguard presentation package
 
+[Current project description and submission fields](../docs/01-PRODUCT-AND-CHALLENGE.md) contains the updated problem, solution, completed work, technology/resources, deliverable links and explicit team-confirmation fields. Use its ready-to-paste answers for the submission form; do not reuse the older 70-case/live-pending text.
+
 The ten-slide [PDF](Mathguard-HackYeah-2026.pdf) and [editable PowerPoint](Mathguard-HackYeah-2026.pptx) explain the control layer with one main idea per slide. The architecture and policy tables remain editable. Short English scripts, Polish explanations and source references are in the PowerPoint notes. The full [presenter tutorial](../docs/18-PRESENTATION-TUTORIAL.md) includes a five-minute schedule, a short demo, troubleshooting and judge questions.
 
 The [classic shield identity](brand/CLASSIC-IDENTITY.md) restores the original universal quantifier and connected nodes. The original project logo is preserved. The presentation uses Nimbus Roman for titles, Nimbus Sans for body text and Nimbus Mono PS for commands, with navy, ivory and restrained gold accents. [Design review](brand/DESIGN-REVIEW.md) records the visual checks and their limits.
@@ -9,5 +11,7 @@ For a judge's first run, use [the quickstart](../docs/17-JUDGE-QUICKSTART.md). F
 Runtime and live evidence are separate. [Integration evidence](../evidence/integration.json) uses controlled verdict fixtures and the actual compiled worker. [The local rehearsal](../evidence/live-local-rehearsal.json) records actual local-model operation. Neither establishes independent unseen detector accuracy. The [release assurance map](../docs/verification/RELEASE-ASSURANCE.md) distinguishes model proofs, runtime tests and operational limits.
 
 The selected 1.5B/strict-schema/128-token configuration passed [eight development cases](../evidence/live-development-evaluation.json). The corpus was used during prompt development. Earlier overblocking, timeout and malformed-verdict runs remain in the evidence directory, along with [exploratory diagnostics](../evidence/semantic-prompt-development.json) that retain the support-note/public-paste expected-block miss. See the presenter tutorial for how to explain these limits.
+
+The latest runtime receipt has 189 passed cases. The deck's exported evidence slide retains the 187-case checkpoint at export; the two later Prelint regression cases are in the current receipt, and the tutorial explains the resulting demo behavior. [The full gateway follow-up](../evidence/prelint-indirect-live.json) still missed the known input, but the proposer refused; a separately constructed harmful output was blocked. Do not label the refusal an input-classifier block.
 
 Browser visual/download rehearsal remains open because the review browser blocks localhost. The final slide PDF is rendered and checked separately. Team/member registration, organizer deadline confirmation and HackTribe acceptance are external submission steps; this package does not claim they occurred. The project's own distribution license remains the owner's decision; see [third-party notices](../THIRD-PARTY-NOTICES.md).

@@ -83,7 +83,7 @@ Inspect current Lean 4.28.0 definitions and the 156-record audit before proposin
 
 ## Remaining external decisions
 
-The team must confirm the earlier deadline discrepancy, registered member list, HackTribe entry and final submission acceptance. Actual installed weights need a recorded license/version. These are not solved by passing fixture tests or rendering the deck. The prepared release will clearly distinguish completed engineering evidence from external or live acceptance still needed.
+The team must confirm the earlier deadline discrepancy, registered member list, HackTribe entry and final submission acceptance, and choose the project's distribution license. Actual installed weights/version/license are recorded in `submission/model-record.json`. Platform acceptance and independent unseen/human rehearsal are not established by fixture tests or the checked deck. Use [the current submission fields](01-PRODUCT-AND-CHALLENGE.md) for the release description.
 
 ## Release checkpoint
 
